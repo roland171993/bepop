@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    android:orientation="vertical"
+    tools:context="com.RolandAssoh.stopgalere.ci.LeMotivationActivity">
+
+    <include
+        android:id="@+id/leMotisToolbar"
+        layout="@layout/mtoolbar" />
+
+    <ListView
+        android:id="@+id/listLeMotivationId"
+        android:layout_below="@id/leMotisToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="#00000000"
+        android:layout_margin="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:divider="@android:color/transparent"
+        android:listSelector="@drawable/list_selector"
+        android:padding="4dp"
+        android:dividerHeight="5dp"/>
+
+    <ProgressBar
+        android:id="@+id/leMotisProgressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
+
+</RelativeLayout>

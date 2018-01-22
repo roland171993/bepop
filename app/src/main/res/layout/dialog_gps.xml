@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center" >
+
+    <LinearLayout
+        android:id="@+id/dialog_social_layout"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:background="@color/main_color_grey_100"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <com.font.RobotoTextView
+                android:id="@+id/dialog_share_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/main_color_grey_100"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="@string/gps_title"
+                android:textColor="@color/main_color_600"
+                android:textSize="20sp"
+                app:typeface="robotoBlack" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/main_color_grey_300" />
+
+            <com.font.RobotoTextView
+                android:id="@+id/map_dialog_setMessageId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="4"
+                android:text="@string/gps_message"
+                android:textColor="@color/main_color_grey_700"
+                android:textSize="18sp"
+                app:typeface="robotoRegular" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/main_color_grey_300" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right">
+
+            <com.font.RobotoTextView
+                android:id="@+id/map_dialog_cancel_Id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/selector_dialog_warning"
+                android:gravity="center"
+                android:minWidth="64dp"
+                android:padding="8dp"
+                android:text="@string/share_cancel"
+                android:textColor="@color/main_color_600"
+                android:textSize="14sp"
+                app:typeface="robotoMedium" />
+
+            <com.font.RobotoTextView
+                android:id="@+id/map_dialog_enbale_Id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:background="@drawable/selector_dialog_warning"
+                android:gravity="center"
+                android:minWidth="64dp"
+                android:padding="8dp"
+                android:text="@string/gps_enable"
+                android:textColor="@color/main_color_600"
+                android:textSize="14sp"
+                app:typeface="robotoMedium" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

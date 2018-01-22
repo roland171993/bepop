@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/app_background"
+    android:orientation="vertical"
+    tools:context="com.RolandAssoh.stopgalere.ci.EmploiDetailActivity">
+
+    <include
+        android:id="@+id/emplDetsToolbar"
+        layout="@layout/mtoolbar"/>
+
+    <ScrollView
+        android:id="@+id/detsScrollViewId"
+        android:layout_below="@id/emplDetsToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <com.font.RobotoTextView
+                android:id="@+id/detsTitleTextId"
+                android:layout_centerHorizontal="true"
+                style="@style/TextViewAppearance.Headline1"
+                android:text=""
+                android:textColor="@color/black" />
+
+            <com.font.RobotoTextView
+                style="@style/TextViewAppearance.Title1"
+                android:id="@+id/detsDescriTitleId"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/detsTitleTextId"
+                android:layout_marginTop="8dp"
+                android:text="DESCRIPTION"
+                android:textColor="@color/colorPrimary" />
+
+            <com.font.RobotoTextView
+                style="@style/TextViewAppearance.Body1"
+                android:id="@+id/detsDescriTextId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detsDescriTitleId"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp"
+                android:text=""
+                android:textColor="@color/black"/>
+
+            <LinearLayout
+                android:id="@+id/detsLSection2Id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/detsDescriTextId"
+                android:orientation="vertical">
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Title1"
+                    android:id="@+id/detsETitleId"
+                    android:text="EMPLOYEUR"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/colorPrimary" />
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Body1"
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/detsSocietyTextId"
+                    android:layout_gravity="center_horizontal"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+                <ImageView
+                    android:id="@+id/detsSocietyImgId"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:adjustViewBounds="true"
+                    android:maxHeight="100dp"
+                    android:maxWidth="200dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/detsLSection3Id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/detsLSection2Id"
+                android:orientation="vertical">
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Title1"
+                    android:id="@+id/detsPTitleId"
+                    android:text="PUBLICATION"
+                    android:textColor="@color/colorPrimary" />
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Body1"
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/detsADateTextId"
+                    android:layout_gravity="center_horizontal"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Title1"
+                    android:id="@+id/detsEDateTitleId"
+                    android:layout_marginTop="1dp"
+                    android:text="DATE LIMITE"
+                    android:textColor="@color/red" />
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Body1"
+                    android:id="@+id/detsEDateTextId"
+                    android:layout_gravity="center_horizontal"
+                    android:text=""
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <com.font.RobotoTextView
+                style="@style/TextViewAppearance.Title1"
+                android:id="@+id/detsContaTitleId"
+                android:layout_marginTop="2dp"
+                android:text="CONTACT(S)"
+                android:textColor="@color/colorPrimary"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/detsLSection3Id"
+                />
+
+            <LinearLayout
+                android:id="@+id/detsLConta1Id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detsContaTitleId"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="2dp"
+                android:orientation="vertical">
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Body1"
+                    android:id="@+id/detsMob1TextId"
+                    android:layout_gravity="center"
+                    android:text=""
+                    android:textColor="@color/black" />
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Body1"
+                    android:id="@+id/detsMob2TextId"
+                    android:layout_gravity="center"
+                    android:text=""
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/detsLASectorId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detsLConta1Id"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical">
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Title1"
+                    android:id="@+id/detsASectTitleId"
+                    android:layout_gravity="center"
+                    android:text="SECTEUR D'ACTIVITE"
+                    android:textColor="@color/colorPrimary" />
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Body1"
+                    android:id="@+id/detsASectTextId"
+                    android:layout_gravity="center"
+                    android:text=""
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/detsLWSiteId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="6dp"
+                android:layout_below="@id/detsLASectorId"
+                android:orientation="vertical">
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Title1"
+                    android:id="@+id/detsWSTitleId"
+                    android:layout_gravity="center"
+                    android:text="SITE WEB"
+                    android:textColor="@color/colorPrimary" />
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Body1"
+                    android:id="@+id/detsWSiteTextId"
+                    android:text=""
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/detsLEmailId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="6dp"
+                android:layout_below="@id/detsLWSiteId"
+                android:orientation="vertical">
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Title1"
+                    android:id="@+id/detsEmailTitleId"
+                    android:text="EMAIL"
+                    android:layout_gravity="center"
+                    android:textColor="@color/colorPrimary" />
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Body1"
+                    android:id="@+id/detsEmailTextId"
+                    android:text=""
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/detsLSalaryId"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@id/detsLEmailId"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:background="@color/orange"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.font.RobotoTextView
+                    style="@style/TextViewAppearance.Display1"
+                    android:id="@+id/detsSalaryTextId"
+                    android:layout_gravity="center"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/detsSalaryIcId"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/dets_ic_salary" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/detsLDealId"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@id/detsLSalaryId"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/detsDealIcId"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/dets_ic_deal" />
+
+                <com.font.RobotoTextView
+                    android:id="@+id/detsCTypeTextId"
+                    style="@style/TextViewAppearance.Body1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:textColor="@color/black"
+                    android:text=""
+                     />
+
+
+                <com.font.RobotoTextView
+                    android:id="@+id/detsWModeTextId"
+                    style="@style/TextViewAppearance.Body1"
+                    android:layout_marginLeft="6dp"
+                    android:textColor="@color/black"
+                    android:text="" />
+
+                <com.font.RobotoTextView
+                    android:id="@+id/detsCityTextId"
+                    style="@style/TextViewAppearance.Body1"
+                    android:textColor="@color/black"
+                    android:layout_marginLeft="6dp"
+                    android:text="" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/detsLMindId"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detsLDealId"
+                android:layout_centerHorizontal="true"
+                android:background="@color/green"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/detsMindIcId"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/dets_ic_mind" />
+
+                <com.font.RobotoTextView
+                    android:id="@+id/detsSexeTextId"
+                    style="@style/TextViewAppearance.Body1"
+                    android:text=""
+                    android:textColor="@color/white" />
+
+                <com.font.RobotoTextView
+                    android:id="@+id/detsSLevelTextId"
+                    style="@style/TextViewAppearance.Body1"
+                    android:text=""
+                    android:textColor="@color/white" />
+
+                <com.font.RobotoTextView
+                    android:id="@+id/detsEXPTextId"
+                    style="@style/TextViewAppearance.Body1"
+                    android:text=""
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+    <ProgressBar
+        android:id="@+id/detsProgressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
+</RelativeLayout>

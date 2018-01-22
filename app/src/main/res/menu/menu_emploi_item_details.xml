@@ -1,0 +1,48 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.bepop.stopgalere.com.RolandAssoh.stopgalere.ci.EmploiItemDetailsActivity">
+
+    <item
+        android:id="@+id/emp_location"
+        android:title="@string/user_location"
+        android:icon="@drawable/dets_ic_map"
+        android:visible="true"
+        app:showAsAction="always"
+        />
+    <item android:id="@+id/call_mobile1"
+        android:title="@string/mobile1_button"
+        android:icon="@drawable/dets_ic_mobile1"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/call_mobile2"
+        android:title="@string/mobile1_button"
+        android:icon="@drawable/dets_ic_mobile2"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/send_mail"
+        android:title="@string/send_mail"
+        android:icon="@drawable/dets_ic_email"
+        android:visible="true"
+        app:showAsAction="always"
+        />
+
+    <item
+        android:id="@+id/show_website"
+        android:title="@string/show_website"
+        android:icon="@drawable/dets_ic_navigator"
+        android:visible="true"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/send_sms"
+        android:title="@string/send_sms"
+        android:icon="@drawable/dets_ic_share"
+        app:showAsAction="always"
+        />
+
+</menu>

@@ -1,0 +1,76 @@
+<resources>
+    <string name="app_name">StopGalere CI</string>
+    <string name="app_version">3.0.1</string>
+    <string name="app_id">com.RolandAssoh.stopgalere.ci</string>
+    <string name="app_developper">© 2017 Bepop -Tous droits réservés</string>
+    <string name="app_slogan">Recevez quotidiennement et gratuitement des offres d\'emploi</string>
+    <string name="app_cgu">CGU</string>
+    <string name="facebook_videos">www.facebook.com/pg/Stopgalere-CI-243747339471646/videos/</string>
+    <string name="facebook_groupe">www.facebook.com/stopgalereci/</string>
+    <string name="app_email">contact@stopgalere-ci.com</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">StopGalère CI</string>
+    <string name="title_activity_emploi_item_details">Details</string>
+    <string name="mobile1_button">Appeler mobile 1</string>
+    <string name="mobile2_button">Appeler mobile 2</string>
+    <string name="send_mail">Postuler</string>
+    <string name="user_location">Itinéraire</string>
+    <string name="menu_download">Télécharger</string>
+    <string name="show_website">Go to web site</string>
+    <string name="show_location">Go to location</string>
+    <string name="send_sms">Envoyer sms</string>
+    <string name="menu_search">Rechercher</string>
+    <string name="menu_about">A Propos</string>
+    <string name="menu_option">Option</string>
+    <string name="menu_rate">Noter l\'App</string>
+    <string name="menu_group">Discussion</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string name="position_user">Votre position</string>
+    <string name="position_destination">Votre future employeur</string>
+    <string name="receive_notif">Recevoir les offres 24h/24</string>
+    <string name="permission_call">Veuillez accorder la permission d\'appeler à l\'Appli</string>
+    <!--Advertise-->
+    <string name="interstitial_ad_unit_id">ca-app-pub-3659681503236163/3059486733</string>
+    <string name="admob_banner_id">ca-app-pub-3659681503236163/7099406731</string>
+    <string name="admob_rewarded_video_id">ca-app-pub-3659681503236163/5050551633</string>
+    <string name="admob_app_id">ca-app-pub-3659681503236163~9842580334</string>
+    <string name="map_api_key">AIzaSyBJ6W8XRa0Rk2GPhKMhk4-ZNJWPitednqo</string>
+    <string name="startapp_app_id">207562055</string>
+    <string name="irsource_app_id">68d0b5bd</string>
+    <string name="irsource_rew_video_placement">Reward_World</string>
+    <string name="irsource_interstitial_placement">INTESTITIAL_WORLD</string>
+
+    <string name="cd_main_image">main image</string>
+    <string name="material_icon_info">&#xe9d4;</string>
+    <string name="cancel">ANNULER</string>
+    <string name="update">METTRE A JOUR</string>
+    <string name="ok">OK</string>
+    <string name="understand">COMPRIS</string>
+    <string name="gps_enable">ALLER ACTIVER</string>
+    <string name="gps_message">Le GPS est désactivé, Voulez-vous l\'activer ?</string>
+    <string name="gps_title">ITINERAIRE</string>
+    <string name="yes">OUI</string>
+    <string name="no">NON</string>
+    <string name="continu">CONTINUER</string>
+    <string name="signUp">SE CONNECTER</string>
+    <string name="share_title">Avertir un proche</string>
+    <string name="share_name">NOM</string>
+    <string name="share_name_hint">Votre nom</string>
+    <string name="share_phone">Contact</string>
+    <string name="share_phone_hint">N°du destinataire</string>
+    <string name="share_send">ENVOYER SMS</string>
+    <string name="share_cancel">ANNULER</string>
+
+    <string name="fontello_heart_empty">&#xe9b5;</string>
+    <string name="fontello_heart_full">&#xe9b6;</string>
+    <string name="wizard_next">Suivant</string>
+    <string name="wizard_finish">Terminer</string>
+    <string name="wizard_cv">50\n Modèles de CV\n téléchargeables </string>
+    <string name="wizard_lemotivation">230\n Lettres de motivation\n à votre disposition</string>
+    <string name="wizard_gps">Itinéraire\n le GPS pour vous accompagner</string>
+    <string name="connection_tips">Veuillez réessayer ultérieurement</string>
+    
+</resources>

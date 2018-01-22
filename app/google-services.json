@@ -1,0 +1,58 @@
+{
+  "project_info": {
+    "project_number": "537971924712",
+    "firebase_url": "https://stopgalere-150410.firebaseio.com",
+    "project_id": "stopgalere-150410",
+    "storage_bucket": "stopgalere-150410.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537971924712:android:6f92571533e212f8",
+        "android_client_info": {
+          "package_name": "com.RolandAssoh.stopgalere.ci"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "537971924712-rcpir8spgb4191ajfobf2neejqnqhpto.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.RolandAssoh.stopgalere.ci",
+            "certificate_hash": "41cb3a17c0fb13b6d49b20a92023bbfc4a0b42bc"
+          }
+        },
+        {
+          "client_id": "537971924712-0gf8psj4d7na7go9q16fcr2sri2tn1t7.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "537971924712-epjei8pt7hm5d9158nje569k2sdtvli7.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "537971924712-p38iv3b3htlba7pomr4kdrmhv3rrq165.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAI131IDqb0Jc-O1_GmUbrVMnhcrEuRYwk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
