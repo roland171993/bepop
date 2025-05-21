@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -75,6 +76,7 @@ public class EmploiDetailActivity extends AppCompatActivity {
     //StartApp
     private StartAppAd startAppAd = new StartAppAd(this);
     private Toolbar toolbar;
+    private static final String PERSISTANCE_DATA = "persistanceData";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,23 +108,28 @@ public class EmploiDetailActivity extends AppCompatActivity {
         pbarDets = (ProgressBar) findViewById(R.id.detsProgressBar);
         mScrollView = (ScrollView) findViewById(R.id.detsScrollViewId);
         societyPic = (ImageView) findViewById(R.id.detsSocietyImgId);
+        ///
+        TextView description = (TextView) findViewById(R.id.detsDescriTextId);
+        TextView society = (TextView) findViewById(R.id.detsSocietyTextId);
+        TextView studyLevel = (TextView) findViewById(R.id.detsSLevelTextId);
+        TextView sexe = (TextView) findViewById(R.id.detsSexeTextId);
+        TextView contratType = (TextView) findViewById(R.id.detsCTypeTextId);
+        TextView workMode = (TextView) findViewById(R.id.detsWModeTextId);
+        TextView experience = (TextView) findViewById(R.id.detsEXPTextId);
+        TextView activitySector = (TextView) findViewById(R.id.detsASectTextId);
 
         //        get Serializable from Intent
         emploi = (Emploi) getIntent().getSerializableExtra("emploiObj");
+        /*if (savedInstanceState != null){
+            emploi = (Emploi) savedInstanceState.getSerializable(PERSISTANCE_DATA) ;
+        }*/
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String preview = bundle.getString("loadingok");
             if (preview != null && preview.equals("1")) {
 //                All Emplois loading ok
-                TextView description = (TextView) findViewById(R.id.detsDescriTextId);
-                TextView society = (TextView) findViewById(R.id.detsSocietyTextId);
-                TextView studyLevel = (TextView) findViewById(R.id.detsSLevelTextId);
-                TextView sexe = (TextView) findViewById(R.id.detsSexeTextId);
-                TextView contratType = (TextView) findViewById(R.id.detsCTypeTextId);
-                TextView workMode = (TextView) findViewById(R.id.detsWModeTextId);
-                TextView experience = (TextView) findViewById(R.id.detsEXPTextId);
-                TextView activitySector = (TextView) findViewById(R.id.detsASectTextId);
+
 
                 description.setText(emploi.getDescription());
                 society.setText(emploi.getSociety());
@@ -159,6 +166,18 @@ public class EmploiDetailActivity extends AppCompatActivity {
         salary.setText(emploi.getSalary());
         city.setText(emploi.getCity());
         endDate.setText(emploi.getEndDate());
+
+        //////
+
+        description.setText(emploi.getDescription());
+        society.setText(emploi.getSociety());
+        studyLevel.setText(emploi.getStudyLevel());
+        sexe.setText(emploi.getSexe());
+        contratType.setText(emploi.getContratType());
+        workMode.setText(emploi.getWorkMode());
+        experience.setText(emploi.getExperience());
+        activitySector.setText(emploi.getActivitySector());
+
 //          hide empty field
         if (emploi.getSalary().isEmpty() || emploi.getSalary().equals("0") || emploi.getSalary().trim().toLowerCase().equals("fcfa")) {
             salary.setVisibility(View.GONE);
@@ -178,6 +197,8 @@ public class EmploiDetailActivity extends AppCompatActivity {
 
         //load Advertise
         iniInterstitial();
+
+
     }
 
     private void iniInterstitial() {
@@ -342,21 +363,28 @@ public class EmploiDetailActivity extends AppCompatActivity {
 
                     objson = jsonArray.getJSONObject(0);
 
-                    description.setText(objson.getString(Constant.EMPLOI_ITEM_DESCRI));
-                    studyLevel.setText(objson.getString(Constant.EMPLOI_ITEM_STUDYLEVEL));
-                    sexe.setText(objson.getString(Constant.EMPLOI_ITEM_SEXE));
-                    society.setText(objson.getString(Constant.EMPLOI_ITEM_SOCIETY));
-                    workMode.setText(objson.getString(Constant.EMPLOI_ITEM_WORKMODE));
-                    experience.setText(objson.getString(Constant.EMPLOI_ITEM_EXP));
-                    activitySector.setText(objson.getString(Constant.EMPLOI_ITEM_SECTOR));
-                    contratType.setText(objson.getString(Constant.EMPLOI_ITEM_CONTRAT));
-                    emploi.setSocietyPicUrl(objson.getString(Constant.EMPLOI_ITEM_SOCIETY_IMAGE));
-                    displayImage();
+                    Emploi emp = new Emploi();
+                    if (emp.fillFromJSON(objson)){
+                        // Remplissage Ok
+                        description.setText(                    emp.getDescription());
+                        studyLevel.setText(                     emp.getStudyLevel());
+                        sexe.setText(                           emp.getSexe());
+                        society.setText(                        emp.getSociety());
+                        workMode.setText(                       emp.getWorkMode());
+                        experience.setText(                     emp.getExperience());
+                        activitySector.setText(                 emp.getActivitySector());
+                        contratType.setText(                    emp.getContratType());
+                        emploi.setSocietyPicUrl(                emp.getSocietyPicUrl());
+                        displayImage();
+
+                    }
 //                    Log.v("Description", objson.getString(Constant.EMPLOI_ITEM_DESCRI));
 
 
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 
             }
@@ -632,5 +660,11 @@ public class EmploiDetailActivity extends AppCompatActivity {
             public void adNotDisplayed(Ad ad) {
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putSerializable(PERSISTANCE_DATA,emploi);
     }
 }

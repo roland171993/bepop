@@ -18,8 +18,6 @@ import com.util.DialogBuilder;
 import com.util.JsonUtils;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -112,27 +110,17 @@ public class CvActivity extends AppCompatActivity {
                 try {
 
                     JSONArray jsonArray = new JSONArray(result);
-                    JSONObject objJson = null;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        objJson = jsonArray.getJSONObject(i);
+                    cvArrayFast.addAll(App.cVJsonToList(jsonArray));
 
-                        CV mCv = new CV();
+                    cvFastAdpater.notifyDataSetChanged();
 
-                        if(isCancelled())
-                            break;
-                        mCv.setId(objJson.getString(Constant.CV_ITEM_ID).trim());
-                        mCv.setTitle(objJson.getString(Constant.CV_ITEM_TITLE).trim());
-
-                        cvArrayFast.add(mCv);
-//                            Log.v("All News Fragements", objJson.getString(Constant.CATEGORY_NAME));
-
-                    }
-
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 //                Build
-                cvFastAdpater.notifyDataSetChanged();
+
             }
         }
 
@@ -164,31 +152,20 @@ public class CvActivity extends AppCompatActivity {
                 try {
 
                     JSONArray jsonArray = new JSONArray(result);
-                    JSONObject objJson = null;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        objJson = jsonArray.getJSONObject(i);
-
-                        CV cv = new CV();
-                        if(isCancelled())
-                            break;
-                        cv.setId(objJson.getString(Constant.CV_ITEM_ID).trim());
-                        cv.setTitle(objJson.getString(Constant.CV_ITEM_TITLE).trim());
-                        cv.setContent(objJson.getString(Constant.CV_ITEM_CONTENT).trim());
-                        cv.setDownloadUrl(objJson.getString(Constant.CV_ITEM_DOWNLOAD_URL).trim());
-
-                        cvArrayComp.add(cv);
+                    cvArrayComp.addAll(App.cVJsonToList(jsonArray));
 //                            Log.v("All News Fragements", objJson.getString(Constant.CATEGORY_NAME));
-
+                    //                Build ListView
+                    if(!networkErr)
+                    {
+                        updateListView();
                     }
 
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
-//                Build ListView
-                if(!networkErr)
-                {
-                    updateListView();
-                }
+
             }
 
         }

@@ -65,6 +65,7 @@ public class LeMotisDetailActivity extends AppCompatActivity {
         }
         getSupportActionBar().setTitle("Lettre de motivation");
         title = (TextView) findViewById(R.id.leMotisDetsTitleId);
+        content = (TextView) findViewById(R.id.leMotisContentId);
         pbarLeMotisDets = (ProgressBar) findViewById(R.id.leMotisDetsPrBar);
         mScrollView = (ScrollView) findViewById(R.id.leMotisDetsSrViewId);
 
@@ -78,7 +79,7 @@ public class LeMotisDetailActivity extends AppCompatActivity {
             if(preview != null && preview.equals("1"))
             {
 //                All lettre de motivation downloaded is complete
-                content = (TextView) findViewById(R.id.leMotisContentId);
+
                 content.setText(leMotivation.getContent());
 
             }
@@ -89,6 +90,7 @@ public class LeMotisDetailActivity extends AppCompatActivity {
             }
         }
         title.setText(leMotivation.getTitle());
+        content.setText(leMotivation.getContent());
         //Setup Advertise
         if (savedInstanceState == null){
             monetizerCode = App.getMonetizerId();
@@ -209,19 +211,26 @@ public class LeMotisDetailActivity extends AppCompatActivity {
                 try {
                     JSONArray jsonArray = new JSONArray(result);
                     JSONObject objson = null;
-                    content = (TextView) findViewById(R.id.leMotisContentId);
+                   // content = (TextView) findViewById(R.id.leMotisContentId);
 
 
                     objson = jsonArray.getJSONObject(0);
+                    LettreMotivation lm = new LettreMotivation();
 
-                    content.setText(objson.getString(Constant.LEMOTIVATION_ITEM_CONTENT));
+                    if (lm.fillFromJSON(objson)){
+                        content.setText(lm.getContent());
+                    }
+
+
 
 //                    Log.v("Description", objson.getString(Constant.EMPLOI_ITEM_DESCRI));
 
 
 
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 
             }

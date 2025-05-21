@@ -197,24 +197,12 @@ public class LeMotivationActivity extends AppCompatActivity{
 
                 try {
                     JSONArray jsonArray = new JSONArray(result);
-                    JSONObject objJson = null;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        objJson = jsonArray.getJSONObject(i);
+                    arrayAllLeMotis.addAll(App.leMoJsonToList(jsonArray));
 
-                        LettreMotivation mLeMotis= new LettreMotivation();
-
-                        if(isCancelled())
-                            break;
-
-                        mLeMotis.setId(objJson.getString(Constant.LEMOTIVATION_ITEM_ID.trim()));
-                        mLeMotis.setTitle(objJson.getString(Constant.LEMOTIVATION_ITEM_TITLE).trim());
-                        mLeMotis.setContent(objJson.getString(Constant.LEMOTIVATION_ITEM_CONTENT));
-
-                        arrayAllLeMotis.add(mLeMotis);
-                    }
-
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 
             }
@@ -381,39 +369,27 @@ public class LeMotivationActivity extends AppCompatActivity{
                 try {
 
                     JSONArray jsonArray = new JSONArray(result);
-                    JSONObject objJson = null;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        objJson = jsonArray.getJSONObject(i);
+                    arrayFastLeMotis.addAll(App.leMoJsonToList(jsonArray));
 
-                        LettreMotivation lMotivation = new LettreMotivation();
-
-                        if(isCancelled())
-                            break;
-
-                        lMotivation.setId(objJson.getString(Constant.LEMOTIVATION_ITEM_ID).trim());
-                        lMotivation.setTitle(objJson.getString(Constant.LEMOTIVATION_ITEM_TITLE).trim());
-
-                        arrayFastLeMotis.add(lMotivation);
-//                            Log.v("All News Fragements", objJson.getString(Constant.CATEGORY_NAME));
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-//                Build
-                leMotisAdapter.notifyDataSetChanged();
-                currentPosition = arrayFastLeMotis.size() - 1;
-//                get Lettre motivation part 2
-                if (JsonUtils.isNetworkAvailable(LeMotivationActivity.this))
-                {
-                    if(!arrayFastLeMotis.isEmpty())
+//                      Build
+                    leMotisAdapter.notifyDataSetChanged();
+                    currentPosition = arrayFastLeMotis.size() - 1;
+//                       get Lettre motivation part 2
+                    if (JsonUtils.isNetworkAvailable(LeMotivationActivity.this))
                     {
+                        if(!arrayFastLeMotis.isEmpty())
+                        {
 //                        log Request
 //                        Log.v("LeMotis part2 Req", Constant.LETTRE_MOTIVATION_PART2_URL + arrayLeMotisPart1.get(arrayLeMotisPart1.size()- 1).getId());
-                        leMotisAsynComp = new completeTask();
-                        leMotisAsynComp.execute(Constant.LETTRE_MOTIVATION_COMP_URL);
+                            leMotisAsynComp = new completeTask();
+                            leMotisAsynComp.execute(Constant.LETTRE_MOTIVATION_COMP_URL);
+                        }
                     }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
             }
 

@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -21,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -268,39 +270,19 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     JSONArray jsonArray = new JSONArray(result);
-                    JSONObject objJson = null;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        objJson = jsonArray.getJSONObject(i);
 
-                        Emploi emploiItem = new Emploi();
+                    empArrayLast.addAll(App.emploisJsonToList(jsonArray));
 
-                        if(isCancelled())
-                            break;
-                        emploiItem.setEmploiId(objJson.getString(Constant.EMPLOI_ITEM_ID).trim());
-                        emploiItem.setTitle(objJson.getString(Constant.EMPLOI_ITEM_TITLE).trim());
-                        emploiItem.setAddDate(objJson.getString(Constant.EMPLOI_ITEM_ADDDATE));
-                        emploiItem.setEmail(objJson.getString(Constant.EMPLOI_ITEM_EMAIL).trim());
-                        emploiItem.setWebSite(objJson.getString(Constant.EMPLOI_ITEM_WEBSITE).trim());
-                        emploiItem.setMobile1(objJson.getString(Constant.EMPLOI_ITEM_MOBILE1).trim());
-                        emploiItem.setMobile2(objJson.getString(Constant.EMPLOI_ITEM_MOBILE2).trim());
-                        emploiItem.setSalary(objJson.getString(Constant.EMPLOI_ITEM_SALARY).trim());
-                        emploiItem.setCity(objJson.getString(Constant.EMPLOI_ITEM_CITY).trim());
-                        emploiItem.setEndDate(objJson.getString(Constant.EMPLOI_ITEM_ENDDATE));
-                        emploiItem.setLatitude(objJson.getDouble(Constant.EMPLOI_ITEM_LATITUDE));
-                        emploiItem.setLongitude(objJson.getDouble(Constant.EMPLOI_ITEM_LONGITUDE));
+                    //            Build ListView
+                    emploiLastAdapter.notifyDataSetChanged();
 
-                        empArrayLast.add(emploiItem);
-
-
-                    }
-
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 
             }
-//            Build ListView
-            emploiLastAdapter.notifyDataSetChanged();
         }
 
     }
@@ -333,53 +315,33 @@ public class MainActivity extends AppCompatActivity {
 
                 try {
                     JSONArray jsonArray = new JSONArray(result);
-                    JSONObject objJson = null;
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        objJson = jsonArray.getJSONObject(i);
+                    Log.d("server", "onPostExecute: " + jsonArray);
 
-                        Emploi emploi = new Emploi();
+                    if(isCancelled())
+                        return;
 
-                        if(isCancelled())
-                            break;
+                    empArrayComp.addAll(App.emploisJsonToList(jsonArray));
 
-                        emploi.setEmploiId(objJson.getString(Constant.EMPLOI_ITEM_ID).trim());
-                        emploi.setTitle(objJson.getString(Constant.EMPLOI_ITEM_TITLE).trim());
-                        emploi.setAddDate(objJson.getString(Constant.EMPLOI_ITEM_ADDDATE));
-                        emploi.setEmail(objJson.getString(Constant.EMPLOI_ITEM_EMAIL).trim());
-                        emploi.setWebSite(objJson.getString(Constant.EMPLOI_ITEM_WEBSITE).trim());
-                        emploi.setMobile1(objJson.getString(Constant.EMPLOI_ITEM_MOBILE1).trim());
-                        emploi.setMobile2(objJson.getString(Constant.EMPLOI_ITEM_MOBILE2).trim());
-                        emploi.setSalary(objJson.getString(Constant.EMPLOI_ITEM_SALARY).trim());
-                        emploi.setCity(objJson.getString(Constant.EMPLOI_ITEM_CITY).trim());
-                        emploi.setEndDate(objJson.getString(Constant.EMPLOI_ITEM_ENDDATE));
-                        emploi.setDescription(objJson.getString(Constant.EMPLOI_ITEM_DESCRI).trim());
-                        emploi.setStudyLevel(objJson.getString(Constant.EMPLOI_ITEM_STUDYLEVEL).trim());
-                        emploi.setSexe(objJson.getString(Constant.EMPLOI_ITEM_SEXE).trim());
-                        emploi.setSociety(objJson.getString(Constant.EMPLOI_ITEM_SOCIETY).trim());
-                        emploi.setWorkMode(objJson.getString(Constant.EMPLOI_ITEM_WORKMODE).trim());
-                        emploi.setExperience(objJson.getString(Constant.EMPLOI_ITEM_EXP).trim());
-                        emploi.setActivitySector(objJson.getString(Constant.EMPLOI_ITEM_SECTOR).trim());
-                        emploi.setContratType(objJson.getString(Constant.EMPLOI_ITEM_CONTRAT).trim());
-                        emploi.setSocietyPicUrl(objJson.getString(Constant.EMPLOI_ITEM_SOCIETY_IMAGE.trim()));
-                        emploi.setLatitude(objJson.getDouble(Constant.EMPLOI_ITEM_LATITUDE));
-                        emploi.setLongitude(objJson.getDouble(Constant.EMPLOI_ITEM_LONGITUDE));
-
-                        empArrayComp.add(emploi);
+                    //Build ListView
+                    if(!networkErr)
+                    {
+                        updateListView();
                     }
 
-                } catch (JSONException e) {
+
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 
             }
-//            Build ListView
-            if(!networkErr)
-            {
-                updateListView();
-            }
+//
         }
 
     }
+
+
 
     private void updateListView() {
 //        show listeView
@@ -472,33 +434,40 @@ public class MainActivity extends AppCompatActivity {
                     final String appId = getPackageName();//your application package name i.e play store application url
                     objJson =jsonArray.getJSONObject(0);
 
-                    versionCode = objJson.getInt("versionCode");
-                    updateInfo = objJson.getString("response");
-                    if (!isCancelled())
-                    {
-                        if(versionCode != 0 && versionCode > getVersionCode(getApplicationContext()))// New update available
+                    if (!objJson.isNull("versionCode") && !objJson.isNull("response")){
+                        versionCode = objJson.getInt("versionCode");
+                        updateInfo = objJson.getString("response");
+                        if (!isCancelled())
                         {
-                            // an version exist on server
-                            updateAlert = new DialogBuilder.Update(MainActivity.this, "Mise à jour", "une nouvelle version est disponible:"+ "\n" + updateInfo);
-                            updateAlert.showDialog();
+                            if(versionCode != 0 && versionCode > getVersionCode(getApplicationContext()))// New update available
+                            {
+                                // an version exist on server
+                                updateAlert = new DialogBuilder.Update(MainActivity.this, "Mise à jour", "une nouvelle version est disponible:"+ "\n" + updateInfo);
+                                updateAlert.showDialog();
+                            }
+                            //Load map setting
+                            if(mapCount == 0 && !isMaxUse)
+                            {
+                                onFirstTime();
+                            }
+                            else
+                            {
+                                onCurrentDate();
+                            }
                         }
-                        //Load map setting
-                        if(mapCount == 0 && !isMaxUse)
-                        {
-                            onFirstTime();
+                        if(isAdvertiserReqAllow){
+                            asynMonetize = new monetizationTask();
+                            asynMonetize.execute(Constant.ADVERTISER_URL);
                         }
-                        else
-                        {
-                            onCurrentDate();
-                        }
-                    }
-                    if(isAdvertiserReqAllow){
-                        asynMonetize = new monetizationTask();
-                        asynMonetize.execute(Constant.ADVERTISER_URL);
+
                     }
 
-                } catch (JSONException e) {
+
+
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 
             }
@@ -539,15 +508,18 @@ public class MainActivity extends AppCompatActivity {
                     int advertiserId;
                     //sav in shared pref
                     // sav in singleton for other act
-                    advertiserId = objJson.getInt("advetiser");
-                    if(advertiserId != app.getMonetizerId()){
-                        Prefs mPref = new Prefs(MainActivity.this);
-                        mPref.setAdvertiserId(advertiserId);
+                    if (!objJson.isNull("advetiser")){
+                        advertiserId = objJson.getInt("advetiser");
+                        if(advertiserId != app.getMonetizerId()){
+                            Prefs mPref = new Prefs(MainActivity.this);
+                            mPref.setAdvertiserId(advertiserId);
+                        }
                     }
 
-
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 
             }
@@ -892,60 +864,66 @@ public class MainActivity extends AppCompatActivity {
                     Boolean isMapAllow = false;
                     Boolean isMapLock = true;
                     Long mDate = 0L;
-
                     objson = jsonArray.getJSONObject(0);
-                    isMapAllow = objson.getInt(Constant.MAPS_ACCES) == 1;
-                    isMapLock = objson.getInt(Constant.MAPS_LOCK) == 1;
-                    mDate = objson.getLong("nDate");
 
-//                    Log.v("InfoTask start", "mapAllow: " + isMapAllow + " isMapLock: " + isMapLock
+                    if (!objson.isNull(Constant.MAPS_ACCES) && !objson.isNull(Constant.MAPS_ACCES) && !objson.isNull("nDate")){
+                        isMapAllow = objson.getInt(Constant.MAPS_ACCES) == 1;
+                        isMapLock = objson.getInt(Constant.MAPS_LOCK) == 1;
+                        mDate = objson.getLong("nDate");
+
+                        Log.v("InfoTask start", "mapAllow: " + isMapAllow + " isMapLock: " + isMapLock);
 //                            + " Today: " +mDate + "Count Left: " + countLeft + " isMaxUse: "+ isMaxUse);
 
-                    if(!isCancelled())
-                    {
-                        Prefs mPrefs = new Prefs(MainActivity.this);
-                        int count = mPrefs.getMapCount();
-                        if(mDate != 0L)
+                        if(!isCancelled())
                         {
-                            if(!isMapLock && isMapAllow)
+                            Prefs mPrefs = new Prefs(MainActivity.this);
+                            int count = mPrefs.getMapCount();
+                            if(mDate != 0L)
                             {
-                                if(mDate > mPrefs.getToday())
+                                if(!isMapLock && isMapAllow)
                                 {
-                                    //it a new day
-                                    mPrefs.setToday(mDate); // sav new Date
-                                    mapAccount = new accountTask();
-                                    mapAccount.execute(MAP_ACCOUNT_URL); // get Bundle
-                                }
-                                else
-                                {
-                                    // not new day ..
-                                    if(count > 0 )
+                                    if(mDate > mPrefs.getToday())
                                     {
-                                        mapCount = count; // load preview date
-                                        isMaxUse = false;
+                                        //it a new day
+                                        mPrefs.setToday(mDate); // sav new Date
+                                        mapAccount = new accountTask();
+                                        mapAccount.execute(MAP_ACCOUNT_URL); // get Bundle
                                     }
                                     else
                                     {
-                                        isMaxUse = true;
-                                        mapCount = 0;
+                                        // not new day ..
+                                        if(count > 0 )
+                                        {
+                                            mapCount = count; // load preview date
+                                            isMaxUse = false;
+                                        }
+                                        else
+                                        {
+                                            isMaxUse = true;
+                                            mapCount = 0;
+                                        }
                                     }
+
+                                }
+                                else
+                                {
+                                    // API Lock GPS or it a limit
+                                    mapCount = 0;
+                                    isMaxUse = true;
                                 }
 
-                            }
-                            else
-                            {
-                                // API Lock GPS or it a limit
-                                mapCount = 0;
-                                isMaxUse = true;
                             }
 
                         }
 
+
                     }
 
 
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
             }
 
@@ -985,45 +963,52 @@ public class MainActivity extends AppCompatActivity {
                     int mApiCount = 0;
 
                     objson = jsonArray.getJSONObject(0);
-                    isMapAllow = objson.getInt(Constant.MAPS_ACCES) == 1;
-                    isMapLock = objson.getInt(Constant.MAPS_LOCK) == 1;
-                    locationHome = objson.getInt(Constant.MAPS_LOCATION_HOME) == 1;
-                    routeAvailable = objson.getInt(Constant.MAPS_LOCATION_DEST) == 1;
-                    refreshAvailable = objson.getInt(Constant.MAPS_LOCATION_REFRESH) == 1;
 
-                    if(!isCancelled())
-                    {
-                        Prefs mPrefs = new Prefs(MainActivity.this);
+                    if (!objson.isNull(Constant.MAPS_ACCES) && !objson.isNull(Constant.MAPS_LOCK) && !objson.isNull(Constant.MAPS_LOCATION_HOME) && !objson.isNull(Constant.MAPS_LOCATION_DEST)
+                            && !objson.isNull(Constant.MAPS_LOCATION_REFRESH)){
+                        isMapAllow = objson.getInt(Constant.MAPS_ACCES) == 1;
+                        isMapLock = objson.getInt(Constant.MAPS_LOCK) == 1;
+                        locationHome = objson.getInt(Constant.MAPS_LOCATION_HOME) == 1;
+                        routeAvailable = objson.getInt(Constant.MAPS_LOCATION_DEST) == 1;
+                        refreshAvailable = objson.getInt(Constant.MAPS_LOCATION_REFRESH) == 1;
 
-                        if(!isMapLock && isMapAllow)
+                        if(!isCancelled())
                         {
-                            isMaxUse = false; // Non Next time : dispaly map button
-                            if(locationHome)
+                            Prefs mPrefs = new Prefs(MainActivity.this);
+
+                            if(!isMapLock && isMapAllow)
                             {
-                                mApiCount = mApiCount + 2;
+                                isMaxUse = false; // Non Next time : dispaly map button
+                                if(locationHome)
+                                {
+                                    mApiCount = mApiCount + 2;
+                                }
+                                if(routeAvailable)
+                                {
+                                    mApiCount = mApiCount + 2;
+                                }
+                                if(refreshAvailable)
+                                {
+                                    mApiCount = mApiCount + 180;
+                                }
                             }
-                            if(routeAvailable)
+                            else
                             {
-                                mApiCount = mApiCount + 2;
+                                // API Lock GPS or it a limit
+                                isMaxUse = true;
+                                mApiCount = 0;
                             }
-                            if(refreshAvailable)
-                            {
-                                mApiCount = mApiCount + 180;
-                            }
-                        }
-                        else
-                        {
-                            // API Lock GPS or it a limit
-                            isMaxUse = true;
-                            mApiCount = 0;
-                        }
 //                        mPrefs.setMapCount(mApiCount); wait for new soluce
-                        mapCount = mApiCount;
+                            mapCount = mApiCount;
+                        }
+
                     }
 
 
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 
             }
@@ -1115,6 +1100,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRewardedVideoAdFailedToLoad(int i) {
 //                Toast.makeText(getBaseContext(), "Ad failed to load.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRewardedVideoCompleted() {
+
             }
         });
         // Load a reward based video ad

@@ -156,13 +156,20 @@ public class CvDetailActivity extends AppCompatActivity {
 
                     objson = jsonArray.getJSONObject(0);
 
-                    cvWebView.loadUrl(objson.getString(Constant.CV_ITEM_CONTENT));
-                    mCv.setDownloadUrl(objson.getString(Constant.CV_ITEM_DOWNLOAD_URL));
-                    cvWebView.getSettings().setJavaScriptEnabled(true);
-                    cvWebView.setWebViewClient(new WebViewClient());
+                    CV c =  new CV();
+                    if (c.fillFromJSON(objson)){
+                        cvWebView.loadUrl(c.getContent());
+                        mCv.setDownloadUrl(c.getDownloadUrl());
+                        cvWebView.getSettings().setJavaScriptEnabled(true);
+                        cvWebView.setWebViewClient(new WebViewClient());
+                    }
 
-                } catch (JSONException e) {
+
+
+                } catch (Exception e) {
                     e.printStackTrace();
+                }catch (Error er ){
+                    er.printStackTrace();
                 }
 
             }

@@ -1,5 +1,11 @@
 package model;
 
+import android.support.annotation.NonNull;
+
+import com.util.Constant;
+
+import org.json.JSONObject;
+
 import java.io.Serializable;
 
 /**
@@ -32,7 +38,108 @@ public class Emploi implements Serializable {
     private String experience;
     private String studyLevel;
 
+
+    public boolean fillFromJSON(@NonNull final  JSONObject objJson){
+        try {
+
+            // Contient la Clé
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_ID)){
+                setEmploiId(objJson.getString(Constant.EMPLOI_ITEM_ID).trim());
+
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_TITLE)){
+                setTitle(objJson.getString(Constant.EMPLOI_ITEM_TITLE).trim());
+
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_ADDDATE)){
+                setAddDate(objJson.getString(Constant.EMPLOI_ITEM_ADDDATE));
+            }
+
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_EMAIL)){
+                setEmail(objJson.getString(Constant.EMPLOI_ITEM_EMAIL).trim());
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_WEBSITE)){
+                setWebSite(objJson.getString(Constant.EMPLOI_ITEM_WEBSITE).trim());
+
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_MOBILE1)){
+                setMobile1(objJson.getString(Constant.EMPLOI_ITEM_MOBILE1).trim());
+
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_MOBILE2)){
+                setMobile2(objJson.getString(Constant.EMPLOI_ITEM_MOBILE2).trim());
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_SALARY)){
+                setSalary(objJson.getString(Constant.EMPLOI_ITEM_SALARY).trim());
+            }
+
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_CITY)){
+                setCity(objJson.getString(Constant.EMPLOI_ITEM_CITY).trim());
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_ENDDATE)){
+                setEndDate(objJson.getString(Constant.EMPLOI_ITEM_ENDDATE));
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_DESCRI)){
+                setDescription(objJson.getString(Constant.EMPLOI_ITEM_DESCRI).trim());
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_STUDYLEVEL)){
+                setStudyLevel(objJson.getString(Constant.EMPLOI_ITEM_STUDYLEVEL).trim());
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_SEXE)){
+                JSONObject sexeObj = objJson.getJSONObject(Constant.EMPLOI_ITEM_SEXE);
+                if (!sexeObj.isNull("libelle")){
+                    setSexe(sexeObj.getString("libelle"));
+                }
+            }
+
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_SOCIETY)){
+                setSociety(objJson.getString(Constant.EMPLOI_ITEM_SOCIETY).trim());
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_EXP)){
+                setExperience(objJson.getString(Constant.EMPLOI_ITEM_EXP).trim());
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_SOCIETY_IMAGE)){
+                setSocietyPicUrl(objJson.getString(Constant.EMPLOI_ITEM_SOCIETY_IMAGE.trim()));
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_LATITUDE)){
+                setLatitude(objJson.getDouble(Constant.EMPLOI_ITEM_LATITUDE));
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_LONGITUDE)){
+                setLongitude(objJson.getDouble(Constant.EMPLOI_ITEM_LONGITUDE));
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_WORKMODE)){
+                JSONObject son = objJson.getJSONObject(Constant.EMPLOI_ITEM_WORKMODE);
+                if (!son.isNull("libelle")){
+                    setWorkMode(son.getString("libelle"));
+                }
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_SECTOR)){
+                JSONObject son = objJson.getJSONObject(Constant.EMPLOI_ITEM_SECTOR);
+                if (!son.isNull("libelle")){
+                    setActivitySector(son.getString("libelle"));
+                }
+            }
+            if (!objJson.isNull(Constant.EMPLOI_ITEM_CONTRAT)){
+                JSONObject son =objJson.getJSONObject(Constant.EMPLOI_ITEM_CONTRAT);
+                if (!son.isNull("libelle")){
+                    setContratType(son.getString("libelle"));
+                }
+            }
+
+
+
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+        }catch (Error er){
+            er.printStackTrace();
+        }
+        return false;
+    }
+
     public String getSocietyPicUrl() {
+        if (societyPicUrl == null)
+            societyPicUrl = "";
         return societyPicUrl;
     }
 
@@ -41,6 +148,8 @@ public class Emploi implements Serializable {
     }
 
     public String getEmploiId() {
+        if (emploiId == null )
+            emploiId = "";
         return emploiId;
     }
 
@@ -49,6 +158,8 @@ public class Emploi implements Serializable {
     }
 
     public String getSociety() {
+        if (society == null)
+            society = "";
         return society;
     }
 
@@ -57,6 +168,8 @@ public class Emploi implements Serializable {
     }
 
     public String getAddDate() {
+        if (addDate == null)
+            addDate = "";
         return addDate;
     }
 
@@ -65,6 +178,8 @@ public class Emploi implements Serializable {
     }
 
     public String getActivitySector() {
+        if (activitySector == null)
+            activitySector = "";
         return activitySector;
     }
 
@@ -73,6 +188,8 @@ public class Emploi implements Serializable {
     }
 
     public String getEmail() {
+        if (email == null)
+            email ="";
         return email;
     }
 
@@ -81,6 +198,8 @@ public class Emploi implements Serializable {
     }
 
     public String getMobile1() {
+        if (mobile1 == null)
+            mobile1 = "";
         return mobile1;
     }
 
@@ -89,6 +208,8 @@ public class Emploi implements Serializable {
     }
 
     public String getMobile2() {
+        if (mobile2 == null)
+            mobile2 = "";
         return mobile2;
     }
 
@@ -113,6 +234,8 @@ public class Emploi implements Serializable {
     }
 
     public String getSexe() {
+        if (sexe == null)
+            sexe = "";
         return sexe;
     }
 
@@ -121,6 +244,8 @@ public class Emploi implements Serializable {
     }
 
     public String getContratType() {
+        if (contratType == null)
+            contratType = "";
         return contratType;
     }
 
@@ -129,6 +254,8 @@ public class Emploi implements Serializable {
     }
 
     public String getWorkMode() {
+        if (workMode == null)
+            workMode = "";
         return workMode;
     }
 
@@ -137,6 +264,8 @@ public class Emploi implements Serializable {
     }
 
     public String getExperience() {
+        if (experience == null)
+            experience ="";
         return experience;
     }
 
@@ -145,6 +274,8 @@ public class Emploi implements Serializable {
     }
 
     public String getStudyLevel() {
+        if (studyLevel == null)
+            studyLevel = "";
         return studyLevel;
     }
 
@@ -157,6 +288,8 @@ public class Emploi implements Serializable {
     }
 
     public String getTitle() {
+        if (title == null)
+            title = "";
         return title;
     }
 
@@ -165,6 +298,8 @@ public class Emploi implements Serializable {
     }
 
     public String getDescription() {
+        if (description == null)
+            description = "";
         return description;
     }
 
@@ -173,6 +308,8 @@ public class Emploi implements Serializable {
     }
 
     public String getWebSite() {
+        if (webSite == null)
+            webSite = "";
         return webSite;
     }
 
@@ -181,6 +318,8 @@ public class Emploi implements Serializable {
     }
 
     public String getSalary() {
+        if (salary == null)
+            salary = "";
         return salary;
     }
 
@@ -189,6 +328,8 @@ public class Emploi implements Serializable {
     }
 
     public String getCity() {
+        if (city == null)
+            city = "";
         return city;
     }
 
@@ -197,6 +338,8 @@ public class Emploi implements Serializable {
     }
 
     public String getEndDate() {
+        if (endDate == null)
+            endDate ="";
         return endDate;
     }
 

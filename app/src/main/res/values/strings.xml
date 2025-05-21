@@ -72,5 +72,17 @@
     <string name="wizard_lemotivation">230\n Lettres de motivation\n à votre disposition</string>
     <string name="wizard_gps">Itinéraire\n le GPS pour vous accompagner</string>
     <string name="connection_tips">Veuillez réessayer ultérieurement</string>
+
+    <!--Permission-->
+    <string name="error_permission_all_left">Veuillez accorder l\'autorisation </string>
+    <string name="error_permission_all_right">dans vos Paramètres</string>
+    <string name="permission_preference">PERMISSION_PREFERENCE</string>
+    <string name="error_permission_all_title">Rappel </string>
+    <string name="perm_phone">Téléphone</string>
+    <string name="perm_storage">Stockage</string>
+    <string name="perm_sms">SMS</string>
+    <string name="perm_position">Position</string>
+    <string name="allow">Autoriser</string>
+    <string name="cancel_dialog">Annuler</string>
     
 </resources>
