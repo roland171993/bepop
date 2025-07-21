@@ -1,0 +1,83 @@
+STOP GALERE API
+STARTED: Started: 2025 05 22
+- 2025 05 22: Creat projet, copy content
+- 2025 05 23: Correction, Connexion
+- 2025 05 24: adding Pagination
+
+
+STOP GALERE API
+API:
+.
+├── package.json
+├── .env                          # environment variables (PORT, DB_URI, JWT_SECRET, ONESIGNAL_KEY…)
+├── .gitignore
+├── README.md
+├── src
+│   ├── config
+│   │   ├── index.js              # loads & validates process.env via dotenv
+│   │   ├── database.js           # mongoose (or Sequelize) connection setup
+│   │   └── logger.js             # request/app logging (e.g. morgan, winston)
+│   │
+│   ├── models
+│   │   ├── user.model.js         # User schema & methods (e.g. password hash)
+│   │   ├── job.model.js          # Job posting schema
+│   │   ├── resume.model.js       # Resume upload & metadata schema
+│   │   ├── cover-letter.model.js # Cover-letter schema
+│   │   └── index.js              # exports all models
+│   │
+│   ├── controllers
+│   │   ├── auth.controller.js    # login, token issuance, “/me”
+│   │   ├── job.controller.js     # CRUD for jobs
+│   │   ├── resume.controller.js  # CRUD & file-upload for resumes
+│   │   ├── cover-letter.controller.js # CRUD for cover letters
+│   │   └── common.controller.js  # lookups (sectors, contract-types…)
+│   │
+│   ├── routes
+│   │   ├── auth.routes.js        # /api/auth
+│   │   ├── jobs.routes.js        # /api/jobs
+│   │   ├── resumes.routes.js     # /api/resumes
+│   │   ├── cover-letters.routes.js # /api/cover-letters
+│   │   ├── common.routes.js      # /api/sectors, /api/contract-types…
+│   │   └── index.js              # mounts all feature routers on /api
+│   │
+│   ├── middlewares
+│   │   ├── auth.middleware.js    # JWT verification & guard
+│   │   ├── validation.middleware.js # request-body / params validation (e.g. Joi)
+│   │   └── error.middleware.js   # centralized error handler
+│   │
+│   ├── services
+│   │   ├── notification.service.js # OneSignal wrapper
+│   │   ├── cron.service.js         # cron registration helper
+│   │   └── file.service.js         # multer setup, file helpers
+│   │
+│   ├── jobs                        # scheduled tasks (crons)
+│   │   ├── add-job.job.js         # e.g. re-publish stale jobs hourly
+│   │   └── delete-job.job.js      # e.g. remove expired jobs nightly
+│   │
+│   ├── utils
+│   │   └── helpers.js             # pure helper functions (dates, IDs…)
+│   │
+│   ├── app.js                     # creates Express app, applies middleware & routes
+│   └── server.js                  # loads app.js, connects DB, starts HTTP listener
+│
+├── tests                          # unit & integration tests, mirroring src structure
+│   ├── controllers
+│   ├── models
+│   ├── routes
+│   ├── services
+│   └── middlewares
+└── coverage                       # test coverage output (optional)
+
+
+
+
+DEBUG: http://localhost:3000/api/jobs
+
+JOB GET /api/jobs?page=2
+RESUME GET /api/resumes?page=2
+COVER LETTER GET /api/cover-letters?page=1
+
+nvm use 22      # FOR StopGalere API
+nvm use 16      # FOR JOOL ID
+
+nvm ls-remote

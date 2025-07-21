@@ -1,0 +1,312 @@
+Job App:
+Started: 2025 05 19
+Job App:
+
+Notificaton (OneSignal)
+Google Ad
+Google Map
+Picasso (Image)
+
+Backend: Take All Model give it to AI
+Design: Take All UI give it to AI
+Ask AI: Structure, Organisation and Name
+
+Fonctionality:
+Job
+Resume
+Cover letter
+
+
+Object List:
+Job
+Resume
+
+Windows List:
+Resume List
+Resume Detail
+Job List
+Job Detail
+Cover Letter list
+Cover Letter Detail
+Main Activity
+About Activity
+Splash Screen
+Intro Wizard
+
+Options and Opératon List:
+Resume List:
+1-contain a list of item
+2- go to detail on click on on item
+3- show progress , hide list when load data async from internet and hide progress and show list when loading done
+4- Show message when user not connected to internet
+5- Close on BackPressed
+6- list row show the title 
+7- Data downloaded is a list of Resume that each contain a title, an ID, a Description
+Resume Detail:
+1- show Resume description using a webview from a link
+2- show the Resume title
+3- user can download a Resume using menu button download
+4- Show message when user not connected to internet
+5- Close on BackPressed
+6- Show message when user not connected to internet
+7- Data downloaded is a objet of Resume that  contain a url to display and a url for download, an ID, a Description
+8- Display download option for  Android 2.3 or higher
+9- show progress , hide content when load data async from internet and hide progress and show content when loading done
+
+Job List:
+Job Detail:
+1- show detail such as title,description, society,studyLevel,sexe,contratType,workMode, Required experience, domain activity,  added Date, email, website, mobile1, mobile2, salary, city, end Date,
+            name Contact, name Email, name WebSite
+2- show Apply Dialog when user press apply button 
+3- show Share Dialog when user press share button
+4- Show message when user not connected to internet
+5- Close on BackPressed
+6- show Interstitial Ad when press one button it limit of 2 for this actvity
+7- show map button if job objet contain map that not empty
+8- Hide menu button when empty:callMobile1, callMobile2, sendMail, showWebSite,shoLocationOnGoogleMap
+9- show progress , hide scroll view when load data async from internet and hide progress and show scroll view when loading done
+10- Enable scroll can that activity can contain a long data
+11- hide if empty :Salary, Email,WebSite,Mobile1
+12- on Restart show Interstitial Ad if loaded
+13- user can launch call when Mobile1 (contact) is avaible and user has pressed it
+14- this are the data downloaded from internet other are from List activity:description,studyLevel, sexe, society, workMode, experience,activitySector,contratType, emploi, Image URL..
+
+        
+
+Cover Letter list
+Cover Letter Detail
+Main Activity:
+1- Contain Job List
+2- contain a Drawer menu list and user can navigate to : Cover Letter list,About Activity, go to facebook web page, Rate app , help,
+3- show popup : to add job write to as at stopgalere@info.com
+4- show Floating Action Button when reward video is ready, then show reward video and at end navigate to Resume List
+5- user can search in Job list downloaded using a seach button that is a text field with icon button (it a lower case title contain search)
+6- Show message when user not connected to internet
+7- Data downloaded is a list of job contain and display a list of job with title and in scroll view
+8- user navgate to job detail when touch one row in job list
+9- show progress , hide scroll view when load data async from internet and hide progress and show scroll view when loading done
+10- Check and display app update Dialog when an update is available 
+11- first Download and show the sort job list then download the full list and it to displayed list 
+12- Rate App open Playstore to app form
+
+About Activity:
+1- Enable or Disable Notification using Checkbox
+2- show a webview that Display CGU from a link
+3- Close on BackPressed
+Splash Screen:
+1- Open MainActivity after 2 seconds delay
+Intro Wizard:
+1- use a slider to show app functionnality, there is 3 page
+2- it's one when user open app first then never show again (persistent)
+
+
+, liste les fenêtres et sous fenêtre, lister les options ou opérations
+
+Navigation:
+1- SplashScreen
+2- Wizard
+3- Main
+4- All other are from Main
+Resume List
+Resume Detail
+Job List
+Job Detail
+Cover Letter list
+Cover Letter Detail
+About Activity
+
+
+Font: Roboto
+Icons: Material Design Icons
+Model:
+1-Resume:
+	private String id;
+    private String title;
+    private String content;
+    private String downloadUrl; 
+2-Job:
+	private String emploiId;
+    private String title;
+    private String description;
+    private String webSite;
+    private String salary;
+    private String city;
+    private String endDate;
+    private String society;
+    private String societyPicUrl;
+    private String addDate;
+    private String activitySector;
+    private String email;
+    private String mobile1;
+    private String mobile2;
+    private double longitude;
+    private double latitude;
+    private String sexe;
+    private String contratType;
+    private String workMode;
+    private String experience;
+    private String studyLevel;
+3-CoverLetter:
+	private String id;
+    private String title;
+    private String content;
+
+4-Drawer main Menu:
+ 	private long mId;
+	private String mImageURL;
+	private String mText;
+	private String mIconRes;
+
+
+Constant:
+public static final String BASE_URL =                       "http://51.75.26.88/";
+
+	public static final String COVER_LETTER_LATEST_URL =             BASE_URL+"stopgalereapi_get/fastEmploisLatest";
+
+    public static final String COVER_LETTER_COMPLETE_URL =           BASE_URL+"stopgalereapi_get/emploisSorted";
+	//this url gives list of category in 2nd tab
+    public static final String COVER_LETTER_PART1_URL =    BASE_URL+"stopgalereapi_get/AllLeMotisPart1";
+
+    public static final String COVER_LETTER_COMP_URL =     BASE_URL+"stopgalereapi_get/LeMotivationsCompleteApi";
+
+    public static final String COVER_LETTER_DESC_URL =     BASE_URL+"stopgalereapi_get/LeMotivationsForIdApi/";
+
+    public static final String JOB_DESCRIPTION_URL =         BASE_URL+"stopgalereapi_get/emploiDesription/";
+    //this url gives app version info
+   
+    public static final String APP_CGU_URL =                    BASE_URL+"stopgalere/condition-cgu";
+
+    public static final String RESUME_FAST_URL =                    BASE_URL+"stopgalereapi_get/cvlastapp";
+
+    public static final String RESUME_COMPLETE_URL =                BASE_URL+"stopgalereapi_get/cvssortedapp";
+
+    public static final String RESUME_DESCRIPTION_URL =             BASE_URL+"stopgalereapi_get/cvDescriptionapp/";
+
+    public static final String MAP_INFO_URL =                   BASE_URL+"stopgalereapi_get/mapaccess";
+
+    
+
+======================= @@@@@@@@@@@@@@@@@@@@
+
+
+Give folder structure and file organization for a Kotlin project, along with the role of each component
+       Example:  Give folder structure and file organization for a React.js client project, along with the role of each component
+      - UI Library for Faster Development 🎨 (Color and Font)
+      - Manage State (Local state , Global state, Server state ) share function between  component
+      - Router for Navigation
+      - Dependence Injection
+      - Unit Test
+      - UI Test
+      - Mockable Test
+
+For my  Kotlin Job Notification project Give me best framework using comparison with other for:
+	  - UI Library for Faster Development 🎨 (Color and Font)
+      - Manage State (Local state , Global state, Server state ) share function between  component
+      - Router for Navigation
+      - Dependence Injection
+      - Unit Test
+      - UI Test
+      - Mockable Test
+
+ i want to use MVVM
+
+ RESPONSE:
+ 1. UI Library for Faster Development 
+ 	=>Jetpack Compose
+ 2. State Management 
+ 	=> Local State: Jetpack Compose’s remember/mutableStateOf for UI-specific state.
+ 	=> Global State: ViewModel with StateFlow or SharedFlow
+ 	=> Server State: Remote Data: Use Paging 3 for pagination + Retrofit with coroutines
+ 					 Caching: Room for local DB + Repository pattern to sync with server 
+ 3. Router for Navigation
+    => Jetpack Navigation
+ 4. Dependency Injection
+ 	=> Dagger Hilt
+ 5. Unit Testing
+ 	Framework: JUnit 5 + Mockito (with mockito-inline for Kotlin finals) 
+	Coroutines: Use TestDispatcher (e.g., StandardTestDispatcher) to control virtual time 
+	ViewModel: Test with TestCoroutineScope and InstantTaskExecutorRule for LiveData
+
+ 6- UI Testing
+ 	=> Compose Test (Jetpack Compose)
+ 	Tooling:
+ 		MockWebServer: For API response mocking 9.
+ 		HiltTestRule: For DI in UI tests 
+ 7. Mockable Testing
+ 	=> Mockito: Best for Java/Kotlin interoperability (use mockito-inline for final classes) 6.
+ 	   MockK: Pure Kotlin mocking with clearer syntax (e.g., every { repo.getData() } returns flowOf(data)).
+
+
+updated folder structure across all MVVM layers
+
+com.stopgalere/
+├── data/
+│   ├── model/
+│   │   ├── Resume.kt
+│   │   ├── Job.kt
+│   │   ├── CoverLetter.kt       # Cover letter data model
+│   │   └── MenuItem.kt
+│   ├── remote/
+│   │   ├── ApiService.kt        # Contains all COVER_LETTER_* endpoints
+│   │   └── ApiDataSource.kt
+│   ├── local/
+│   │   ├── dao/
+│   │   │   ├── JobDao.kt
+│   │   │   ├── ResumeDao.kt
+│   │   │   └── CoverLetterDao.kt  # Added
+│   │   ├── AppDatabase.kt
+│   │   └── Preferences.kt
+│   └── repository/
+│       ├── JobRepository.kt
+│       ├── ResumeRepository.kt
+│       └── CoverLetterRepository.kt  # Added
+├── domain/
+│   ├── usecase/
+│   │   ├── GetJobsUseCase.kt
+│   │   ├── GetResumesUseCase.kt
+│   │   └── GetCoverLettersUseCase.kt  # Added
+│   └── repository/
+│       ├── JobRepoInterface.kt
+│       ├── ResumeRepoInterface.kt
+│       └── CoverLetterRepoInterface.kt  # Added
+├── presentation/
+│   ├── ui/
+│   │   ├── job/
+│   │   │   ├── JobList.kt
+│   │   │   └── JobDetail.kt
+│   │   ├── resume/
+│   │   │   ├── ResumeList.kt
+│   │   │   └── ResumeDetail.kt
+│   │   ├── coverletter/          # Full Cover Letter UI
+│   │   │   ├── CoverList.kt
+│   │   │   └── CoverDetail.kt
+│   │   ├── main/
+│   │   │   ├── MainScreen.kt
+│   │   │   └── components/
+│   │   ├── about/
+│   │   │   └── AboutScreen.kt
+│   │   ├── splash/
+│   │   │   └── SplashScreen.kt
+│   │   └── intro/
+│   │       └── IntroWizard.kt
+│   ├── viewmodel/
+│   │   ├── JobViewModel.kt
+│   │   ├── ResumeViewModel.kt
+│   │   └── CoverLetterViewModel.kt  # Added
+│   └── theme/
+│       ├── Type.kt
+│       └── Color.kt
+├── navigation/
+│   └── NavGraph.kt               # Updated with Cover Letter routes
+├── di/
+│   ├── AppModule.kt              # Updated with Cover Letter DI
+│   └── ViewModelModule.kt
+├── util/
+│   ├── NetworkUtils.kt
+│   ├── AdMobHelper.kt
+│   ├── NotificationHelper.kt
+│   └── ImageLoader.kt
+└── constants/
+    └── AppConstants.kt           # All Cover Letter URLs included
+
+
