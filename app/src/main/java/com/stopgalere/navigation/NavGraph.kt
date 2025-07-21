@@ -1,49 +1,30 @@
 package com.stopgalere.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-//import com.stopgalere.R
-import com.stopgalere.navigation.destinations.Screen
-//import com.stopgalere.presentation.ui.about.AboutScreen
-//import com.stopgalere.presentation.ui.coverletter.CoverList
-//import com.stopgalere.presentation.ui.job.JobList
-//import com.stopgalere.presentation.ui.resume.ResumeList
-//import com.stopgalere.presentation.ui.main.MainScreen
+import androidx.navigation.compose.rememberNavController
+import com.stopgalere.presentation.ui.splash.SplashScreen
 
 @Composable
-fun NavGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = Screen.Main.route) {
-//        composable(Screen.Main.route) {
-//            MainScreen(
-//                navController = navController,
-//                title = stringResource(R.string.screen_main_title)
-//            )
+fun NavGraph(
+    navController: NavHostController = rememberNavController()
+) {
+    NavHost(
+        navController = navController,
+        startDestination = "splash"
+    ) {
+        composable("splash") {
+            // 🌟 Pass the controller here!
+            SplashScreen(navController = navController)
+        }
+//        composable("intro") {
+//            IntroWizard(navController = navController)
 //        }
-//        composable(Screen.JobList.route) {
-//            JobList(
-//                navController = navController,
-//                title = stringResource(R.string.screen_jobs_title)
-//            )
+//        composable("main") {
+//            MainScreen(navController = navController)
 //        }
-//        composable(Screen.ResumeList.route) {
-//            ResumeList(
-//                navController = navController,
-//                title = stringResource(R.string.screen_resumes_title)
-//            )
-//        }
-//        composable(Screen.CoverList.route) {
-//            CoverList(
-//                navController = navController,
-//                title = stringResource(R.string.screen_coverletters_title)
-//            )
-//        }
-//        composable(Screen.About.route) {
-//            AboutScreen(
-//                title = stringResource(R.string.screen_about_title)
-//            )
-//        }
+        // …other routes
     }
 }
