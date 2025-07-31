@@ -17,7 +17,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.RolandAssoh.stopgalere.ci.R
-import com.stopgalere.R
 import com.stopgalere.presentation.theme.StopGalereTheme
 import com.stopgalere.presentation.viewmodel.SplashEvent
 import com.stopgalere.presentation.viewmodel.SplashUiState
