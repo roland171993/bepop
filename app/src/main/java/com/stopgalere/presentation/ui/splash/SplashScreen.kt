@@ -22,16 +22,28 @@ import com.stopgalere.presentation.viewmodel.SplashEvent
 import com.stopgalere.presentation.viewmodel.SplashUiState
 import com.stopgalere.presentation.viewmodel.SplashViewModel
 import kotlinx.coroutines.flow.collectLatest
+// --- 1) Extract the pure-UI into its own function ---
+@Composable
+fun SplashScreenContent(
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(R.drawable.splash_screen),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillWidth
+        )
+    }
+}
 
 @Composable
 fun SplashScreen(
     navController: NavHostController,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
-    // Observe UI state
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // Handle one-off navigation events
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->
             if (event is SplashEvent.Navigate) {
@@ -42,15 +54,12 @@ fun SplashScreen(
         }
     }
 
-    // Permissions launcher
     var permissionsRequested by remember { mutableStateOf(false) }
     val permissionsLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { results ->
         viewModel.onPermissionsResult(results.values.all { it })
     }
-
-    // When ViewModel asks for perms, launch them (once)
     LaunchedEffect(uiState) {
         if (uiState is SplashUiState.RequestPermissions && !permissionsRequested) {
             permissionsRequested = true
@@ -62,24 +71,14 @@ fun SplashScreen(
             )
         }
     }
-
-    // UI: just show the splash image full-screen
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(R.drawable.splash_screen),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
-    }
+    
+    SplashScreenContent()
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenPreview() {
-    val navController = rememberNavController()
     StopGalereTheme {
-        SplashScreen(navController = navController)
+        SplashScreenContent()
     }
 }
-
