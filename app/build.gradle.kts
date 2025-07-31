@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("kapt")
-    id("com.google.dagger.hilt.android") version "2.56.2" apply false
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -42,6 +42,10 @@ android {
 }
 
 dependencies {
+    val navComposeVersion         = "2.6.0"
+    val hiltNavComposeVersion     = "1.0.0"
+    val viewModelComposeVersion   = "2.6.1"
+
     // Core Android
     implementation(libs.androidx.core.ktx) // "androidx.core:core-ktx"
     implementation("androidx.core:core-splashscreen:1.0.1")
@@ -54,11 +58,14 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)         // "androidx.compose.material3:material3"
     implementation(libs.androidx.activity.compose)  // "androidx.activity:activity-compose:1.8.0"
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.7.0-beta05")
 
-    // Hilt & Navigation
-    implementation("com.google.dagger:hilt-android:2.52")
-    kapt("com.google.dagger:hilt-compiler:2.52")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    // Navigation-Compose & ViewModel-Compose
+    implementation("com.google.dagger:hilt-android:2.56.2")
+    kapt("com.google.dagger:hilt-compiler:2.56.2")
+    implementation("androidx.navigation:navigation-compose:${navComposeVersion}")
+    implementation("androidx.hilt:hilt-navigation-compose:${hiltNavComposeVersion}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${viewModelComposeVersion}")
 
     // Retrofit / Room / Paging / Coroutines / etc.
     // TODO: add missing dependencies here
@@ -68,8 +75,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)               // "androidx.test.ext:junit"
     androidTestImplementation(libs.androidx.espresso.core)      // "androidx.test.espresso:espresso-core"
     androidTestImplementation(libs.androidx.ui.test.junit4)     // "androidx.compose.ui:ui-test-junit4"
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.52")
-    kaptAndroidTest("com.google.dagger:hilt-compiler:2.52")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.2")
+    kaptAndroidTest("com.google.dagger:hilt-compiler:2.56.2")
 
     // Debug Only
     debugImplementation(libs.androidx.ui.tooling)               // Compose tooling
