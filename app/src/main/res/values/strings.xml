@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">StopGalere</string>
     <string name="screen_main_title">Home</string>
+    <string name="screen_splash_title">Stop Galère</string>
+    <string name="screen_splash_header">L’emploi vous poursuit</string>
     <string name="screen_jobs_title">Jobs</string>
     <string name="screen_resumes_title">Resumes</string>
     <string name="screen_coverletters_title">Cover Letters</string>

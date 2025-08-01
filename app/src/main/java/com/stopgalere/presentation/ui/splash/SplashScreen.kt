@@ -1,48 +1,29 @@
-// app/src/main/java/com/stopgalere/presentation/ui/splash/SplashScreen.kt
 package com.stopgalere.presentation.ui.splash
 
-import android.Manifest
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.RolandAssoh.stopgalere.ci.R
 import com.stopgalere.presentation.theme.StopGalereTheme
 import com.stopgalere.presentation.viewmodel.SplashEvent
-import com.stopgalere.presentation.viewmodel.SplashUiState
 import com.stopgalere.presentation.viewmodel.SplashViewModel
 import kotlinx.coroutines.flow.collectLatest
-// --- 1) Extract the pure-UI into its own function ---
-@Composable
-fun SplashScreenContent(
-    modifier: Modifier = Modifier
-) {
-    Box(modifier = modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(R.drawable.splash_screen),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillWidth
-        )
-    }
-}
 
+/**
+ * Orchestrates:
+ *  1. UI rendering
+ *  2. Permission flow
+ *  3. Navigation side-effects
+ */
 @Composable
 fun SplashScreen(
     navController: NavHostController,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
 
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->
@@ -54,30 +35,22 @@ fun SplashScreen(
         }
     }
 
-    var permissionsRequested by remember { mutableStateOf(false) }
-    val permissionsLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()
-    ) { results ->
-        viewModel.onPermissionsResult(results.values.all { it })
-    }
-    LaunchedEffect(uiState) {
-        if (uiState is SplashUiState.RequestPermissions && !permissionsRequested) {
-            permissionsRequested = true
-            permissionsLauncher.launch(
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-            )
-        }
-    }
-    
-    SplashScreenContent()
+    // 1. Content
+    SplashScreenContent(modifier = Modifier)
+
+    // 2. Permissions
+    PermissionRequestHandler(
+        uiState = uiState,
+        onPermissionsResult = viewModel::onPermissionsResult
+    )
 }
 
-@Preview(showBackground = true)
+/**
+ * Default preview wrapped in your app theme.
+ */
+@Preview(showBackground = true, name = "Default Splash")
 @Composable
-fun SplashScreenPreview() {
+fun SplashScreenDevicePreviews() {
     StopGalereTheme {
         SplashScreenContent()
     }
