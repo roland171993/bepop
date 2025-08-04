@@ -6,8 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.luminance
 import androidx.core.view.WindowCompat
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.stopgalere.navigation.NavGraph
 import dagger.hilt.android.AndroidEntryPoint
 import com.stopgalere.presentation.theme.StopGalereTheme
@@ -25,9 +28,24 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             StopGalereTheme {
+                // 1. Grab the system ui controller
+                val systemUiController = rememberSystemUiController()
+                // 2. Pick your primary color from the theme
+                val primaryColor = MaterialTheme.colorScheme.primary
+                // 3. Decide whether icons should be dark or light
+                val useDarkIcons = primaryColor.luminance() > 0.5f
+
+                // 4. SideEffect to update the bars
+                SideEffect {
+                    systemUiController.setSystemBarsColor(
+                        color     = primaryColor,
+                        darkIcons = !useDarkIcons
+                    )
+                }
+                // Your app surface + navigation
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color    = MaterialTheme.colorScheme.background
                 ) {
                     NavGraph()
                 }

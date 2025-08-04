@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.stopgalere.presentation.ui.intro.WizardPagerScreen
 import com.stopgalere.presentation.ui.splash.SplashScreen
 
 @Composable
@@ -13,11 +14,13 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "splash"
+        startDestination = "intro"
     ) {
         composable("splash") {
-            // 🌟 Pass the controller here!
             SplashScreen(navController = navController)
+        }
+        composable("intro"){
+            WizardPagerScreen(navController = navController)
         }
 //        composable("intro") {
 //            IntroWizard(navController = navController)
