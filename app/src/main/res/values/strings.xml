@@ -7,5 +7,10 @@
     <string name="screen_resumes_title">Resumes</string>
     <string name="screen_coverletters_title">Cover Letters</string>
     <string name="screen_about_title">About</string>
+    <string name="screen_wizard_next">Suivant</string>
+    <string name="screen_wizard_finish">Terminer</string>
+    <string name="screen_wizard_resume">50\n Modèles de CV\n téléchargeables </string>
+    <string name="screen_wizard_cover_letter">230\n Lettres de motivation\n à votre disposition</string>
+    <string name="screen_wizard_gps">Itinéraire\n le GPS pour vous accompagner</string>
 
 </resources>

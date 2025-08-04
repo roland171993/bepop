@@ -69,6 +69,14 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:${navComposeVersion}")
     implementation("androidx.hilt:hilt-navigation-compose:${hiltNavComposeVersion}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${viewModelComposeVersion}")
+    implementation("androidx.compose.foundation:foundation:1.8.3")
+    implementation("com.google.accompanist:accompanist-pager:0.36.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.36.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
+
+
+    //Coil (image loading in Compose) ---
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     // Retrofit / Room / Paging / Coroutines / etc.
     // TODO: add missing dependencies here
