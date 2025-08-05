@@ -28,21 +28,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             StopGalereTheme {
-                // 1. Grab the system ui controller
                 val systemUiController = rememberSystemUiController()
-                // 2. Pick your primary color from the theme
                 val primaryColor = MaterialTheme.colorScheme.primary
-                // 3. Decide whether icons should be dark or light
+                // Decide whether icons should be dark or light
                 val useDarkIcons = primaryColor.luminance() > 0.5f
-
-                // 4. SideEffect to update the bars
                 SideEffect {
-                    systemUiController.setSystemBarsColor(
+                    systemUiController.setStatusBarColor(
                         color     = primaryColor,
                         darkIcons = !useDarkIcons
                     )
                 }
-                // Your app surface + navigation
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color    = MaterialTheme.colorScheme.background

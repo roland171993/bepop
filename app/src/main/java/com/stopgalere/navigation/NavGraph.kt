@@ -14,7 +14,7 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "intro"
+        startDestination = "splash"
     ) {
         composable("splash") {
             SplashScreen(navController = navController)
@@ -22,12 +22,8 @@ fun NavGraph(
         composable("intro"){
             WizardPagerScreen(navController = navController)
         }
-//        composable("intro") {
-//            IntroWizard(navController = navController)
-//        }
-//        composable("main") {
-//            MainScreen(navController = navController)
-//        }
-        // …other routes
+        composable("main"){
+            MainScreen(navController)
+        }
     }
 }

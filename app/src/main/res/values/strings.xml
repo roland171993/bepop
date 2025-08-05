@@ -12,5 +12,8 @@
     <string name="screen_wizard_resume">50\n Modèles de CV\n téléchargeables </string>
     <string name="screen_wizard_cover_letter">230\n Lettres de motivation\n à votre disposition</string>
     <string name="screen_wizard_gps">Itinéraire\n le GPS pour vous accompagner</string>
+    <string name="screen_main_search_placeholder">Rechercher…</string>
+    <string name="screen_main_empty_page_message">Vide</string>
+    <string name="screen_main_cd_open_drawer">Ouvrir le menu</string>
 
 </resources>
