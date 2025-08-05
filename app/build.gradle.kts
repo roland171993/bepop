@@ -1,3 +1,11 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -42,6 +50,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.testing.android)
     val navComposeVersion         = "2.6.0"
     val hiltNavComposeVersion     = "1.0.0"
     val viewModelComposeVersion   = "2.6.1"
@@ -74,6 +83,8 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager-indicators:0.36.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
 
+    implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.1")
+
 
     //Coil (image loading in Compose) ---
     implementation("io.coil-kt:coil-compose:2.4.0")
@@ -96,6 +107,5 @@ dependencies {
     // Unit / JVM Tests
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-    testImplementation("org.mockito:mockito-inline:5.3.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
 }

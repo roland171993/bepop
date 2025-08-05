@@ -113,8 +113,10 @@ fun WizardPagerScreen(
                 if (!isLast) {
                     scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
                 } else {
-                    navController.navigate("main") {
-                        popUpTo("intro") { inclusive = true }
+                    navController.navigate("main"){
+                        popUpTo("intro"){
+                            inclusive = true
+                        }
                     }
                 }
             },
