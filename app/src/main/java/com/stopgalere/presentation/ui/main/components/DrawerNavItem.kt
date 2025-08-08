@@ -16,13 +16,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import compose.icons.fontawesome.FontAwesomeIcons
-import compose.icons.fontawesome.icons.Bullhorn
-import compose.icons.fontawesome.icons.FileAlt
-import compose.icons.fontawesome.icons.InfoCircle
-import compose.icons.fontawesome.icons.QuestionCircle
-import compose.icons.fontawesome.icons.Star
-import compose.icons.fontawesome.icons.brands.Facebook
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Brands
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.brands.Facebook
+import compose.icons.fontawesomeicons.solid.Bullhorn
+import compose.icons.fontawesomeicons.solid.FileAlt
+import compose.icons.fontawesomeicons.solid.InfoCircle
+import compose.icons.fontawesomeicons.solid.QuestionCircle
+import compose.icons.fontawesomeicons.solid.Star
+
 
 /**
  * A single item in the drawer: route, icon, and label.

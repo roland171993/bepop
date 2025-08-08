@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.stopgalere.presentation.ui.intro.WizardPagerScreen
+import com.stopgalere.presentation.ui.main.MainScreen
 import com.stopgalere.presentation.ui.splash.SplashScreen
 
 @Composable
@@ -14,7 +15,7 @@ fun NavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = "splash"
+        startDestination = "main"
     ) {
         composable("splash") {
             SplashScreen(navController = navController)
@@ -23,7 +24,7 @@ fun NavGraph(
             WizardPagerScreen(navController = navController)
         }
         composable("main"){
-            MainScreen(navController)
+            MainScreen(navController = navController)
         }
     }
 }

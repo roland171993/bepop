@@ -29,7 +29,6 @@ import androidx.compose.ui.semantics.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import com.stopgalere.R
 import com.stopgalere.presentation.ui.main.components.DrawerNavItem
 import com.stopgalere.presentation.ui.main.components.DrawerNavItemDefaults
 import com.stopgalere.presentation.viewmodel.MainViewModel
@@ -38,6 +37,7 @@ import androidx.compose.material.DrawerValue
 import androidx.compose.material.ModalDrawer
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.TopAppBar
+import com.stopgalere.presentation.ui.main.components.DrawerContent
 
 @Composable
 fun MainScreen(
@@ -60,6 +60,7 @@ fun MainScreen(
                 }
             )
         },
+        modifier = Modifier.semantics{ testTag = "MainScreen"},
         content = {
             Column(modifier = Modifier.fillMaxSize()) {
                 TopAppBar(
