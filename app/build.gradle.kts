@@ -54,6 +54,7 @@ dependencies {
     val navComposeVersion         = "2.6.0"
     val hiltNavComposeVersion     = "1.0.0"
     val viewModelComposeVersion   = "2.6.1"
+    val hiltVersion             = "2.56.2"
 
     // Core Android
     implementation("androidx.core:core-ktx:1.10.1")
@@ -98,7 +99,10 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.2")
-    kaptAndroidTest("com.google.dagger:hilt-compiler:2.56.2")
+
+    // Hilt testing
+    androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
+    kaptAndroidTest("com.google.dagger:hilt-compiler:$hiltVersion")
 
     // Debug Only
     debugImplementation("androidx.compose.ui:ui-tooling")

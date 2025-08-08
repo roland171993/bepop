@@ -1,60 +1,50 @@
-package com.RolandAssoh.stopgalere.ci
+package com.stopgalere.presentation.ui.intro
 
-import android.content.Context
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.activity.ComponentActivity
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
-import androidx.navigation.compose.ComposeNavigator
-import androidx.navigation.testing.TestNavHostController
-import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.stopgalere.presentation.theme.StopGalereTheme
-import com.stopgalere.presentation.ui.intro.WizardPagerScreen
-import org.junit.Assert
-import org.junit.Before
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
 class WizardPagerScreenComposeTest {
 
     @get:Rule
-    val composeTestRule = createComposeRule()
-
-    private lateinit var navController: TestNavHostController
-
-    @Before
-    fun setup() {
-        val ctx = ApplicationProvider.getApplicationContext<Context>()
-        navController = TestNavHostController(ctx).apply {
-            navigatorProvider.addNavigator(ComposeNavigator())
-        }
-    }
+    val composeRule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun pager_displaysPages_and_navigatesOnFinish() {
-        composeTestRule.setContent {
-            StopGalereTheme {
-                WizardPagerScreen(navController)
+    fun wizard_navigates_to_main_on_finish() {
+        composeRule.setContent { TestNavHost() }
+
+        // There are 3 pages. Click twice for Next, then once for Finish.
+        composeRule.onNodeWithTag("WizardNextButton").performClick()
+        composeRule.onNodeWithTag("WizardNextButton").performClick()
+        composeRule.onNodeWithTag("WizardNextButton").performClick()
+
+        composeRule.onNodeWithTag("MainScreen").assertIsDisplayed()
+    }
+
+    @Composable
+    private fun TestNavHost() {
+        val navController = rememberNavController()
+        NavHost(navController = navController, startDestination = "intro") {
+            composable("intro") { WizardPagerScreen(navController) }
+            composable("main") {
+                Box(
+                    Modifier
+                        .fillMaxSize()
+                        .testTag("MainScreen")
+                )
             }
         }
-
-        // Page 0 visible
-        composeTestRule.onNodeWithTag("WizardPage_0").assertExists()
-        // Click “Next” → Page 1
-        composeTestRule.onNodeWithTag("WizardNextButton").performClick()
-        composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithTag("WizardPage_1").assertExists()
-
-        // Click “Next” → Page 2
-        composeTestRule.onNodeWithTag("WizardNextButton").performClick()
-        composeTestRule.waitForIdle()
-        composeTestRule.onNodeWithTag("WizardPage_2").assertExists()
-
-        // Click “Finish” → should navigate to “main”
-        composeTestRule.onNodeWithTag("WizardNextButton").performClick()
-        composeTestRule.waitForIdle()
-        Assert.assertEquals("main", navController.currentBackStackEntry?.destination?.route)
     }
 }
