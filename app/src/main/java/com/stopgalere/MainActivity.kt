@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                 SideEffect {
                     systemUiController.setStatusBarColor(
                         color     = primaryColor,
-                        darkIcons = !useDarkIcons
+                        darkIcons = useDarkIcons
                     )
                 }
                 Surface(

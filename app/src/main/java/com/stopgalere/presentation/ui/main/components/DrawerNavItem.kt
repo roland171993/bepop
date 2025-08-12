@@ -79,7 +79,7 @@ fun DrawerContent(
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .width(width)
+            .wrapContentWidth()
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(

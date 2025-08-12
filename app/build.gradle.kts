@@ -25,7 +25,7 @@ android {
         versionCode = 328
         versionName = "4.0.1"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" // Compose Test
     }
 
     buildTypes {
@@ -50,7 +50,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.navigation.testing.android)
     val navComposeVersion         = "2.6.0"
     val hiltNavComposeVersion     = "1.0.0"
     val viewModelComposeVersion   = "2.6.1"
@@ -83,6 +82,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-pager:0.36.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.36.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
+    implementation("androidx.navigation:navigation-testing-android:2.9.3")
 
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.1")
 
