@@ -32,8 +32,18 @@ import com.stopgalere.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.sp
+import com.RolandAssoh.stopgalere.ci.R
 
+
+@Composable
+private fun rememberDrawerWidth(fraction: Float = 0.2f): Dp {
+    return 150.dp
+}
 @Composable
 fun MainScreen(
     navController: NavHostController,
@@ -41,16 +51,18 @@ fun MainScreen(
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val withLarge = screenWidth * 0.4f
+    val drawerWidth = rememberDrawerWidth()
 
     // Real screen keeps the drawer
     ModalDrawer(
         drawerState = drawerState,
         modifier = Modifier.statusBarsPadding(),
+        drawerBackgroundColor = Color.Transparent,
+        drawerShape = RectangleShape,
+        drawerElevation = 0.dp,
         drawerContent = {
             DrawerContent(
-                width = withLarge,
+                width = drawerWidth,
                 onItemSelected = { route ->
                     scope.launch { drawerState.close() }
                     navController.navigate(route)
@@ -99,15 +111,21 @@ private fun MainScreenContent(
             ) {
                 Icon(
                     imageVector = if (!isDrawerOpen) Icons.Default.Menu else Icons.Default.ArrowBack,
-                    contentDescription = "Toggle drawer"
+                    contentDescription = "Toggle drawer",
+                    tint = Color.White
                 )
             }
             Spacer(Modifier.width(8.dp))
             Text(
-                "StopGalere CI",
+                stringResource(R.string.screen_main_app_name),
                 modifier = Modifier
                     .weight(1f)
                     .semantics { testTag = "AppBarTitle" },
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                ),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -115,7 +133,11 @@ private fun MainScreenContent(
                 onClick = onSearchClick,
                 modifier = Modifier.semantics { testTag = "SearchIcon" }
             ) {
-                Icon(Icons.Default.Search, contentDescription = "Search")
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = Color.White
+                    )
             }
         }
 
@@ -218,7 +240,9 @@ private fun MainScreenPreviewScaffold() {
     widthDp = 320, heightDp = 640,
     showBackground = true, backgroundColor = 0xFFFFFFFF
 )
-@Composable fun Preview_Main_Small() { MaterialTheme { MainScreenPreviewScaffold() } }
+@Composable fun Preview_Main_Small() {
+    MaterialTheme { MainScreenPreviewWithDrawerHost() }
+}
 
 /** MEDIUM PHONE */
 @Preview(
@@ -226,7 +250,9 @@ private fun MainScreenPreviewScaffold() {
     widthDp = 360, heightDp = 740,
     showBackground = true, backgroundColor = 0xFFFFFFFF
 )
-@Composable fun Preview_Main_Medium() { MaterialTheme { MainScreenPreviewScaffold() } }
+@Composable fun Preview_Main_Medium() {
+    MaterialTheme { MainScreenPreviewWithDrawerHost() }
+}
 
 /** TALL / LARGE PHONE */
 @Preview(
@@ -234,7 +260,9 @@ private fun MainScreenPreviewScaffold() {
     widthDp = 411, heightDp = 891,
     showBackground = true, backgroundColor = 0xFFFFFFFF
 )
-@Composable fun Preview_Main_Tall() { MaterialTheme { MainScreenPreviewScaffold() } }
+@Composable fun Preview_Main_Tall() {
+    MaterialTheme { MainScreenPreviewWithDrawerHost() }
+}
 
 /** TABLET (sw600dp+) */
 @Preview(
@@ -242,7 +270,9 @@ private fun MainScreenPreviewScaffold() {
     widthDp = 800, heightDp = 1280,
     showBackground = true, backgroundColor = 0xFFFFFFFF
 )
-@Composable fun Preview_Main_Tablet() { MaterialTheme { MainScreenPreviewScaffold() } }
+@Composable fun Preview_Main_Tablet() {
+    MaterialTheme { MainScreenPreviewWithDrawerHost() }
+}
 
 /** SMALL (DARK MODE) */
 @Preview(
@@ -251,17 +281,23 @@ private fun MainScreenPreviewScaffold() {
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
-@Composable fun Preview_Main_Small_Dark() { MaterialTheme { MainScreenPreviewScaffold() } }
+@Composable fun Preview_Main_Small_Dark() {
+    MaterialTheme { MainScreenPreviewWithDrawerHost() }
+}
 
 @Composable
 private fun MainScreenPreviewWithDrawerHost() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val drawerWidth = rememberDrawerWidth()
 
     ModalDrawer(
         drawerState = drawerState,
+        drawerBackgroundColor = Color.Transparent,
+        drawerShape = RectangleShape,
+        drawerElevation = 0.dp,
         drawerContent = {
-            DrawerContent(width = 280.dp, onItemSelected = { /* no-op in preview */ })
+            DrawerContent(width = drawerWidth, onItemSelected = { /* no-op in preview */ })
         }
     ) {
         MainScreenContent(
@@ -273,14 +309,4 @@ private fun MainScreenPreviewWithDrawerHost() {
             jobs = sampleJobs()
         )
     }
-}
-
-@Preview(
-    name = "Medium – with Drawer (interactive)",
-    widthDp = 360, heightDp = 740,
-    showBackground = true, backgroundColor = 0xFFFFFFFF
-)
-@Composable
-fun Preview_Main_Medium_WithDrawer() {
-    MaterialTheme { MainScreenPreviewWithDrawerHost() }
 }

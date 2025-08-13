@@ -15,5 +15,6 @@
     <string name="screen_main_search_placeholder">Rechercher…</string>
     <string name="screen_main_empty_page_message">Vide</string>
     <string name="screen_main_cd_open_drawer">Ouvrir le menu</string>
+    <string name="screen_main_app_name">StopGalere CI</string>
 
 </resources>
