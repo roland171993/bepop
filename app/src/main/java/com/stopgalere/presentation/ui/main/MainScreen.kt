@@ -1,6 +1,9 @@
 package com.stopgalere.presentation.ui.main
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,16 +31,25 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.stopgalere.presentation.ui.main.components.DrawerContent
 import com.stopgalere.presentation.ui.main.components.NoContentPlaceholder
-import com.stopgalere.presentation.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SearchBar
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.RolandAssoh.stopgalere.ci.R
+import com.stopgalere.presentation.viewmodel.MainViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Close
 
 
 @Composable
@@ -53,6 +65,9 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     val drawerWidth = rememberDrawerWidth()
 
+    val isSearchOpen by viewModel.isSearchOpen.collectAsStateWithLifecycle()
+    val query by viewModel.searchQuery.collectAsStateWithLifecycle()
+
     // Real screen keeps the drawer
     ModalDrawer(
         drawerState = drawerState,
@@ -65,6 +80,7 @@ fun MainScreen(
                 width = drawerWidth,
                 onItemSelected = { route ->
                     scope.launch { drawerState.close() }
+                    viewModel.closeSearch()
                     navController.navigate(route)
                 }
             )
@@ -73,25 +89,89 @@ fun MainScreen(
         // Replace sampleJobs() with data from your VM when ready
         val jobs = sampleJobs()
 
+        // Apply simple client-side filtering (replace later with repo/paging)
+        val filteredJobs = remember(jobs, query) {
+            if (query.isBlank()) jobs
+            else jobs.filter { j ->
+                j.title.contains(query, ignoreCase = true) ||
+                        j.city.contains(query, ignoreCase = true)  ||
+                        j.region.contains(query, ignoreCase = true)
+            }
+        }
+
         MainScreenContent(
             isDrawerOpen = drawerState.isOpen,
+            isSearchOpen = isSearchOpen,
+            query = query,
+            onQueryChange = viewModel::updateSearchQuery,
             onNavClick = {
-                scope.launch {
-                    if (drawerState.isClosed) drawerState.open() else drawerState.close()
+                scope.launch{
+                    if(drawerState.isOpen) drawerState.close() else drawerState.open()
                 }
             },
-            onSearchClick = { /* TODO open search */ },
-            jobs = jobs
+            onSearchClick = { viewModel.toggleSearch() }, // still used by the app bar icon
+            onSetSearchActive = { active ->
+                if (active) viewModel.openSearch() else viewModel.closeSearch()
+            },
+            jobs = filteredJobs
         )
     }
 }
 
+@Composable
+private fun AppBarSearchField(
+    modifier: Modifier = Modifier,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    onSearch: () -> Unit,
+    onClear: () -> Unit
+) {
+    TextField(
+        value = query,
+        onValueChange = onQueryChange,
+        modifier = modifier
+            .padding(end = 8.dp)
+            .heightIn(min = 56.dp)
+        ,
+        singleLine = true,
+        textStyle = TextStyle(fontSize = 16.sp, color = Color.White),
+        placeholder = { Text("Rechercher…", color = Color(0xCCFFFFFF)) },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.White) },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = onClear) {
+                    Icon(Icons.Default.Close, contentDescription = "Clear", tint = Color.White)
+                }
+            }
+        },
+        shape = RoundedCornerShape(10.dp),
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.White,
+            cursorColor = Color.White,
+            placeholderColor = Color(0xCCFFFFFF),
+            leadingIconColor = Color.White,
+            trailingIconColor = Color.White,
+            backgroundColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+        keyboardActions = KeyboardActions(onSearch = { onSearch() })
+    )
+}
+
 /** Shared content used by both the real screen and previews (no drawer here). */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun MainScreenContent(
     isDrawerOpen: Boolean,
+    isSearchOpen: Boolean,
+    query: String,
+    onQueryChange: (String) -> Unit,
     onNavClick: () -> Unit,
     onSearchClick: () -> Unit,
+    onSetSearchActive: (Boolean) -> Unit,   // NEW
     jobs: List<JobUi>
 ) {
     Column(
@@ -99,45 +179,80 @@ private fun MainScreenContent(
             .fillMaxSize()
             .semantics { testTag = "MainScreen" }
     ) {
-        // App bar (blue, title centered with weight)
         TopAppBar(
             modifier = Modifier.statusBarsPadding(),
             backgroundColor = Color(0xFF3B8ED0),
-            contentColor = Color.White
+            contentColor = Color.White,
+            elevation = 0.dp
         ) {
-            IconButton(
-                onClick = onNavClick,
-                modifier = Modifier.semantics { testTag = "NavIcon" }
-            ) {
-                Icon(
-                    imageVector = if (!isDrawerOpen) Icons.Default.Menu else Icons.Default.ArrowBack,
-                    contentDescription = "Toggle drawer",
-                    tint = Color.White
-                )
-            }
-            Spacer(Modifier.width(8.dp))
-            Text(
-                stringResource(R.string.screen_main_app_name),
-                modifier = Modifier
-                    .weight(1f)
-                    .semantics { testTag = "AppBarTitle" },
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            IconButton(
-                onClick = onSearchClick,
-                modifier = Modifier.semantics { testTag = "SearchIcon" }
-            ) {
-                Icon(
-                    Icons.Default.Search,
-                    contentDescription = "Search",
-                    tint = Color.White
+            if (!isSearchOpen) {
+                // Left: drawer toggle
+                IconButton(
+                    onClick = onNavClick,
+                    modifier = Modifier.semantics { testTag = "NavIcon" }
+                ) {
+                    Icon(
+                        imageVector = if (!isDrawerOpen) Icons.Default.Menu else Icons.Default.ArrowBack,
+                        contentDescription = "Toggle drawer",
+                        tint = Color.White
                     )
+                }
+
+                Spacer(Modifier.width(8.dp))
+
+                // Center: title
+                Text(
+                    stringResource(R.string.screen_main_app_name),
+                    modifier = Modifier
+                        .weight(1f)
+                        .semantics { testTag = "AppBarTitle" },
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                // Right: search icon opens search
+                IconButton(
+                    onClick = { onSetSearchActive(true) },
+                    modifier = Modifier.semantics { testTag = "SearchIcon" }
+                ) {
+                    Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
+                }
+            } else {
+                // While searching
+                IconButton(
+                    onClick = { onSetSearchActive(false) }, // cancel search
+                    modifier = Modifier.semantics { testTag = "SearchBack" }
+                ) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Close search", tint = Color.White)
+                }
+
+                Spacer(Modifier.width(8.dp))
+
+                // Center: the search field takes the title's place
+                AppBarSearchField(
+                    modifier = Modifier.weight(1f),
+                    query = query,
+                    onQueryChange = onQueryChange,
+                    onSearch = {
+                        // you filter as user types; optionally close:
+                        // onSetSearchActive(false)
+                    },
+                    onClear = { onQueryChange("") }
+                )
+
+                // Right: optional clear action (kept for symmetry)
+                IconButton(
+                    onClick = { onQueryChange("") },
+                    modifier = Modifier.semantics { testTag = "SearchClear" }
+                ) {
+                    // You can use Icons.Default.Close if you like
+                    Icon(Icons.Default.Search, contentDescription = "Do nothing", tint = Color.Transparent)
+                }
             }
         }
 
@@ -223,17 +338,6 @@ private fun sampleJobs() = listOf(
 
 // --------------------------- PREVIEWS ----------------------------------------
 
-// Preview wrapper WITHOUT ModalDrawer (no duplication)
-@Composable
-private fun MainScreenPreviewScaffold() {
-    MainScreenContent(
-        isDrawerOpen = false,
-        onNavClick = {},               // no-op in preview
-        onSearchClick = {},            // no-op in preview
-        jobs = sampleJobs()
-    )
-}
-
 /** SMALL PHONE */
 @Preview(
     name = "Small – light",
@@ -302,10 +406,16 @@ private fun MainScreenPreviewWithDrawerHost() {
     ) {
         MainScreenContent(
             isDrawerOpen = drawerState.isOpen,
-            onNavClick = { scope.launch {
-                if (drawerState.isClosed) drawerState.open() else drawerState.close()
-            }},
+            isSearchOpen = false,
+            query = "",
+            onQueryChange = {},
+            onNavClick = {
+                scope.launch {
+                    if (drawerState.isClosed) drawerState.open() else drawerState.close()
+                }
+            },
             onSearchClick = {},
+            onSetSearchActive = { /* no-op in preview */ }, // <-- add this line
             jobs = sampleJobs()
         )
     }
