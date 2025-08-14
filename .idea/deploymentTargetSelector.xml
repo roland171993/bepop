@@ -8,6 +8,9 @@
       <SelectionState runConfigName="WizardPagerEspressoTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="Preview_Main_Small - Small – light">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>
