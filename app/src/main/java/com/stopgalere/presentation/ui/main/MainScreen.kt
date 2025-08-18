@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
@@ -50,6 +49,12 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.max
+import com.stopgalere.presentation.ui.job.JobList
+import com.stopgalere.presentation.viewmodel.JobViewModel
 
 
 @Composable
@@ -59,7 +64,7 @@ private fun rememberDrawerWidth(fraction: Float = 0.2f): Dp {
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: JobViewModel = hiltViewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -259,16 +264,11 @@ private fun MainScreenContent(
         if (jobs.isEmpty()) {
             NoContentPlaceholder(modifier = Modifier.fillMaxSize())
         } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color(0xFFF2F2F2))
-                    .semantics { testTag = "MainList" }
-                    .navigationBarsPadding(),
-                contentPadding = PaddingValues(vertical = 8.dp)
-            ) {
-                items(jobs) { job -> JobRow(job) }
-            }
+            JobList(
+                jobs = jobs,
+                modifier = Modifier.fillMaxSize()
+                // onJobClick = { job -> /* nav to detail later if needed */ }
+            )
         }
     }
 }
@@ -284,52 +284,67 @@ private data class JobUi(
 
 @Composable
 private fun JobRow(job: JobUi) {
-    Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp)) {
-        // Small top info row (city | date)
-        Row(
-            Modifier.fillMaxWidth().padding(horizontal = 4.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(job.city, style = MaterialTheme.typography.caption, color = Color(0xFF666666))
-            Text(job.date, style = MaterialTheme.typography.caption, color = Color(0xFF666666))
-        }
 
-        Spacer(Modifier.height(6.dp))
+    // White card with the job title
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        elevation = 4.dp,
+        color = Color.White,
+        modifier = Modifier
+            .fillMaxWidth().
+            padding(vertical = 7.dp, horizontal = 10.dp)
+            .semantics { testTag = "JobCard_${job.title}" }
+    ) {
+        Box {
+            Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp)) {
+                // Small top info row (city | date)
+                Spacer(Modifier.height(6.dp))
 
-        // White card with the job title
-        Surface(
-            shape = RoundedCornerShape(10.dp),
-            elevation = 4.dp,
-            color = Color.White,
-            modifier = Modifier
-                .fillMaxWidth()
-                .semantics { testTag = "JobCard_${job.title}" }
-        ) {
-            Box(Modifier.padding(vertical = 16.dp, horizontal = 14.dp)) {
                 Text(
                     job.title.uppercase(),
-                    style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold)
+                    style = MaterialTheme.typography.subtitle1.copy(fontWeight = FontWeight.Bold),
+                    maxLines = 1,
+                    overflow =  TextOverflow.Ellipsis,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
+
+                Spacer(Modifier.height(6.dp))
+
+                Row(
+                    Modifier.fillMaxWidth().padding(horizontal = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(job.city,
+                        style = MaterialTheme.typography.caption,
+                        maxLines = 1,
+                        overflow =  TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
+                        color = Color(0xFF666666))
+                    Text(job.date,
+                        style = MaterialTheme.typography.caption.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontStyle = FontStyle.Italic,
+                            color = Color(0xFF666666),
+                            textAlign = TextAlign.End
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier.weight(1f),
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
+
+                Spacer(Modifier.height(6.dp))
             }
         }
-
-        Spacer(Modifier.height(6.dp))
-
-        // Bottom info row (region)
-        Row(
-            Modifier.fillMaxWidth().padding(horizontal = 4.dp),
-            horizontalArrangement = Arrangement.Start
-        ) {
-            Text(job.region, style = MaterialTheme.typography.caption, color = Color(0xFF666666))
-        }
     }
+
 }
 
 // Temporary sample data to preview the UI.
 // Hook this to your ViewModel/Flow when you’re ready.
 private fun sampleJobs() = listOf(
-    JobUi(city = "Abidjan", region = "Abidjan", title = "TECHNICO-COMMERCIAUX", date = "30-09-2017"),
+    JobUi(city = "Abidjan Abidjan", region = "Abidjan", title = "TECHNICO-COMMERCIAUX", date = "30-09-2017"),
     JobUi(city = "COCODY", region = "Côte d'Ivoire", title = "COMMERCIAL B TO B", date = "04-09-2017"),
     JobUi(city = "—", region = "Côte d'Ivoire", title = "COMMERCIAUX", date = "01-11-2017"),
     JobUi(city = "Abidjan- Cocody", region = "—", title = "CUISINIERS PROFESSIONNELS", date = "04-09-2017"),

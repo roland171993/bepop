@@ -24,8 +24,8 @@ android {
         targetSdk = 35
         versionCode = 328
         versionName = "4.0.1"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner" // Compose Test
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables { useSupportLibrary = true }
     }
 
     buildTypes {
@@ -47,6 +47,7 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
 
 dependencies {
@@ -92,7 +93,22 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     // Retrofit / Room / Paging / Coroutines / etc.
-    // TODO: add missing dependencies here
+    // Paging 3
+    implementation ("androidx.paging:paging-runtime-ktx:3.3.0")
+    implementation ("androidx.paging:paging-compose:3.3.0")
+
+    // Room
+    implementation ("androidx.room:room-ktx:2.6.1")
+    implementation ("androidx.room:room-paging:2.6.1")
+    kapt ("androidx.room:room-compiler:2.6.1")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Retrofit + OkHttp
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // Android Instrumentation Tests
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.00"))
