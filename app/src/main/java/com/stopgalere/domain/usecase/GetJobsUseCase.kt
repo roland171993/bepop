@@ -9,5 +9,6 @@ import javax.inject.Inject
 class GetJobsUseCase @Inject constructor(
     private val repo: JobRepoInterface
 ) {
-    operator fun invoke(query: String?): Flow<PagingData<Job>> = repo.pagedJobs(query)
+    operator fun invoke(query: String?, online: Boolean): Flow<PagingData<Job>> =
+        repo.getJobs(query, online)
 }

@@ -1,13 +1,24 @@
 package com.stopgalere.data.remote.dto
 
+
+import com.google.gson.annotations.SerializedName
+
 data class JobDto(
-    val id: String,
-    val title: String,
+    @SerializedName("_id") val id: String?,
+    val title: String?,
     val city: String?,
-    val date: String?
+    val dateAdded: String?
 )
-data class JobPageDto(
-    val items: List<JobDto>,
-    val nextPage: Int?, // null when no next page
-    val prevPage: Int?  // null when no prev page
+
+/** The paged response shape from http://localhost:3000/api/jobs */
+data class JobsResponse(
+    val jobs: List<JobDto> = emptyList(),
+    val pagination: Pagination? = null
+)
+
+data class Pagination(
+    val total: Int? = null,
+    val page: Int? = null,
+    val totalPages: Int? = null,
+    val limit: Int? = null
 )

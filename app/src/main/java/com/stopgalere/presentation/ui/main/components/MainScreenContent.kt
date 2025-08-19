@@ -29,7 +29,6 @@ import androidx.paging.compose.LazyPagingItems
 import com.RolandAssoh.stopgalere.ci.R
 import com.stopgalere.presentation.ui.job.JobList
 import com.stopgalere.presentation.ui.job.JobUi
-import com.stopgalere.presentation.ui.main.MainList
 
 
 @OptIn(ExperimentalMaterial3Api::class)

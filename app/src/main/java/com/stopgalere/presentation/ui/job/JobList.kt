@@ -63,11 +63,10 @@ fun JobList(
                 contentPadding = contentPadding) {
                 items(jobs.itemCount) { index ->
                     jobs[index]?.let { job ->
-                        androidx.compose.foundation.layout.Box(
-                            Modifier.clickable { onJobClick(job) }
-                        ) {
-                            JobRow(job)
-                        }
+                        JobItem(
+                            job = job,
+                            onClick = onJobClick
+                        )
                     }
                 }
                 // show append state

@@ -1,6 +1,7 @@
 package com.stopgalere.data.local
 
 import android.content.Context
+import com.stopgalere.util.AppConstants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -10,11 +11,11 @@ import javax.inject.Inject
 class Prefs @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val prefs = context.getSharedPreferences("stop_galere_prefs", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences(AppConstants.PREFS_NAME, Context.MODE_PRIVATE)
 
-    fun getFirstLaunch(): Boolean = prefs.getBoolean("first_launch", false)
+    fun getFirstLaunch(): Boolean = prefs.getBoolean(AppConstants.PREF_KEY_FIRST_LAUNCH, false)
     fun setFirstLaunch(value: Boolean) {
-        prefs.edit().putBoolean("first_launch", value).apply()
+        prefs.edit().putBoolean(AppConstants.PREF_KEY_FIRST_LAUNCH, value).apply()
     }
 
 }
