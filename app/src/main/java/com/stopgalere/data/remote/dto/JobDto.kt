@@ -1,10 +1,10 @@
 package com.stopgalere.data.remote.dto
 
+import com.squareup.moshi.Json
 
-import com.google.gson.annotations.SerializedName
 
 data class JobDto(
-    @SerializedName("_id") val id: String?,
+    @Json(name = "_id") val id: String?,
     val title: String?,
     val city: String?,
     val dateAdded: String?
