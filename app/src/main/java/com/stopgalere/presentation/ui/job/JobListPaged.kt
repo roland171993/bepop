@@ -1,25 +1,28 @@
 package com.stopgalere.presentation.ui.job
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
-import com.stopgalere.presentation.ui.main.JobRow // reuse your existing row
 import com.stopgalere.presentation.ui.main.components.NoContentPlaceholder
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun JobListPaged(
@@ -28,8 +31,8 @@ fun JobListPaged(
     contentPadding: PaddingValues = PaddingValues(vertical = 8.dp),
     onJobClick: (JobUi) -> Unit = {}
 ) {
-    val itemCount = jobs.itemCount
-    if (itemCount == 0 && jobs.loadState.refresh.endOfPaginationReached) {
+    // Empty state once initial load is done
+    if (jobs.itemCount == 0 && jobs.loadState.refresh is LoadState.NotLoading) {
         NoContentPlaceholder(
             modifier = modifier
                 .fillMaxSize()
@@ -46,54 +49,68 @@ fun JobListPaged(
             .navigationBarsPadding(),
         contentPadding = contentPadding
     ) {
+        // Render items with stable keys when possible
         items(
-            count = itemCount,
-            key = jobs.itemKey { it.id }
+            count = jobs.itemCount,
+            key = { index -> jobs.peek(index)?.id ?: "placeholder-$index" }
         ) { index ->
             jobs[index]?.let { job ->
-                androidx.compose.foundation.layout.Box(
-                    Modifier.clickable { onJobClick(job) }
-                ) { JobRow(job) }
+                JobItem(
+                    job = job,
+                    onClick = onJobClick
+                )
             }
         }
-        // You can append a footer/error/retry UI here using jobs.loadState
+
+        // Footer for append state
+        item {
+            when (val s = jobs.loadState.append) {
+                is LoadState.Loading -> LinearProgressIndicator(Modifier.fillMaxWidth())
+                is LoadState.Error -> Text(
+                    text = "Couldn’t load more: ${s.error.message.orEmpty()}",
+                    modifier = Modifier.fillMaxWidth()
+                )
+                else -> {}
+            }
+        }
     }
 }
 
 /* ---------- Previews with fake paging ---------- */
-@Preview(name = "JobList – Light", widthDp = 360, heightDp = 740, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobListPaged_Light() {
-    // For previews, convert a static list to PagingData
+
+@Preview(
+    name = "JobList – Light",
+    widthDp = 360, heightDp = 740,
+    showBackground = true, backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun Preview_JobListPaged_Light() {
     val fake = previewPagingItems(jobPreviewItems())
     MaterialTheme { JobListPaged(jobs = fake) }
 }
 
-@Preview(name = "JobList – Dark", widthDp = 360, heightDp = 740, showBackground = true)
-@Composable fun Preview_JobListPaged_Dark() {
+@Preview(
+    name = "JobList – Dark",
+    widthDp = 360, heightDp = 740,
+    showBackground = true
+)
+@Composable
+fun Preview_JobListPaged_Dark() {
     val fake = previewPagingItems(jobPreviewItems())
     MaterialTheme { JobListPaged(jobs = fake) }
 }
 
-/* Utilities for previews */
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.paging.PagingData
-import androidx.paging.compose.collectAsLazyPagingItems
-import kotlinx.coroutines.flow.flowOf
-
-private val LocalPreviewPaging = staticCompositionLocalOf { PagingData.empty<JobUi>() }
+/* ---------- Utilities for previews ---------- */
 
 @Composable
 private fun previewPagingItems(list: List<JobUi>): LazyPagingItems<JobUi> {
     val pd = remember { PagingData.from(list) }
-    CompositionLocalProvider(LocalPreviewPaging provides pd) {
-        return flowOf(pd).collectAsLazyPagingItems()
-    }
+    // No CompositionLocalProvider here; just collect directly.
+    return flowOf(pd).collectAsLazyPagingItems()
 }
 
 private fun jobPreviewItems() = listOf(
-    JobUi("1","Android Engineer","San Francisco","2025-08-01"),
-    JobUi("2","Kotlin Dev","A very very long city name that will be ellipsized","2025-07-22"),
-    JobUi("3","Compose Wizard","Paris","2025-07-01")
+    JobUi("1", "Android Engineer", "San Francisco", "2025-08-01"),
+    JobUi("2", "Kotlin Dev", "A very very long city name that will be ellipsized", "2025-07-22"),
+    JobUi("3", "Compose Wizard", "Paris", "2025-07-01")
 )

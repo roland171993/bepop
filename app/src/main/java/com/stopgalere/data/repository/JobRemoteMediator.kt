@@ -9,6 +9,7 @@ import com.stopgalere.data.local.AppDatabase
 import com.stopgalere.data.model.JobEntity
 import com.stopgalere.data.model.JobRemoteKeys
 import com.stopgalere.data.remote.ApiService
+import com.stopgalere.data.remote.dto.JobsResponse
 
 @OptIn(ExperimentalPagingApi::class)
 class JobRemoteMediator(
@@ -24,49 +25,86 @@ class JobRemoteMediator(
         loadType: LoadType,
         state: PagingState<Int, JobEntity>
     ): MediatorResult = try {
+        // Determine which page to load
         val page = when (loadType) {
             LoadType.REFRESH -> {
                 val anchor = state.anchorPosition?.let { pos ->
-                    state.closestItemToPosition(pos)?.id?.let { keysDao.remoteKeysById(it)?.nextKey?.minus(1) }
+                    state.closestItemToPosition(pos)?.id
+                        ?.let { id -> keysDao.remoteKeysById(id)?.nextKey?.minus(1) }
                 } ?: 1
                 anchor
             }
             LoadType.PREPEND -> {
-                val firstId = state.firstItemOrNull()?.id ?: return MediatorResult.Success(endOfPaginationReached = true)
-                val key = keysDao.remoteKeysById(firstId)?.prevKey ?: return MediatorResult.Success(true)
-                key
+                val firstId = state.firstItemOrNull()?.id
+                    ?: return MediatorResult.Success(endOfPaginationReached = true)
+                val prev = keysDao.remoteKeysById(firstId)?.prevKey
+                    ?: return MediatorResult.Success(endOfPaginationReached = true)
+                prev
             }
             LoadType.APPEND -> {
-                val lastId = state.lastItemOrNull()?.id ?: return MediatorResult.Success(endOfPaginationReached = true)
-                val key = keysDao.remoteKeysById(lastId)?.nextKey ?: return MediatorResult.Success(true)
-                key
+                val lastId = state.lastItemOrNull()?.id
+                    ?: return MediatorResult.Success(endOfPaginationReached = true)
+                val next = keysDao.remoteKeysById(lastId)?.nextKey
+                    ?: return MediatorResult.Success(endOfPaginationReached = true)
+                next
             }
         }
 
         val pageSize = state.config.pageSize
-        val response = api.getJobs(page = page, pageSize = pageSize, query = query)
-        val items = response.items
 
+        // Call API — only the requested page is downloaded
+        val response: JobsResponse = api.getJobs(
+            page = page,
+            limit = pageSize,
+            query = query
+        )
+
+        val items = response.jobs.orEmpty()
+        val current = response.pagination?.page ?: page
+        val totalPages = response.pagination?.totalPages ?: current
+
+        // Derive prev/next safely
+        val prevKey = if (current > 1) current - 1 else null
+        val nextKey = if (current < totalPages) current + 1 else null
+
+        // Persist page to DB inside a single transaction
         db.withTransaction {
             if (loadType == LoadType.REFRESH) {
                 keysDao.clearKeys()
                 jobDao.clearAll()
             }
 
-            val prev = response.prevPage
-            val next = response.nextPage
+            // Upsert jobs (null-safety + minimal fields)
+            jobDao.upsertAll(
+                items.mapNotNull { dto ->
+                    val id = dto.id ?: return@mapNotNull null
+                    JobEntity(
+                        id = id,
+                        title = dto.title ?: "(no title)",
+                        city = dto.city,
+                        date = dto.dateAdded
+                    )
+                }
+            )
 
-            jobDao.upsertAll(items.map { dto ->
-                JobEntity(id = dto.id, title = dto.title, city = dto.city, date = dto.date)
-            })
-
-            keysDao.insertAll(items.map { dto ->
-                JobRemoteKeys(jobId = dto.id, prevKey = prev, nextKey = next)
-            })
+            // Store the same prev/next for each job in this page
+            keysDao.insertAll(
+                items.mapNotNull { dto ->
+                    val id = dto.id ?: return@mapNotNull null
+                    JobRemoteKeys(jobId = id, prevKey = prevKey, nextKey = nextKey)
+                }
+            )
         }
 
-        MediatorResult.Success(endOfPaginationReached = response.nextPage == null || items.isEmpty())
+        MediatorResult.Success(endOfPaginationReached = nextKey == null || items.isEmpty())
     } catch (t: Throwable) {
         MediatorResult.Error(t)
     }
 }
+
+/** Helpers to safely access first/last loaded items */
+private fun <T : Any> PagingState<Int, T>.firstItemOrNull(): T? =
+    pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
+
+private fun <T : Any> PagingState<Int, T>.lastItemOrNull(): T? =
+    pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()

@@ -35,8 +35,6 @@ import com.stopgalere.presentation.ui.main.components.AppBarSearchField
 import com.stopgalere.presentation.ui.main.components.MainScreenContent
 import com.stopgalere.presentation.viewmodel.MainViewModel
 
-@Composable
-private fun rememberDrawerWidth(fraction: Float = 0.2f) = 150.dp
 
 @Composable
 fun MainScreen(
@@ -45,14 +43,14 @@ fun MainScreen(
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    val drawerWidth = rememberDrawerWidth()
+    val drawerWidth = 150.dp
 
     val isSearchOpen by viewModel.isSearchOpen.collectAsStateWithLifecycle()
     val query by viewModel.searchQuery.collectAsStateWithLifecycle()
-    // collect paging as LazyPagingItems for Compose
+
     val jobsPaging = viewModel.jobs.collectAsLazyPagingItems()
 
-    // i want real data not sample anymore
+
 
     ModalDrawer(
         drawerState = drawerState,
