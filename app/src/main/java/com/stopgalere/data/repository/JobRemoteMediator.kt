@@ -129,12 +129,19 @@ class JobRemoteMediator(
                     return@mapNotNull null
                 }
 
+                val frenchDate = JobValidation.validateAndFormatDate(date)
+                if (frenchDate == null) {
+                    // Defensive: should not happen if isValid already passed, but keep safe
+                    println("SKIP job[$id]: normalization failed for date='$date'")
+                    return@mapNotNull null
+                }
+
                 // At this point all are non-null & valid; trim before saving
                 JobEntity(
                     id = id,
                     title = title!!.trim(),
                     city = city!!.trim(),
-                    date = date!!.trim()
+                    date = frenchDate
                 )
             }
 
