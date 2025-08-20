@@ -2,7 +2,10 @@ package com.stopgalere.util
 
 object AppConstants {
     const val DATABASE_NAME = "app.db"
-    const val BASE_URL = "http://localhost:3000/api"
+    const val DEV_URL = "http://192.168.100.22:3000/api/"
+
+    const val PROD_URL = "changeMe"
+    const val BASE_URL = DEV_URL
     const val NETWORK_TIMEOUT = 7_200_000L // 2 hours
 
     // Paging

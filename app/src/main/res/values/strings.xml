@@ -16,5 +16,6 @@
     <string name="screen_main_empty_page_message">Vide</string>
     <string name="screen_main_cd_open_drawer">Ouvrir le menu</string>
     <string name="screen_main_app_name">StopGalere CI</string>
+    <string name="job_list_no_more">Impossible de charger plus.</string>
 
 </resources>

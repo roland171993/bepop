@@ -26,7 +26,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.RolandAssoh.stopgalere.ci.R
 import com.stopgalere.presentation.ui.main.components.DrawerContent
-import com.stopgalere.presentation.viewmodel.JobViewModel
 import kotlinx.coroutines.launch
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,7 +49,7 @@ fun MainScreen(
 
     val jobsPaging = viewModel.jobs.collectAsLazyPagingItems()
 
-
+    println("SEARCH Main ")
 
     ModalDrawer(
         drawerState = drawerState,
