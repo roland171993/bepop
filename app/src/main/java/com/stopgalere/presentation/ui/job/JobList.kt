@@ -56,7 +56,10 @@ fun JobList(
         }
         jobs.loadState.refresh is LoadState.Error -> {
             val e = jobs.loadState.refresh as LoadState.Error
-            Text("Erreur: ${e.error.message ?: "unknown"}", color = Color.Red, modifier = Modifier.padding(16.dp))
+            Box(modifier = Modifier.fillMaxSize(),
+                Alignment.Center){
+                Text("Erreur: ${e.error.message ?: "unknown"}", color = Color.Red, modifier = Modifier.padding(16.dp))
+            }
         }
         jobs.itemCount == 0 -> {
             NoContentPlaceholder(
