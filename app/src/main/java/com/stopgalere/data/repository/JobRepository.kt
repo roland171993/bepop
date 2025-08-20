@@ -10,6 +10,7 @@ import com.stopgalere.data.model.JobEntity
 import com.stopgalere.data.model.toDomain
 import com.stopgalere.data.remote.ApiService
 import com.stopgalere.domain.model.Job
+import com.stopgalere.domain.repository.JobRepoInterface
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -20,7 +21,7 @@ import javax.inject.Singleton
 class JobRepository @Inject constructor(
     private val db: AppDatabase,
     private val api: ApiService
-) : com.stopgalere.domain.repository.JobRepoInterface {
+) : JobRepoInterface {
 
     private val jobDao = db.jobDao()
 
@@ -30,6 +31,8 @@ class JobRepository @Inject constructor(
      */
     override fun getJobs(query: String?, online: Boolean): Flow<PagingData<Job>> {
         val pageSize = 15
+
+        println("SEARCH online : $online")
 
         return if (online) {
             val mediator = JobRemoteMediator(db, api, query)
