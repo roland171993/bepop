@@ -13,18 +13,13 @@ import com.stopgalere.data.remote.dto.JobsResponse
 import com.stopgalere.domain.validation.JobValidation
 
 /**
- * RemoteMediator for Jobs.
+ * DATA layer – keeps pagination state in Room (RemoteKeys),
+ * using server-provided pagination: currentPage/lastPage/previousPage/nextPage.
  *
- * Responsibilities (DATA layer):
- * - Fetch the requested page from the API
- * - Validate raw DTO fields using DOMAIN rules
- * - Persist only valid rows to Room inside a single transaction
- * - Maintain per-item remote keys for append/prepend
- *
- * Separation of concerns:
- * - DOMAIN: JobValidation expresses what a "valid" job is.
- * - DATA: this mediator fetches, filters, persists.
- * - PRESENTATION: reads from Room/Paging; no validation logic there.
+ * MVVM split:
+ * - DOMAIN: validation (JobValidation)
+ * - DATA: fetch, map, validate, persist, remember next/previous page
+ * - PRESENTATION: reads PagingData only (no networking/pagination math)
  */
 
 @OptIn(ExperimentalPagingApi::class)
@@ -41,23 +36,19 @@ class JobRemoteMediator(
         loadType: LoadType,
         state: PagingState<Int, JobEntity>
     ): MediatorResult = try {
-        // Determine which page to load
-        val page = when (loadType) {
+
+        // 1) Decide which page to load
+        val pageToLoad = when (loadType) {
             LoadType.REFRESH -> {
-                val anchor = state.anchorPosition?.let { pos ->
-                    state.closestItemToPosition(pos)?.id
-                        ?.let { id -> keysDao.remoteKeysById(id)?.nextKey?.minus(1) }
-                } ?: 1
-                anchor
+                // First run: page=1 (requirement)
+                1
             }
             LoadType.PREPEND -> {
-                val firstId = state.firstItemOrNull()?.id
-                    ?: return MediatorResult.Success(endOfPaginationReached = true)
-                val prev = keysDao.remoteKeysById(firstId)?.prevKey
-                    ?: return MediatorResult.Success(endOfPaginationReached = true)
-                prev
+                // We never go "back" for an infinite list; stop here.
+                return MediatorResult.Success(endOfPaginationReached = true)
             }
             LoadType.APPEND -> {
+                // Look at the last item’s saved "nextKey" (our in-memory nextPage)
                 val lastId = state.lastItemOrNull()?.id
                     ?: return MediatorResult.Success(endOfPaginationReached = true)
                 val next = keysDao.remoteKeysById(lastId)?.nextKey
@@ -68,86 +59,52 @@ class JobRemoteMediator(
 
         val pageSize = state.config.pageSize
 
-        // Call API — only the requested page is downloaded
+        // 2) Call API for that exact page
         val response: JobsResponse = api.getJobs(
-            page = page,
+            page = pageToLoad,
             limit = pageSize,
             query = query
         )
 
-        println("SEARCH response fired")
-        println("SEARCH response jobs ${response.jobs.size}")
-        println("SEARCH response pagination ${response.pagination?.page}")
+        val dtoList = response.jobs.orEmpty()
+        val p = response.pagination
+        val currentPage = p?.currentPage ?: pageToLoad
+        val lastPage    = p?.lastPage    ?: currentPage
+        val prevKey     = p?.previousPage
+        val nextKey     = p?.nextPage
 
-        val items = response.jobs.orEmpty()
-        val current = response.pagination?.page ?: page
-        val totalPages = response.pagination?.totalPages ?: current
+        println("JOBS page=$currentPage next=$nextKey last=$lastPage size=${dtoList.size}")
 
-        items.forEachIndexed { index, dto ->
-            println("SEARCH Job[$index]: id=${dto.id}, title=${dto.title}, city=${dto.city}, date=${dto.dateAdded}")
+        // 3) Map/validate DTOs → Entities (use DOMAIN rules)
+        val entities = dtoList.mapNotNull { dto ->
+            if (dto == null) return@mapNotNull null
+            val id = dto.id ?: return@mapNotNull null
+            val title = dto.title
+            val city  = dto.city
+            val date  = dto.dateAdded
+
+            if (!JobValidation.isValid(title, city, date)) return@mapNotNull null
+            val normalized = JobValidation.validateAndFormatDate(date) ?: return@mapNotNull null
+
+            JobEntity(
+                id = id,
+                title = title!!.trim(),
+                city = city!!.trim(),
+                date = normalized
+            )
         }
 
-        // Derive prev/next safely
-        val prevKey = if (current > 1) current - 1 else null
-        val nextKey = if (current < totalPages) current + 1 else null
-
-        // Persist page to DB inside a single transaction
+        // 4) Persist to DB in a single transaction
         db.withTransaction {
             if (loadType == LoadType.REFRESH) {
                 keysDao.clearKeys()
                 jobDao.clearAll()
             }
 
-            // Map -> Validate (DOMAIN) -> skip invalid/null safely
-            val entities: List<JobEntity> = items.mapNotNull { dto ->
-                // Skip null job objects entirely
-                if (dto == null) {
-                    println("SKIP job: dto is null")
-                    return@mapNotNull null
-                }
-
-                // ID is required for Room primary key and keys table
-                val id = dto.id
-                if (id.isNullOrBlank()) {
-                    println("SKIP job: missing id (title='${dto.title}', city='${dto.city}', date='${dto.dateAdded}')")
-                    return@mapNotNull null
-                }
-
-                val title = dto.title
-                val city = dto.city
-                val date = dto.dateAdded
-
-                // Apply DOMAIN validation rules
-                val isValid = JobValidation.isValid(
-                    title = title,
-                    city = city,
-                    date = date
-                )
-
-                if (!isValid) {
-                    println("SKIP job[$id]: invalid fields -> title='$title', city='$city', date='$date'")
-                    return@mapNotNull null
-                }
-
-                val frenchDate = JobValidation.validateAndFormatDate(date)
-                if (frenchDate == null) {
-                    // Defensive: should not happen if isValid already passed, but keep safe
-                    println("SKIP job[$id]: normalization failed for date='$date'")
-                    return@mapNotNull null
-                }
-
-                // At this point all are non-null & valid; trim before saving
-                JobEntity(
-                    id = id,
-                    title = title!!.trim(),
-                    city = city!!.trim(),
-                    date = frenchDate
-                )
-            }
-
             if (entities.isNotEmpty()) {
                 jobDao.upsertAll(entities)
-                // Insert keys only for the rows we actually persisted
+
+                // Save the page neighbors alongside each item (our “in-memory” next/prev)
                 keysDao.insertAll(
                     entities.map { e ->
                         JobRemoteKeys(
@@ -157,19 +114,17 @@ class JobRemoteMediator(
                         )
                     }
                 )
-            } else {
-                println("No valid jobs to persist on page $current")
             }
         }
-        MediatorResult.Success(endOfPaginationReached = nextKey == null || items.isEmpty())
+
+        // 5) Stop when there’s no next page OR when current equals last
+        val endReached = nextKey == null || currentPage >= lastPage || entities.isEmpty()
+        MediatorResult.Success(endOfPaginationReached = endReached)
     } catch (t: Throwable) {
         MediatorResult.Error(t)
     }
 }
 
 /** Helpers to safely access first/last loaded items */
-private fun <T : Any> PagingState<Int, T>.firstItemOrNull(): T? =
-    pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
-
 private fun <T : Any> PagingState<Int, T>.lastItemOrNull(): T? =
     pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
