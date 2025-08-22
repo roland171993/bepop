@@ -38,8 +38,6 @@ class JobRepository @Inject constructor(
     override fun getJobs(query: String?, online: Boolean): Flow<PagingData<Job>> {
         val pageSize = 15
 
-        println("SEARCH online : $online")
-
         val config = PagingConfig(
             pageSize = pageSize,
             initialLoadSize = pageSize,

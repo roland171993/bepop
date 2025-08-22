@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -31,7 +31,6 @@ fun JobListPaged(
     contentPadding: PaddingValues = PaddingValues(vertical = 8.dp),
     onJobClick: (JobUi) -> Unit = {}
 ) {
-    // Empty state once initial load is done
     if (jobs.itemCount == 0 && jobs.loadState.refresh is LoadState.NotLoading) {
         NoContentPlaceholder(
             modifier = modifier
@@ -49,7 +48,6 @@ fun JobListPaged(
             .navigationBarsPadding(),
         contentPadding = contentPadding
     ) {
-        // Render items with stable keys when possible
         items(
             count = jobs.itemCount,
             key = { index -> jobs.peek(index)?.id ?: "placeholder-$index" }
@@ -62,7 +60,6 @@ fun JobListPaged(
             }
         }
 
-        // Footer for append state
         item {
             when (val s = jobs.loadState.append) {
                 is LoadState.Loading -> LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -105,7 +102,6 @@ fun Preview_JobListPaged_Dark() {
 @Composable
 private fun previewPagingItems(list: List<JobUi>): LazyPagingItems<JobUi> {
     val pd = remember { PagingData.from(list) }
-    // No CompositionLocalProvider here; just collect directly.
     return flowOf(pd).collectAsLazyPagingItems()
 }
 
