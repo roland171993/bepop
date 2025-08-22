@@ -40,12 +40,14 @@ fun MainScreen(
     navController: NavHostController,
     viewModel: MainViewModel = hiltViewModel()
 ) {
+    val scaffoldState = rememberScaffoldState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val drawerWidth = 150.dp
 
     val isSearchOpen by viewModel.isSearchOpen.collectAsStateWithLifecycle()
     val query by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
 
     val jobsPaging = viewModel.jobs.collectAsLazyPagingItems()
 
@@ -61,9 +63,16 @@ fun MainScreen(
             DrawerContent(
                 width = drawerWidth,
                 onItemSelected = { route ->
-                    scope.launch { drawerState.close() }
-                    viewModel.closeSearch()
-                    navController.navigate(route)
+                    scope.launch {
+                        drawerState.close()
+                        viewModel.closeSearch()
+                        if (route == "cv") {
+                            scaffoldState.snackbarHostState
+                                .showSnackbar("Bientôt disponible")
+                        } else {
+                            navController.navigate(route)
+                        }
+                    }
                 }
             )
         }
@@ -71,6 +80,7 @@ fun MainScreen(
         MainScreenContent(
             isDrawerOpen = drawerState.isOpen,
             isSearchOpen = isSearchOpen,
+            isOnline = isOnline,
             query = query,
             onQueryChange = viewModel::updateSearchQuery,
             onNavClick = {
@@ -81,7 +91,8 @@ fun MainScreen(
             onSetSearchActive = { active ->
                 if (active) viewModel.openSearch() else viewModel.closeSearch()
             },
-            jobs = jobsPaging
+            jobs = jobsPaging,
+            onRefresh = { jobsPaging.refresh() }
         )
     }
 }

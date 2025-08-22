@@ -22,6 +22,7 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.brands.Facebook
 import compose.icons.fontawesomeicons.solid.Bullhorn
 import compose.icons.fontawesomeicons.solid.FileAlt
+import compose.icons.fontawesomeicons.solid.IdCard
 import compose.icons.fontawesomeicons.solid.InfoCircle
 import compose.icons.fontawesomeicons.solid.QuestionCircle
 import compose.icons.fontawesomeicons.solid.Star
@@ -42,6 +43,11 @@ object DrawerNavItemDefaults {
             route = "cover_letter",
             icon  = FontAwesomeIcons.Solid.FileAlt,
             label = "L.Motivation"
+        ),
+        DrawerNavItem(
+            route = "cv",
+            icon  = FontAwesomeIcons.Solid.IdCard,
+            label = "CV"
         ),
         DrawerNavItem(
             route = "noter",

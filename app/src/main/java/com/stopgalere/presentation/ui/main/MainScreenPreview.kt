@@ -1,9 +1,10 @@
 package com.stopgalere.presentation.ui.main
 
 import android.content.res.Configuration
-import androidx.compose.material.*
+import androidx.compose.material.* // keeping ModalDrawer to match your MainScreen
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.rememberDrawerState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,31 +36,36 @@ fun MainScreenPreview() {
         )
     )
 
-    ModalDrawer(
-        drawerState = drawerState,
-        drawerBackgroundColor = Color.Transparent,
-        drawerShape = RectangleShape,
-        drawerElevation = 0.dp,
-        drawerContent = {
-            DrawerContent(
-                width = drawerWidth,
-                onItemSelected = { /* no-op in preview */ }
+    // Wrap preview in Material 3 theme so MainScreenContent’s M3 widgets render as intended
+    MaterialTheme {
+        ModalDrawer(
+            drawerState = drawerState,
+            drawerBackgroundColor = Color.Transparent,
+            drawerShape = RectangleShape,
+            drawerElevation = 0.dp,
+            drawerContent = {
+                DrawerContent(
+                    width = drawerWidth,
+                    onItemSelected = { /* no-op in preview */ }
+                )
+            }
+        ) {
+            MainScreenContent(
+                isDrawerOpen = drawerState.isOpen,
+                isSearchOpen = false,
+                query = "",
+                isOnline = true,                 // ✅ show as online in this preview
+                onQueryChange = { /* no-op */ },
+                onNavClick = {
+                    scope.launch {
+                        if (drawerState.isClosed) drawerState.open() else drawerState.close()
+                    }
+                },
+                onSetSearchActive = { /* no-op */ },
+                jobs = fakeJobs,
+                onRefresh = { fakeJobs.refresh() } // ✅ pull-to-refresh hook
             )
         }
-    ) {
-        MainScreenContent(
-            isDrawerOpen = drawerState.isOpen,
-            isSearchOpen = false,
-            query = "",
-            onQueryChange = { /* no-op */ },
-            onNavClick = {
-                scope.launch {
-                    if (drawerState.isClosed) drawerState.open() else drawerState.close()
-                }
-            },
-            onSetSearchActive = { /* no-op */ },
-            jobs = fakeJobs
-        )
     }
 }
 
@@ -69,19 +75,19 @@ fun MainScreenPreview() {
     name = "Phone – light",
     widthDp = 360, heightDp = 740, showBackground = true, backgroundColor = 0xFFFFFFFF
 )
-@Composable fun Preview_Phone_Light() { MaterialTheme { MainScreenPreview() } }
+@Composable fun Preview_Phone_Light() { MainScreenPreview() }
 
 @Preview(
     name = "Phone – dark",
     widthDp = 360, heightDp = 740, showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES
 )
-@Composable fun Preview_Phone_Dark() { MaterialTheme { MainScreenPreview() } }
+@Composable fun Preview_Phone_Dark() { MainScreenPreview() }
 
 @Preview(
     name = "Tablet – light",
     widthDp = 800, heightDp = 1280, showBackground = true, backgroundColor = 0xFFFFFFFF
 )
-@Composable fun Preview_Tablet_Light() { MaterialTheme { MainScreenPreview() } }
+@Composable fun Preview_Tablet_Light() { MainScreenPreview() }
 
 /* ---------- Preview helpers ---------- */
 
@@ -89,4 +95,42 @@ fun MainScreenPreview() {
 private fun previewPagingItems(list: List<JobUi>): LazyPagingItems<JobUi> {
     val pd = remember { PagingData.from(list) }
     return flowOf(pd).collectAsLazyPagingItems()
+}
+
+@Preview(
+    name = "Phone – offline",
+    widthDp = 360, heightDp = 740, showBackground = true, backgroundColor = 0xFFFFFFFF
+)
+@Composable
+fun Preview_Phone_Offline() {
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    val fakeJobs: LazyPagingItems<JobUi> = previewPagingItems(
+        listOf(JobUi("1", "Offline Example", "Abidjan", "2025-08-01"))
+    )
+    MaterialTheme {
+        ModalDrawer(
+            drawerState = drawerState,
+            drawerBackgroundColor = Color.Transparent,
+            drawerShape = RectangleShape,
+            drawerElevation = 0.dp,
+            drawerContent = { /* omitted */ }
+        ) {
+            MainScreenContent(
+                isDrawerOpen = false,
+                isSearchOpen = false,
+                query = "",
+                isOnline = false,                // 👈 forces banner
+                onQueryChange = { },
+                onNavClick = {
+                    scope.launch {
+                        if (drawerState.isClosed) drawerState.open() else drawerState.close()
+                    }
+                },
+                onSetSearchActive = { },
+                jobs = fakeJobs,
+                onRefresh = { fakeJobs.refresh() }
+            )
+        }
+    }
 }
