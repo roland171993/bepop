@@ -2,13 +2,9 @@ package com.stopgalere.presentation.ui.main
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.DrawerValue
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.rememberDrawerState
+import androidx.compose.material.ModalDrawer
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +25,14 @@ import com.stopgalere.presentation.ui.main.components.DrawerContent
 import kotlinx.coroutines.launch
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material.rememberDrawerState
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.stopgalere.presentation.ui.main.components.AppBarSearchField
 import com.stopgalere.presentation.ui.main.components.MainScreenContent
@@ -40,7 +44,7 @@ fun MainScreen(
     navController: NavHostController,
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    val scaffoldState = rememberScaffoldState()
+    val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val drawerWidth = 150.dp
@@ -49,13 +53,16 @@ fun MainScreen(
     val query by viewModel.searchQuery.collectAsStateWithLifecycle()
     val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
 
+    val listState = rememberSaveable(saver = LazyListState.Saver) { LazyListState() }
+
     val jobsPaging = viewModel.jobs.collectAsLazyPagingItems()
 
     println("SEARCH Main ")
 
     ModalDrawer(
         drawerState = drawerState,
-        modifier = Modifier.statusBarsPadding(),
+        modifier = Modifier
+            .statusBarsPadding(),
         drawerBackgroundColor = Color.Transparent,
         drawerShape = RectangleShape,
         drawerElevation = 0.dp,
@@ -67,8 +74,7 @@ fun MainScreen(
                         drawerState.close()
                         viewModel.closeSearch()
                         if (route == "cv") {
-                            scaffoldState.snackbarHostState
-                                .showSnackbar("Bientôt disponible")
+                            snackbarHostState.showSnackbar("Bientôt disponible")
                         } else {
                             navController.navigate(route)
                         }
@@ -77,23 +83,34 @@ fun MainScreen(
             )
         }
     ) {
-        MainScreenContent(
-            isDrawerOpen = drawerState.isOpen,
-            isSearchOpen = isSearchOpen,
-            isOnline = isOnline,
-            query = query,
-            onQueryChange = viewModel::updateSearchQuery,
-            onNavClick = {
-                scope.launch {
-                    if (drawerState.isOpen) drawerState.close() else drawerState.open()
-                }
-            },
-            onSetSearchActive = { active ->
-                if (active) viewModel.openSearch() else viewModel.closeSearch()
-            },
-            jobs = jobsPaging,
-            onRefresh = { jobsPaging.refresh() }
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            MainScreenContent(
+                isDrawerOpen = drawerState.isOpen,
+                isSearchOpen = isSearchOpen,
+                isOnline = isOnline,
+                query = query,
+                onQueryChange = viewModel::updateSearchQuery,
+                onNavClick = {
+                    scope.launch {
+                        if (drawerState.isOpen) drawerState.close() else drawerState.open()
+                    }
+                },
+                onSetSearchActive = { active ->
+                    if (active) viewModel.openSearch() else viewModel.closeSearch()
+                },
+                jobs = jobsPaging,
+                onRefresh = { jobsPaging.refresh() },
+                listState = listState
+            )
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.align(Alignment.BottomCenter)
+                    .padding(0.dp,0.dp,0.dp,50.dp)
+            )
+        }
+
     }
+
+
 }
 

@@ -1,6 +1,7 @@
 package com.stopgalere.presentation.ui.main
 
 import android.content.res.Configuration
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.* // keeping ModalDrawer to match your MainScreen
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.rememberDrawerState
@@ -25,6 +26,7 @@ import kotlinx.coroutines.launch
 fun MainScreenPreview() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val previewListState = rememberLazyListState()
     val drawerWidth = 150.dp
 
     // Fake paging items for preview
@@ -63,7 +65,8 @@ fun MainScreenPreview() {
                 },
                 onSetSearchActive = { /* no-op */ },
                 jobs = fakeJobs,
-                onRefresh = { fakeJobs.refresh() } // ✅ pull-to-refresh hook
+                onRefresh = { fakeJobs.refresh() } ,// ✅ pull-to-refresh hook
+                listState = previewListState
             )
         }
     }
@@ -105,6 +108,7 @@ private fun previewPagingItems(list: List<JobUi>): LazyPagingItems<JobUi> {
 fun Preview_Phone_Offline() {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val previewListState = rememberLazyListState()
     val fakeJobs: LazyPagingItems<JobUi> = previewPagingItems(
         listOf(JobUi("1", "Offline Example", "Abidjan", "2025-08-01"))
     )
@@ -129,7 +133,8 @@ fun Preview_Phone_Offline() {
                 },
                 onSetSearchActive = { },
                 jobs = fakeJobs,
-                onRefresh = { fakeJobs.refresh() }
+                onRefresh = { fakeJobs.refresh() },
+                listState = previewListState
             )
         }
     }

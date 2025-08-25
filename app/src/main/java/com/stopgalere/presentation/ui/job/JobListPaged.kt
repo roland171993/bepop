@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,6 +31,7 @@ fun JobListPaged(
     jobs: LazyPagingItems<JobUi>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(vertical = 8.dp),
+    listState: LazyListState = rememberLazyListState(),
     onJobClick: (JobUi) -> Unit = {}
 ) {
     if (jobs.itemCount == 0 && jobs.loadState.refresh is LoadState.NotLoading) {
@@ -46,6 +49,7 @@ fun JobListPaged(
             .background(Color(0xFFF2F2F2))
             .semantics { testTag = "JobList" }
             .navigationBarsPadding(),
+        state = listState,
         contentPadding = contentPadding
     ) {
         items(
