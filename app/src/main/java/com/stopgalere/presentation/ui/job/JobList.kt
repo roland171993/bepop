@@ -73,7 +73,8 @@ fun JobList(
                 .background(Color(0xFFF2F2F2))
                 .semantics { testTag = "JobList" }
                 .navigationBarsPadding(),
-                contentPadding = contentPadding) {
+                contentPadding = contentPadding,
+                state = listState) {
                 items(jobs.itemCount) { index ->
                     jobs[index]?.let { job ->
                         JobItem(

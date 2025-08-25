@@ -1,6 +1,7 @@
 package com.stopgalere.presentation.ui.main.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
@@ -43,7 +44,8 @@ fun MainScreenContent(
     onNavClick: () -> Unit,
     onSetSearchActive: (Boolean) -> Unit,
     jobs: LazyPagingItems<JobUi>,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    listState: LazyListState
 ) {
     Column(
         Modifier
@@ -86,7 +88,8 @@ fun MainScreenContent(
             // Keep list stateless and reusable
             JobList(
                 jobs = jobs,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                listState = listState
             )
         }
     }
