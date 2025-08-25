@@ -47,6 +47,18 @@ android {
         compose = true
     }
 
+    packaging {
+        resources {
+            excludes += setOf(
+                "/META-INF/LICENSE.md",
+                "/META-INF/LICENSE-notice.md",
+                "/META-INF/NOTICE",
+                "/META-INF/LICENSE",
+                "/META-INF/{AL2.0,LGPL2.1}"
+            )
+        }
+    }
+
 }
 
 kapt {
@@ -123,6 +135,11 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.2")
+    // If you use MockK on androidTest:
+    androidTestImplementation("io.mockk:mockk-android:1.13.11") {
+        exclude(group = "org.junit.jupiter")
+        exclude(group = "org.junit.platform")
+    }
 
     // Hilt testing
     androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")

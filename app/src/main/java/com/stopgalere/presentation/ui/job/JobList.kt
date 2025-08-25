@@ -46,7 +46,9 @@ fun JobList(
     when {
         jobs.loadState.refresh is LoadState.Loading -> {
             // initial skeleton
-            Box(modifier = Modifier.fillMaxSize(),
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .semantics { testTag = "JobsLoading" },
                 contentAlignment = Alignment.Center){
                 CircularProgressIndicator(
                     modifier = Modifier.padding(24.dp),

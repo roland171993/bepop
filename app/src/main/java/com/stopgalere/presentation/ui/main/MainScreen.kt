@@ -54,8 +54,8 @@ fun MainScreen(
     val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
 
     val listState = rememberSaveable(saver = LazyListState.Saver) { LazyListState() }
-
     val jobsPaging = viewModel.jobs.collectAsLazyPagingItems()
+    val welcomeMsg = stringResource(R.string.screen_main_welcome)
 
     println("SEARCH Main ")
 
@@ -74,7 +74,7 @@ fun MainScreen(
                         drawerState.close()
                         viewModel.closeSearch()
                         if (route == "cv") {
-                            snackbarHostState.showSnackbar("Bientôt disponible")
+                            snackbarHostState.showSnackbar(welcomeMsg)
                         } else {
                             navController.navigate(route)
                         }
