@@ -90,7 +90,32 @@ class JobRemoteMediator(
                 id = id,
                 title = title!!.trim(),
                 city = city!!.trim(),
-                date = normalized
+                date = normalized,
+                description = description,
+
+                // names only (IDs skipped)
+                sectorName = sector?.name,
+                genderName = gender?.name,
+                contractTypeName = contractType?.name,
+                workModeName = workMode?.name,
+
+                // author/company
+                authorEmail = authorEmail,
+                authorWebsite = authorWebsite,
+                authorMobile1 = authorMobile1,
+                authorLongitude = authorLongitude,
+                authorLatitude = authorLatitude,
+                company = company,
+                companyLogoUrl = companyLogoUrl,
+
+                // misc
+                salary = salary,
+                experience = experience,
+                educationLevel = educationLevel,
+
+                // timestamps we keep
+                dateAdded = dateAdded,
+                updatedAt = updatedAt
             )
         }
 

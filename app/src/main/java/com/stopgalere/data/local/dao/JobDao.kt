@@ -9,7 +9,12 @@ import com.stopgalere.data.model.JobEntity
 
 @Dao
 interface JobDao {
-    @Query("SELECT * FROM jobs WHERE (:query IS NULL OR title LIKE '%' || :query || '%' OR city LIKE '%' || :query || '%') ORDER BY date DESC")
+
+    @Query("""
+        SELECT * FROM jobs
+        WHERE (:query IS NULL OR title LIKE '%' || :query || '%' OR city LIKE '%' || :query || '%')
+        ORDER BY COALESCE(dateAdded, date) DESC
+    """)
     fun pagingSource(query: String?): PagingSource<Int, JobEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -5,10 +5,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.navigation.testing.TestNavHostController
 import androidx.paging.PagingData
+import com.stopgalere.DeviceAnimationsRule
 import com.stopgalere.MainActivity
 import com.stopgalere.presentation.ui.job.JobUi
 import com.stopgalere.presentation.viewmodel.MainViewModel
@@ -22,70 +24,70 @@ import org.junit.Test
 
 class MainScreenContentTest {
 
-    @get:Rule
-    val composeRule = createAndroidComposeRule<MainActivity>()
+    // Prevent animations from keeping the main thread "busy/locked"
+    @get:Rule(order = 0)
+    val deviceAnimations = DeviceAnimationsRule()
+
+    // ComposeCookBook-style: launch the real Activity
+    @get:Rule(order = 1)
+    val composeAndroidTestRule = createAndroidComposeRule<MainActivity>()
 
     @Test
-    fun mainScreen_showsFakeJobs() {
-        // Mock the Hilt VM and stub its public flows
-        val vm = mockk<MainViewModel>(relaxed = true)
+    fun main_showsData_whenJobsAvailable() {
+        val vm: MainViewModel = mockk(relaxed = true)
 
-        every { vm.isSearchOpen } returns MutableStateFlow(false)
-        every { vm.searchQuery }  returns MutableStateFlow("")
-        every { vm.isOnline }     returns MutableStateFlow(true)
-        every { vm.jobs } returns fakeJobsFlow(
-            listOf(
-                JobUi("1", "Android Engineer", "Abidjan", "2025-08-01"),
-                JobUi("2", "Kotlin Dev",       "Paris",   "2025-07-22")
-            )
+        val items = listOf(
+            JobUi("1", "Android Engineer", "Abidjan", "2025-08-01"),
+            JobUi("2", "Kotlin Dev",       "Paris",   "2025-07-22")
         )
 
-        val nav = TestNavHostController(composeRule.activity)
+        every { vm.isSearchOpen } returns MutableStateFlow(false)
+        every { vm.searchQuery }  returns MutableStateFlow("")
+        every { vm.isOnline }     returns MutableStateFlow(true)
+        every { vm.jobs }         returns fakeJobs(items)
 
-        composeRule.activity.setContent {
-            MaterialTheme {
-                MainScreen(navController = nav, viewModel = vm)
-            }
+        val nav = TestNavHostController(composeAndroidTestRule.activity)
+
+        composeAndroidTestRule.activity.setContent {
+            MaterialTheme { MainScreen(navController = nav, viewModel = vm) }
         }
 
-        // Wait for the list to render (Paging emits asynchronously)
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            composeRule.onAllNodes(hasTestTag("JobList")).fetchSemanticsNodes().isNotEmpty()
+        // Wait for a specific item text to appear
+        composeAndroidTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeAndroidTestRule
+                .onAllNodesWithText("ANDROID ENGINEER", useUnmergedTree = true) // useUnmergedTree might be needed
+                .fetchSemanticsNodes().isNotEmpty()
         }
 
-        composeRule.onNodeWithTag("JobList").assertIsDisplayed()
-        // Titles are uppercased in JobItem
-        composeRule.onNodeWithText("ANDROID ENGINEER").assertIsDisplayed()
-        composeRule.onNodeWithText("KOTLIN DEV").assertIsDisplayed()
+        composeAndroidTestRule.onNodeWithTag("JobList").assertIsDisplayed()
+        composeAndroidTestRule.onNodeWithText("ANDROID ENGINEER", useUnmergedTree = true).assertIsDisplayed()
+        composeAndroidTestRule.onNodeWithText("KOTLIN DEV", useUnmergedTree = true).assertIsDisplayed()
     }
 
     @Test
-    fun mainScreen_showsEmptyPlaceholder_whenNoJobs() {
-        val vm = mockk<MainViewModel>(relaxed = true)
+    fun main_showsEmpty_whenNoJobs() {
+        val vm: MainViewModel = mockk(relaxed = true)
 
         every { vm.isSearchOpen } returns MutableStateFlow(false)
         every { vm.searchQuery }  returns MutableStateFlow("")
         every { vm.isOnline }     returns MutableStateFlow(true)
-        every { vm.jobs } returns fakeJobsFlow(emptyList())
+        every { vm.jobs }         returns fakeJobs(emptyList())
 
-        val nav = TestNavHostController(composeRule.activity)
+        val nav = TestNavHostController(composeAndroidTestRule.activity)
 
-        composeRule.activity.setContent {
-            MaterialTheme {
-                MainScreen(navController = nav, viewModel = vm)
-            }
+        composeAndroidTestRule.activity.setContent {
+            MaterialTheme { MainScreen(navController = nav, viewModel = vm) }
         }
 
-        // Wait until either list or empty state appears, then verify empty
-        composeRule.waitUntil(timeoutMillis = 10_000) {
-            val hasList  = composeRule.onAllNodes(hasTestTag("JobList")).fetchSemanticsNodes().isNotEmpty()
-            val hasEmpty = composeRule.onAllNodes(hasTestTag("EmptyJobs")).fetchSemanticsNodes().isNotEmpty()
-            hasList || hasEmpty
+        composeAndroidTestRule.waitUntil(timeoutMillis = 10_000) {
+            composeAndroidTestRule.onAllNodes(hasTestTag("JobList")).fetchSemanticsNodes().isNotEmpty() ||
+                    composeAndroidTestRule.onAllNodes(hasTestTag("EmptyPlaceholder")).fetchSemanticsNodes().isNotEmpty()
         }
 
-        composeRule.onNodeWithTag("EmptyJobs").assertIsDisplayed()
+        // Correct tag comes from NoContentPlaceholder()
+        composeAndroidTestRule.onNodeWithTag("EmptyPlaceholder").assertIsDisplayed()
     }
 
-    private fun fakeJobsFlow(items: List<JobUi>): Flow<PagingData<JobUi>> =
+    private fun fakeJobs(items: List<JobUi>): Flow<PagingData<JobUi>> =
         flowOf(PagingData.from(items))
 }
