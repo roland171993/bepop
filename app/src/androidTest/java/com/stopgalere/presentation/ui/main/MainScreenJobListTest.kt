@@ -38,10 +38,16 @@ class MainScreenJobListTest {
             )
         }
 
-        // Root list should be visible (tag from your JobList)
-        rule.onNodeWithTag("JobList").assertExists().assertIsDisplayed()
+        // Wait until the loading indicator is NOT present
+        // and the JobList IS present.
+        rule.waitUntil(timeoutMillis = 5_000) {
+            // Check that JobsLoading is gone OR JobList is present
+            // It's better to wait for JobList to be present directly.
+            rule.onAllNodesWithTag("JobList").fetchSemanticsNodes().isNotEmpty()
+        }
 
-        // Each fake job title should be visible
+        // Now assert the list and its items
+        rule.onNodeWithTag("JobList").assertExists().assertIsDisplayed()
         rule.onNodeWithText("ANDROID ENGINEER").assertIsDisplayed()
         rule.onNodeWithText("KOTLIN DEV").assertIsDisplayed()
         rule.onNodeWithText("COMPOSE WIZARD").assertIsDisplayed()
