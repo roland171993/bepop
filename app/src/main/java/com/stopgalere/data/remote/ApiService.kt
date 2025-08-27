@@ -1,7 +1,9 @@
 package com.stopgalere.data.remote
 
 import com.stopgalere.data.remote.dto.JobsResponse
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -20,6 +22,9 @@ import retrofit2.http.Query
  *     - pagination: { total, limit, currentPage, lastPage, previousPage, nextPage }
  */
 interface ApiService {
+
+    @DELETE("jobs/{id}")
+    suspend fun deleteJob(@Path("id") id: String)
 
     @GET("jobs")
     suspend fun getJobs(

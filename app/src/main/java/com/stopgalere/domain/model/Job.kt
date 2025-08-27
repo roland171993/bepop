@@ -5,31 +5,29 @@ data class Job(
     val title: String,
     val city: String?,
 
-    // legacy UI field you already use
-    val date: String?,
+    // dates
+    val date: String?,          // normalized for UI (dd-MM-yyyy)
+    val dateAdded: String?,     // raw from API (ISO, etc.) for Room sorting
 
     // details
     val description: String?,
-    val sectorName: String?,        // no sectorId
-    val genderName: String?,        // no genderId
-    val contractTypeName: String?,  // no contractTypeId
-    val workModeName: String?,      // no workModeId
+    val sectorName: String?,
+    val genderName: String?,
+    val contractTypeName: String?,
+    val workModeName: String?,
 
     // author/company
     val authorEmail: String?,
     val authorWebsite: String?,
     val authorMobile1: String?,
-    val authorLongitude: String?,
-    val authorLatitude: String?,
+    val authorLongitude: Double?,
+    val authorLatitude: Double?,
     val company: String?,
     val companyLogoUrl: String?,
 
     // misc
-    val salary: String?,
+    val salary: Int?,
     val experience: String?,
-    val educationLevel: String?,
-
-    // timestamps we keep
-    val dateAdded: String?,
-    val updatedAt: String?
+    val educationLevel: String?
 )
+

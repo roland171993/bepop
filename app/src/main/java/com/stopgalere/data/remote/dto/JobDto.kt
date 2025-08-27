@@ -22,22 +22,19 @@ data class JobDto(
     val authorEmail: String? = null,
     val authorWebsite: String? = null,
     val authorMobile1: String? = null,
-    val authorLongitude: String? = null,
-    val authorLatitude: String? = null,
+    val authorLongitude: Double? = null,
+    val authorLatitude: Double? = null,
     val company: String? = null,
     val companyLogoUrl: String? = null,
 
     // misc
-    val salary: String? = null,
+    val salary: Int? = null,
     val city: String? = null,
     val experience: String? = null,
     val educationLevel: String? = null,
 
     // timestamps we keep
-    @SerializedName("dateAdded") val dateAdded: String? = null,
-    val updatedAt: String? = null
-
-    // skipped from JSON: __v, deadline, createdAt, unpublished
+    @SerializedName("dateAdded") val dateAdded: String? = null
 )
 
 data class JobsResponse(
