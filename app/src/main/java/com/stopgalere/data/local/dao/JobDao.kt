@@ -13,7 +13,11 @@ interface JobDao {
     @Query("""
         SELECT * FROM jobs
         WHERE (:query IS NULL OR title LIKE '%' || :query || '%' OR city LIKE '%' || :query || '%')
-        ORDER BY COALESCE(dateAdded, date) DESC
+        ORDER BY 
+          CASE 
+            WHEN dateAdded IS NOT NULL AND dateAdded != '' THEN dateAdded
+            ELSE (substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2))
+          END DESC
     """)
     fun pagingSource(query: String?): PagingSource<Int, JobEntity>
 

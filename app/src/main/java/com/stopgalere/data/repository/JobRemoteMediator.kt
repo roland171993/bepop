@@ -11,6 +11,7 @@ import com.stopgalere.data.model.JobRemoteKeys
 import com.stopgalere.data.remote.ApiService
 import com.stopgalere.data.remote.dto.JobsResponse
 import com.stopgalere.domain.validation.JobValidation
+import com.stopgalere.domain.validation.SafeText.isSafeText
 
 /**
  * DATA layer – keeps pagination state in Room (RemoteKeys),
@@ -79,43 +80,60 @@ class JobRemoteMediator(
         val entities = dtoList.mapNotNull { dto ->
             if (dto == null) return@mapNotNull null
             val id = dto.id ?: return@mapNotNull null
-            val title = dto.title
-            val city  = dto.city
-            val date  = dto.dateAdded
+            // Trim upfront
+            val title = dto.title?.trim()
+            val city  = dto.city?.trim()
 
-            if (!JobValidation.isValid(title, city, date)) return@mapNotNull null
-            val normalized = JobValidation.validateAndFormatDate(date) ?: return@mapNotNull null
+            // Keep your existing high-level validation (title/city/date + normalization)
+            val dateRaw = dto.dateAdded?.trim()
+            if (!JobValidation.isValid(title, city, dateRaw)) return@mapNotNull null
+            val normalized = JobValidation.validateAndFormatDate(dateRaw) ?: return@mapNotNull null
+
+            // New: policy checks for required content
+            val description = dto.description?.trim()
+            val sectorName  = dto.sector?.name?.trim()
+            val company     = dto.company?.trim()
+            if (JobValidation.shouldSkipByPolicy(description, sectorName, company)) return@mapNotNull null
+
+            // New: regex gate for the other fields
+            val gate = listOf(
+                title, normalized, city, description, sectorName, company,
+                dto.contractType?.name, dto.authorEmail, dto.authorWebsite, dto.authorMobile1,
+                dto.companyLogoUrl, dto.experience, dto.educationLevel
+            )
+            if (gate.any { !isSafeText(it) }) return@mapNotNull null
+
+            // Convert selected nulls → "" as requested; keep numbers nullable
+            val genderName       = dto.gender?.name?.trim().orEmpty()
+            val contractTypeName = dto.contractType?.name?.trim().orEmpty()
+            val authorEmail      = dto.authorEmail?.trim().orEmpty()
+            val authorWebsite    = dto.authorWebsite?.trim().orEmpty()
+            val authorMobile1    = dto.authorMobile1?.trim().orEmpty()
+            val companyLogoUrl   = dto.companyLogoUrl?.trim().orEmpty()
+            val experience       = dto.experience?.trim().orEmpty()
+            val educationLevel   = dto.educationLevel?.trim().orEmpty()
 
             JobEntity(
                 id = id,
-                title = title!!.trim(),
-                city = city!!.trim(),
-                date = normalized,
-                description = description,
-
-                // names only (IDs skipped)
-                sectorName = sector?.name,
-                genderName = gender?.name,
-                contractTypeName = contractType?.name,
-                workModeName = workMode?.name,
-
-                // author/company
-                authorEmail = authorEmail,
-                authorWebsite = authorWebsite,
-                authorMobile1 = authorMobile1,
-                authorLongitude = authorLongitude,
-                authorLatitude = authorLatitude,
-                company = company,
-                companyLogoUrl = companyLogoUrl,
-
-                // misc
-                salary = salary,
-                experience = experience,
-                educationLevel = educationLevel,
-
-                // timestamps we keep
-                dateAdded = dateAdded,
-                updatedAt = updatedAt
+                title = title!!,
+                city = city!!,
+                date = normalized,                 // UI date (dd-MM-yyyy)
+                dateAdded = dateRaw,
+                description = description!!,           // may be null-safe used above
+                sectorName = sectorName!!,
+                genderName = genderName,             // null → ""
+                contractTypeName = contractTypeName, // null → ""
+                workModeName = dto.workMode?.name?.trim(), // unchanged policy (can be null)
+                authorEmail = authorEmail,           // null → ""
+                authorWebsite = authorWebsite,       // null → ""
+                authorMobile1 = authorMobile1,       // null → ""
+                authorLongitude = dto.authorLongitude, // can stay null
+                authorLatitude = dto.authorLatitude,   // can stay null
+                company = company!!,
+                companyLogoUrl = companyLogoUrl,     // null → ""
+                salary = dto.salary,                 // can stay null
+                experience = experience,             // null → ""
+                educationLevel = educationLevel      // null → ""
             )
         }
 

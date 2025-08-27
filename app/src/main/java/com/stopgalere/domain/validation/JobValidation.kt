@@ -1,5 +1,6 @@
 package com.stopgalere.domain.validation
 
+import com.stopgalere.domain.validation.SafeText.isSafeText
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,6 +31,27 @@ object JobValidation {
     }
     private val sdfFrench = SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE).apply {
         isLenient = false
+    }
+
+
+    /** Policy for skipping based on description/sector/company. */
+    fun shouldSkipByPolicy(description: String?, sectorName: String?, company: String?): Boolean {
+        val d = description?.trim()
+        val s = sectorName?.trim()
+        val c = company?.trim()
+
+        // null / empty
+        if (d.isNullOrEmpty() || s.isNullOrEmpty() || c.isNullOrEmpty()) return true
+
+        // length rules
+        if (d.length !in 3..225) return true
+        if (s.length !in 3..225) return true
+        if (c.length !in 2..225) return true
+
+        // regex safety
+        if (!isSafeText(d) || !isSafeText(s) || !isSafeText(c)) return true
+
+        return false
     }
 
     /**
@@ -94,9 +116,6 @@ object JobValidation {
 
         // Must be parsable and normalizable to dd-MM-yyyy
         val normalized = validateAndFormatDate(d) ?: return false
-
-        // Optional: enforce policy regex on the normalized value (already done inside)
-        if (!dateNumSpaceDashRegex.matches(normalized)) return false
 
         return true
     }
