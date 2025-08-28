@@ -59,4 +59,8 @@ class JobRepository @Inject constructor(
             ).flow.map { it.map(JobEntity::toDomain) }
         }
     }
+
+    override fun jobById(id: String): Flow<Job?> =
+        db.jobDao().observeById(id).map { it?.toDomain() }
+
 }

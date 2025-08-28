@@ -78,7 +78,6 @@ class JobRemoteMediator(
 
         // 3) Map/validate DTOs → Entities (use DOMAIN rules)
         val entities = dtoList.mapNotNull { dto ->
-            if (dto == null) return@mapNotNull null
             val id = dto.id ?: return@mapNotNull null
             // Trim upfront
             val title = dto.title?.trim()
@@ -86,24 +85,25 @@ class JobRemoteMediator(
 
             // Keep your existing high-level validation (title/city/date + normalization)
             val dateRaw = dto.dateAdded?.trim()
-            if (!JobValidation.isValid(title, city, dateRaw)) return@mapNotNull null
-            val normalized = JobValidation.validateAndFormatDate(dateRaw) ?: return@mapNotNull null
-
-            // New: policy checks for required content
             val description = dto.description?.trim()
             val sectorName  = dto.sector?.name?.trim()
             val company     = dto.company?.trim()
-            if (JobValidation.shouldSkipByPolicy(description, sectorName, company)) return@mapNotNull null
+            // One-shot validation: returns normalized "dd-MM-yyyy" or null
+            val normalized = JobValidation.validateAll(
+                title = title,
+                city = city,
+                dateRaw = dateRaw,
+                description = description,
+                sectorName = sectorName,
+                company = company,
+                gate = listOf(
+                    title, city, description, sectorName, company,
+                    dto.contractType?.name, dto.authorEmail, dto.authorWebsite, dto.authorMobile1,
+                    dto.companyLogoUrl, dto.experience, dto.educationLevel
+                )
+            ) ?: return@mapNotNull null
 
-            // New: regex gate for the other fields
-            val gate = listOf(
-                title, normalized, city, description, sectorName, company,
-                dto.contractType?.name, dto.authorEmail, dto.authorWebsite, dto.authorMobile1,
-                dto.companyLogoUrl, dto.experience, dto.educationLevel
-            )
-            if (gate.any { !isSafeText(it) }) return@mapNotNull null
-
-            // Convert selected nulls → "" as requested; keep numbers nullable
+            // Convert selected nulls → "" ; keep numbers nullable
             val genderName       = dto.gender?.name?.trim().orEmpty()
             val contractTypeName = dto.contractType?.name?.trim().orEmpty()
             val authorEmail      = dto.authorEmail?.trim().orEmpty()

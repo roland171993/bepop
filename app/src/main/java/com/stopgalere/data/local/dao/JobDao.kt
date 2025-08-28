@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.stopgalere.data.model.JobEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface JobDao {
@@ -26,4 +27,8 @@ interface JobDao {
 
     @Query("DELETE FROM jobs")
     suspend fun clearAll()
+
+    @Query("SELECT * FROM jobs WHERE id = :id LIMIT 1")
+    fun observeById(id: String): Flow<JobEntity?>
+
 }
