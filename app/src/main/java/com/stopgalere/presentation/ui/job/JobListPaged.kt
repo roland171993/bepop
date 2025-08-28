@@ -23,6 +23,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.stopgalere.presentation.ui.job.components.JobItem
 import com.stopgalere.presentation.ui.main.components.NoContentPlaceholder
 import kotlinx.coroutines.flow.flowOf
 

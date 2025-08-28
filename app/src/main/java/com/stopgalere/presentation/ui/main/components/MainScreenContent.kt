@@ -45,7 +45,8 @@ fun MainScreenContent(
     onSetSearchActive: (Boolean) -> Unit,
     jobs: LazyPagingItems<JobUi>,
     onRefresh: () -> Unit,
-    listState: LazyListState
+    listState: LazyListState,
+    onJobClick: (JobUi) -> Unit = {}
 ) {
     Column(
         Modifier
@@ -89,7 +90,9 @@ fun MainScreenContent(
             JobList(
                 jobs = jobs,
                 modifier = Modifier.fillMaxSize(),
-                listState = listState
+                listState = listState,
+                onJobClick = onJobClick
+
             )
         }
     }

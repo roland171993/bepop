@@ -28,6 +28,16 @@ import com.stopgalere.presentation.ui.job.components.DetailChip
 import com.stopgalere.presentation.ui.job.components.DetailSectionCard
 import com.stopgalere.presentation.viewmodel.JobDetailUiState
 import com.stopgalere.presentation.viewmodel.JobDetailViewModel
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Briefcase
+import compose.icons.fontawesomeicons.solid.Envelope
+import compose.icons.fontawesomeicons.solid.Globe
+import compose.icons.fontawesomeicons.solid.PaperPlane
+import compose.icons.fontawesomeicons.solid.Phone
+import compose.icons.fontawesomeicons.solid.PiggyBank
+import compose.icons.fontawesomeicons.solid.Search
+import compose.icons.fontawesomeicons.solid.Share
 
 @Composable
 fun JobDetailScreen(
@@ -102,11 +112,11 @@ fun JobDetailContent(
             Modifier.fillMaxWidth().background(topBarBg).padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton({ (job.authorMobile1 ?: "").also { onCall(it); doCall(it) } }) { Icon(Icons.Outlined.Call, contentDescription = "Call", tint = onTopBar) }
-            IconButton({ (job.authorMobile1 ?: "").also { onCall(it); doCall(it) } }) { Icon(Icons.Outlined.Phone, contentDescription = "Phone", tint = onTopBar) }
-            IconButton({ doShare(); onShare(job.title) }) { Icon(Icons.Outlined.Send, contentDescription = "Send", tint = onTopBar) }
-            IconButton({ (job.authorWebsite ?: "").also { onWeb(it); doWeb(it) } }) { Icon(Icons.Outlined.Language, contentDescription = "Website", tint = onTopBar) }
-            IconButton({ doShare(); onShare(job.title) }) { Icon(Icons.Outlined.Share, contentDescription = "Share", tint = onTopBar) }
+            IconButton({ (job.authorMobile1 ?: "").also { onCall(it); doCall(it) } }) { Icon(FontAwesomeIcons.Solid.Phone, contentDescription = "Call", tint = onTopBar) }
+            IconButton({ (job.authorMobile1 ?: "").also { onCall(it); doCall(it) } }) { Icon(FontAwesomeIcons.Solid.Phone, contentDescription = "Phone", tint = onTopBar) }
+            IconButton({ doShare(); onShare(job.title) }) { Icon(FontAwesomeIcons.Solid.PaperPlane, contentDescription = "Send", tint = onTopBar) }
+            IconButton({ (job.authorWebsite ?: "").also { onWeb(it); doWeb(it) } }) { Icon(FontAwesomeIcons.Solid.Globe, contentDescription = "Website", tint = onTopBar) }
+            IconButton({ doShare(); onShare(job.title) }) { Icon(FontAwesomeIcons.Solid.Share, contentDescription = "Share", tint = onTopBar) }
         }
 
         // Header / title
@@ -122,10 +132,10 @@ fun JobDetailContent(
             Text(phone, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black), modifier = Modifier.align(Alignment.CenterHorizontally))
             if (!phone.contains("\n")) Spacer(Modifier.height(6.dp))
             job.authorEmail?.takeIf { it.isNotBlank() }?.let {
-                DetailRow(Icons.Outlined.Email, it) { onMail(it); doMail(it) }
+                DetailRow(FontAwesomeIcons.Solid.Envelope, it) { onMail(it); doMail(it) }
             }
             job.authorWebsite?.takeIf { it.isNotBlank() }?.let {
-                DetailRow(Icons.Outlined.Language, it) { onWeb(it); doWeb(it) }
+                DetailRow(FontAwesomeIcons.Solid.Globe, it) { onWeb(it); doWeb(it) }
             }
         }
 
@@ -137,14 +147,14 @@ fun JobDetailContent(
             Row(Modifier.fillMaxWidth().padding(16.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
                 val salaryText = job.salary?.let { String.format("%,d FCFA", it).replace(',', ' ') } ?: "Salaire non renseigné"
                 Text(salaryText, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold))
-                Icon(Icons.Outlined.Savings, contentDescription = null)
+                Icon(FontAwesomeIcons.Solid.PiggyBank, contentDescription = null)
             }
         }
 
         // Work details (contract / mode / city)
         DetailSectionCard(title = null) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Outlined.Work, contentDescription = null, modifier = Modifier.size(48.dp))
+                Icon(FontAwesomeIcons.Solid.Briefcase, contentDescription = null, modifier = Modifier.size(48.dp))
                 Spacer(Modifier.width(12.dp))
                 Column {
                     DetailChip(job.contractTypeName ?: "—"); Spacer(Modifier.height(4.dp))
@@ -157,7 +167,7 @@ fun JobDetailContent(
         // Requirements strip
         Surface(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp), color = Color(0xFF4CAF50), contentColor = Color.White) {
             Column(Modifier.fillMaxWidth().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(Icons.Outlined.ManageSearch, contentDescription = null, modifier = Modifier.size(64.dp))
+                Icon(FontAwesomeIcons.Solid.Search, contentDescription = null, modifier = Modifier.size(64.dp))
                 Spacer(Modifier.height(8.dp))
                 Text(job.genderName     ?: "—", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(4.dp))

@@ -34,6 +34,7 @@ import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.stopgalere.navigation.navigateToJobDetail
 import com.stopgalere.presentation.ui.main.components.AppBarSearchField
 import com.stopgalere.presentation.ui.main.components.MainScreenContent
 import com.stopgalere.presentation.viewmodel.MainViewModel
@@ -100,7 +101,10 @@ fun MainScreen(
                 },
                 jobs = jobsPaging,
                 onRefresh = { jobsPaging.refresh() },
-                listState = listState
+                listState = listState,
+                onJobClick = { job ->
+                    navController.navigateToJobDetail(job.id)
+                }
             )
             SnackbarHost(
                 hostState = snackbarHostState,
