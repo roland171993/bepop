@@ -20,6 +20,7 @@ import java.util.*
  *
  * Note: uses java.text.* so it works on API 24+ without desugaring.
  */
+
 object JobValidation {
 
     // Policy rule (post-normalization check)
@@ -33,31 +34,27 @@ object JobValidation {
         isLenient = false
     }
 
+    /**
+     * High-level object validation (DOMAIN). This does not mutate inputs.
+     * Use validateAndFormatDate(...) to obtain the normalized date string.
+     */
+    fun isValid(
+        title: String?,
+        city: String?,
+        dateAdded: String?
+    ): Boolean {
+        val t = title?.trim() ?: return false
+        val c = city?.trim() ?: return false
+        val d = dateAdded?.trim() ?: return false
 
-    /** Policy for skipping based on description/sector/company. */
-    fun shouldSkipByPolicy(description: String?, sectorName: String?, company: String?): Boolean {
-        val d = description?.trim()
-        val s = sectorName?.trim()
-        val c = company?.trim()
+        if (t.isEmpty() || c.isEmpty() || d.isEmpty()) return false
+        if (t.length !in 3..225) return false
+        if (c.length !in 3..225) return false
+        if (d.length !in 3..225) return false
 
-        // null / empty
-        if (d.isNullOrEmpty() || s.isNullOrEmpty() || c.isNullOrEmpty()) return true
-
-        // length rules
-        if (d.length !in 3..225) return true
-        if (s.length !in 3..225) return true
-        if (c.length !in 2..225) return true
-
-        // regex safety
-        if (!isSafeText(d) || !isSafeText(s) || !isSafeText(c)) return true
-
-        return false
+        return true
     }
 
-    /**
-     * Try to parse various inputs and return normalized "dd-MM-yyyy"
-     * Returns null if parsing fails.
-     */
     fun validateAndFormatDate(raw: String?): String? {
         if (raw == null) return null
         val d = raw.trim()
@@ -96,27 +93,72 @@ object JobValidation {
         return null
     }
 
+    /** Policy for skipping based on description/sector/company. */
+    fun shouldSkipByPolicy(description: String?, sectorName: String?, company: String?): Boolean {
+        val d = description?.trim()
+        val s = sectorName?.trim()
+        val c = company?.trim()
+
+        // null / empty
+        if (d.isNullOrEmpty() || s.isNullOrEmpty() || c.isNullOrEmpty()) return true
+
+        // length rules
+        if (d.length !in 3..225) return true
+        if (s.length !in 3..225) return true
+        if (c.length !in 2..225) return true
+
+        // regex safety
+        if (!isSafeText(d) || !isSafeText(s) || !isSafeText(c)) return true
+
+        return false
+    }
+
     /**
-     * High-level object validation (DOMAIN). This does not mutate inputs.
-     * Use validateAndFormatDate(...) to obtain the normalized date string.
+     * Single-entry validator for jobs used by the DATA layer.
+     *
+     * Returns the normalized "dd-MM-yyyy" date if and only if ALL constraints pass:
+     *  - title/city/date basic rules
+     *  - date parsing/normalization
+     *  - policy rules on description/sector/company
+     *  - regex/allowlist gate on all provided fields
+     *
+     * If anything fails, returns null.
+     *
+     * Usage:
+     *   val normalized = JobValidation.validateAll(
+     *       title = ...,
+     *       city = ...,
+     *       dateRaw = ...,
+     *       description = ...,
+     *       sectorName = ...,
+     *       company = ...,
+     *       // any additional fields that should pass SafeText gate
+     *       extraSafeFields = listOf(...)
+     *   )
      */
-    fun isValid(
+    fun validateAll(
         title: String?,
         city: String?,
-        date: String?
-    ): Boolean {
-        val t = title?.trim() ?: return false
-        val c = city?.trim() ?: return false
-        val d = date?.trim() ?: return false
+        dateRaw: String?,
+        description: String?,
+        sectorName: String?,
+        company: String?,
+        gate: List<String?> = emptyList()
+    ): String? {
+        // Step 1: high-level shape validation + date presence
+        if (!isValid(title, city, dateRaw)) return null
 
-        if (t.isEmpty() || c.isEmpty() || d.isEmpty()) return false
-        if (t.length !in 3..225) return false
-        if (c.length !in 3..225) return false
-        if (d.length !in 3..225) return false
+        // Step 2: normalize date to dd-MM-yyyy (also re-parses defensively)
+        val normalizedDate = validateAndFormatDate(dateRaw) ?: return null
 
-        // Must be parsable and normalizable to dd-MM-yyyy
-        val normalized = validateAndFormatDate(d) ?: return false
+        // Step 3: business/policy skip criteria
+        if (shouldSkipByPolicy(description, sectorName, company)) return null
 
-        return true
+        // Step 4: SafeText gate on all relevant fields (including normalized date)
+        if (gate.any { !isSafeText(it) }) return null
+
+        return normalizedDate
     }
+
 }
+
