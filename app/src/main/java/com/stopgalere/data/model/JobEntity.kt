@@ -10,34 +10,34 @@ data class JobEntity(
 
     // display
     val title: String,
-    val city: String?,
+    val city: String,
 
     // dates
-    val date: String?,          // normalized for UI (dd-MM-yyyy)
-    val dateAdded: String?,     // RAW from API for sorting in Room
+    val date: String,          // normalized for UI (dd-MM-yyyy)
+    val dateAdded: String,     // RAW from API for sorting in Room
 
     // details
-    val description: String?,
+    val description: String,
 
     // nested refs -> store names only (IDs skipped)
-    val sectorName: String?,
-    val genderName: String?,
-    val contractTypeName: String?,
-    val workModeName: String?,
+    val sectorName: String,
+    val genderName: String,
+    val contractTypeName: String,
+    val workModeName: String,
 
     // author/company
-    val authorEmail: String?,
-    val authorWebsite: String?,
-    val authorMobile1: String?,
+    val authorEmail: String,
+    val authorWebsite: String,
+    val authorMobile1: String,
     val authorLongitude: Double?,
     val authorLatitude: Double?,
-    val company: String?,
-    val companyLogoUrl: String?,
+    val company: String,
+    val companyLogoUrl: String,
 
     // misc
     val salary: Int?,
-    val experience: String?,
-    val educationLevel: String?,
+    val experience: String,
+    val educationLevel: String,
 )
 
 fun JobEntity.toDomain() = Job(

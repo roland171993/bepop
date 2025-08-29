@@ -32,9 +32,63 @@ fun MainScreenPreview() {
     // Fake paging items for preview
     val fakeJobs: LazyPagingItems<JobUi> = previewPagingItems(
         listOf(
-            JobUi(id = "1", title = "Android Engineer", city = "Abidjan", date = "2025-08-01"),
-            JobUi(id = "2", title = "Kotlin Dev", city = "Côte d'Ivoire", date = "2025-07-22"),
-            JobUi(id = "3", title = "COMMERCIAL B TO B", city = "Cocody", date = "2025-07-10")
+            JobUi(id = "1",
+                title = "Android Engineer",
+                city = "Abidjan",
+                date = "2025-08-01",
+                description = "Gestion comptable, rapports mensuels, etc.",
+                sectorName = "Finances/Comptabilité",
+                genderName = "Homme et femme",
+                contractTypeName = "CDI",
+                workModeName = "Plein temps",
+                authorEmail = "secretaire@attractivbusinessforsign.net",
+                authorWebsite = "www.cidj.com",
+                authorMobile1 = "09632578\n22568963",
+                authorLongitude = null,
+                authorLatitude = null,
+                company = "Attractiv Business",
+                companyLogoUrl = "",
+                salary = 450000,
+                experience = "4 ans d'expérience(s)",
+                educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"),
+            JobUi(id = "2",
+                title = "Kotlin Dev",
+                city = "Côte d'Ivoire",
+                date = "2025-07-22",
+                description = "Gestion comptable, rapports mensuels, etc.",
+                sectorName = "Finances/Comptabilité",
+                genderName = "Homme et femme",
+                contractTypeName = "CDI",
+                workModeName = "Plein temps",
+                authorEmail = "secretaire@attractivbusinessforsign.net",
+                authorWebsite = "www.cidj.com",
+                authorMobile1 = "09632578\n22568963",
+                authorLongitude = null,
+                authorLatitude = null,
+                company = "Attractiv Business",
+                companyLogoUrl = "",
+                salary = 450000,
+                experience = "4 ans d'expérience(s)",
+                educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"),
+            JobUi(id = "3",
+                title = "COMMERCIAL B TO B",
+                city = "Cocody",
+                date = "2025-07-10",
+                description = "Gestion comptable, rapports mensuels, etc.",
+                sectorName = "Finances/Comptabilité",
+                genderName = "Homme et femme",
+                contractTypeName = "CDI",
+                workModeName = "Plein temps",
+                authorEmail = "secretaire@attractivbusinessforsign.net",
+                authorWebsite = "www.cidj.com",
+                authorMobile1 = "09632578\n22568963",
+                authorLongitude = null,
+                authorLatitude = null,
+                company = "Attractiv Business",
+                companyLogoUrl = "",
+                salary = 450000,
+                experience = "4 ans d'expérience(s)",
+                educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7")
         )
     )
 
@@ -110,7 +164,19 @@ fun Preview_Phone_Offline() {
     val scope = rememberCoroutineScope()
     val previewListState = rememberLazyListState()
     val fakeJobs: LazyPagingItems<JobUi> = previewPagingItems(
-        listOf(JobUi("1", "Offline Example", "Abidjan", "2025-08-01"))
+        listOf(JobUi(
+            id ="1",
+            title = "Offline Example",
+            city = "Abidjan",
+            date = "2025-08-01",
+            description = "Gestion comptable, rapports mensuels, etc.",
+            sectorName = "Finances/Comptabilité", genderName = "Homme et femme",
+            contractTypeName = "CDI", workModeName = "Plein temps",
+            authorEmail = "secretaire@attractivbusinessforsign.net",
+            authorWebsite = "www.cidj.com", authorMobile1 = "09632578\n22568963",
+            authorLongitude = null, authorLatitude = null, company = "Attractiv Business",
+            companyLogoUrl = "", salary = 450000, experience = "4 ans d'expérience(s)",
+            educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"))
     )
     MaterialTheme {
         ModalDrawer(
