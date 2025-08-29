@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stopgalere.domain.model.Job
 import com.stopgalere.domain.repository.JobRepoInterface
+import com.stopgalere.presentation.ui.job.JobUi
+import com.stopgalere.presentation.ui.job.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
@@ -17,7 +19,7 @@ import javax.inject.Inject
 sealed interface JobDetailUiState {
     data object Loading : JobDetailUiState
     data class Error(val message: String?) : JobDetailUiState
-    data class Success(val job: Job) : JobDetailUiState
+    data class Success(val job: JobUi) : JobDetailUiState
 }
 
 @HiltViewModel
@@ -37,7 +39,7 @@ class JobDetailViewModel @Inject constructor(
             repo.jobById(jobId)
                 .catch { e -> uiState.value = JobDetailUiState.Error(e.message) }
                 .collectLatest { job ->
-                    uiState.value = job?.let { JobDetailUiState.Success(it) }
+                    uiState.value = job?.let { JobDetailUiState.Success(it.toUi()) }
                         ?: JobDetailUiState.Error("Job not found")
                 }
         }

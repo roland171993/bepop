@@ -112,18 +112,19 @@ class JobRemoteMediator(
             val companyLogoUrl   = dto.companyLogoUrl?.trim().orEmpty()
             val experience       = dto.experience?.trim().orEmpty()
             val educationLevel   = dto.educationLevel?.trim().orEmpty()
+            val workModeName     = dto.workMode?.name?.trim().orEmpty()
 
             JobEntity(
                 id = id,
                 title = title!!,
                 city = city!!,
                 date = normalized,                 // UI date (dd-MM-yyyy)
-                dateAdded = dateRaw,
-                description = description!!,           // may be null-safe used above
+                dateAdded = dateRaw!!,
+                description = description!!,
                 sectorName = sectorName!!,
                 genderName = genderName,             // null → ""
                 contractTypeName = contractTypeName, // null → ""
-                workModeName = dto.workMode?.name?.trim(), // unchanged policy (can be null)
+                workModeName = workModeName,           // null → ""
                 authorEmail = authorEmail,           // null → ""
                 authorWebsite = authorWebsite,       // null → ""
                 authorMobile1 = authorMobile1,       // null → ""

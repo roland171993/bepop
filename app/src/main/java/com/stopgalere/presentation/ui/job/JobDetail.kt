@@ -55,7 +55,7 @@ fun JobDetailScreen(
 /** Stateless content → great for previews and UI tests. */
 @Composable
 fun JobDetailContent(
-    job: Job,
+    job: JobUi,
     modifier: Modifier = Modifier,
     onCall: (String) -> Unit = {},
     onMail: (String) -> Unit = {},
@@ -105,7 +105,8 @@ fun JobDetailContent(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .background(MaterialTheme.colorScheme.background)
-            .semantics { testTag = "JobDetail" }
+            .semantics { testTag = "JobDetail" },
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Top action icons
         Row(
@@ -119,12 +120,23 @@ fun JobDetailContent(
             IconButton({ doShare(); onShare(job.title) }) { Icon(FontAwesomeIcons.Solid.Share, contentDescription = "Share", tint = onTopBar) }
         }
 
+        Text(job.title, style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold), maxLines = 2, overflow = TextOverflow.Ellipsis)
+
+        Text("DESCRIPTION", style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold))
+        Text(job.description, style = MaterialTheme.typography.bodyLarge )
+
         // Header / title
         Column(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(job.title, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold), maxLines = 2, overflow = TextOverflow.Ellipsis)
+
             val subtitle = listOfNotNull(job.company, job.city, job.date).filter { it.isNotBlank() }.joinToString(" • ")
             if (subtitle.isNotBlank()) Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+
+        }
+
+
 
         // Contacts
         DetailSectionCard(title = "CONTACT(S)", titleColor = MaterialTheme.colorScheme.primary) {
@@ -204,9 +216,9 @@ object JobDetailPreviewData {
         authorEmail = "secretaire@attractivbusinessforsign.net",
         authorWebsite = "www.cidj.com", authorMobile1 = "09632578\n22568963",
         authorLongitude = null, authorLatitude = null, company = "Attractiv Business",
-        companyLogoUrl = null, salary = 450000, experience = "4 ans d'expérience(s)",
+        companyLogoUrl = "", salary = 450000, experience = "4 ans d'expérience(s)",
         educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"
-    )
+    ).toUi()
 }
 
 @Preview(name = "Small – Light",  widthDp = 320, heightDp = 640, showBackground = true, backgroundColor = 0xFFFFFFFF)
