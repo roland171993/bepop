@@ -88,18 +88,20 @@ class JobRemoteMediator(
             val description = dto.description?.trim()
             val sectorName  = dto.sector?.name?.trim()
             val company     = dto.company?.trim()
+            val deadlineRaw    = dto.deadline?.trim()
             // One-shot validation: returns normalized "dd-MM-yyyy" or null
             val normalized = JobValidation.validateAll(
                 title = title,
                 city = city,
                 dateRaw = dateRaw,
+                deadlineRaw = deadlineRaw,
                 description = description,
                 sectorName = sectorName,
                 company = company,
                 gate = listOf(
                     title, city, description, sectorName, company,
-                    dto.contractType?.name, dto.authorEmail, dto.authorWebsite, dto.authorMobile1,
-                    dto.companyLogoUrl, dto.experience, dto.educationLevel
+                    dto.contractType?.name, dto.authorEmail, dto.authorWebsite, dto.authorMobile1 ,
+                    dto.authorMobile2 , dto.companyLogoUrl, dto.experience, dto.educationLevel,
                 )
             ) ?: return@mapNotNull null
 
@@ -109,16 +111,19 @@ class JobRemoteMediator(
             val authorEmail      = dto.authorEmail?.trim().orEmpty()
             val authorWebsite    = dto.authorWebsite?.trim().orEmpty()
             val authorMobile1    = dto.authorMobile1?.trim().orEmpty()
+            val authorMobile2    = dto.authorMobile2?.trim().orEmpty()
             val companyLogoUrl   = dto.companyLogoUrl?.trim().orEmpty()
             val experience       = dto.experience?.trim().orEmpty()
             val educationLevel   = dto.educationLevel?.trim().orEmpty()
             val workModeName     = dto.workMode?.name?.trim().orEmpty()
+            val deadline         = JobValidation.validateAndFormatDate(deadlineRaw)
 
             JobEntity(
                 id = id,
                 title = title!!,
                 city = city!!,
                 date = normalized,                 // UI date (dd-MM-yyyy)
+                deadline = deadline!!,
                 dateAdded = dateRaw!!,
                 description = description!!,
                 sectorName = sectorName!!,
@@ -128,6 +133,7 @@ class JobRemoteMediator(
                 authorEmail = authorEmail,           // null → ""
                 authorWebsite = authorWebsite,       // null → ""
                 authorMobile1 = authorMobile1,       // null → ""
+                authorMobile2 = authorMobile2,       // null → ""
                 authorLongitude = dto.authorLongitude, // can stay null
                 authorLatitude = dto.authorLatitude,   // can stay null
                 company = company!!,

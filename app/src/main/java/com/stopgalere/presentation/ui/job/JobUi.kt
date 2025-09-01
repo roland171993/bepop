@@ -10,6 +10,7 @@ data class JobUi(
     val title: String,
     val city: String,
     val date: String,
+    val deadline: String,
 
     // details
     val description: String,
@@ -22,6 +23,7 @@ data class JobUi(
     val authorEmail: String,
     val authorWebsite: String,
     val authorMobile1: String,
+    val authorMobile2: String,
     val authorLongitude: Double?,
     val authorLatitude: Double?,
     val company: String,
@@ -39,6 +41,7 @@ fun Job.toUi(): JobUi = JobUi(
     title = title,
     city = city.ifBlank { "—"} ,
     date = date.ifBlank { "—" },
+    deadline = deadline,
     description = description,
     sectorName = sectorName,
     genderName = genderName,
@@ -47,6 +50,7 @@ fun Job.toUi(): JobUi = JobUi(
     authorEmail = authorEmail,
     authorWebsite = authorWebsite,
     authorMobile1 = authorMobile1,
+    authorMobile2 = authorMobile2,
     authorLongitude = authorLongitude,
     authorLatitude = authorLatitude,
     company = company,

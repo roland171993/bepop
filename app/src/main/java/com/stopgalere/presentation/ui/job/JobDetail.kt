@@ -24,6 +24,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stopgalere.domain.model.Job
+import com.stopgalere.presentation.theme.Orange
+import com.stopgalere.presentation.theme.StopGalereTheme
 import com.stopgalere.presentation.ui.job.components.DetailChip
 import com.stopgalere.presentation.ui.job.components.DetailSectionCard
 import com.stopgalere.presentation.viewmodel.JobDetailUiState
@@ -120,51 +122,56 @@ fun JobDetailContent(
             IconButton({ doShare(); onShare(job.title) }) { Icon(FontAwesomeIcons.Solid.Share, contentDescription = "Share", tint = onTopBar) }
         }
 
-        Text(job.title, style = MaterialTheme.typography.headlineLarge.copy(fontWeight = FontWeight.Bold), maxLines = 2, overflow = TextOverflow.Ellipsis)
+        Text(job.title, style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary), maxLines = 2, overflow = TextOverflow.Ellipsis)
 
-        Text("DESCRIPTION", style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold))
-        Text(job.description, style = MaterialTheme.typography.bodyLarge )
+        HeaderItem("DESCRIPTION")
+        BodyItem(job.description)
 
-        // Header / title
-        Column(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        HeaderItem("EMPLOYEUR")
+        BodyItem(job.company )
 
-            val subtitle = listOfNotNull(job.company, job.city, job.date).filter { it.isNotBlank() }.joinToString(" • ")
-            if (subtitle.isNotBlank()) Text(subtitle, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        HeaderItem("PUBLICATION")
+        BodyItem(job.date )
+
+        HeaderItem("DATE LIMITE")
+        Text(job.deadline, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold), color = Color.Red)
+
+        if (job.authorMobile1.isNotEmpty() or job.authorMobile2.isNotEmpty()) {
+            HeaderItem("CONTACT(S)")
+            val phone =  job.authorMobile1 + "\n" + job.authorMobile2
+            Text(phone, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+        HeaderItem("SECTEUR D'ACTIVITÉ")
+        BodyItem(job.sectorName )
 
+        if (job.authorWebsite.isNotEmpty()) {
+            HeaderItem("SITE WEB")
+            BodyItem(job.authorWebsite )
         }
 
-
-
-        // Contacts
-        DetailSectionCard(title = "CONTACT(S)", titleColor = MaterialTheme.colorScheme.primary) {
-            val phone = job.authorMobile1 ?: "—"
-            Text(phone, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Black), modifier = Modifier.align(Alignment.CenterHorizontally))
-            if (!phone.contains("\n")) Spacer(Modifier.height(6.dp))
-            job.authorEmail?.takeIf { it.isNotBlank() }?.let {
-                DetailRow(FontAwesomeIcons.Solid.Envelope, it) { onMail(it); doMail(it) }
-            }
-            job.authorWebsite?.takeIf { it.isNotBlank() }?.let {
-                DetailRow(FontAwesomeIcons.Solid.Globe, it) { onWeb(it); doWeb(it) }
-            }
+        if (job.authorEmail.isNotEmpty()) {
+            HeaderItem("EMAIL")
+            BodyItem(job.authorEmail )
         }
-
-        // Sector
-        DetailSectionCard(title = "SECTEUR D'ACTIVITÉ", subtitle = job.sectorName ?: "—", titleColor = MaterialTheme.colorScheme.primary)
 
         // Salary strip
-        Surface(Modifier.fillMaxWidth().padding(top = 8.dp), color = Color(0xFFDB7A3D), contentColor = Color.White, shadowElevation = 1.dp) {
-            Row(Modifier.fillMaxWidth().padding(16.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+        DetailSectionCard(backgroudColor = Orange, modifier = modifier.height(170.dp)) {
+            Row(Modifier.fillMaxSize().padding(16.dp), Arrangement.Center, Alignment.CenterVertically) {
                 val salaryText = job.salary?.let { String.format("%,d FCFA", it).replace(',', ' ') } ?: "Salaire non renseigné"
-                Text(salaryText, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold))
-                Icon(FontAwesomeIcons.Solid.PiggyBank, contentDescription = null)
+                Text(salaryText, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold), color = Color.White)
+                Icon(FontAwesomeIcons.Solid.PiggyBank,
+                    contentDescription = null,
+                    modifier = modifier.size(59.dp).padding(5.dp,0.dp,0.dp,0.dp),
+                    tint = Color.White)
             }
+        }
+        Surface(Modifier.fillMaxWidth().padding(top = 8.dp), color = Color(0xFFDB7A3D), contentColor = Color.White, shadowElevation = 1.dp) {
+
         }
 
         // Work details (contract / mode / city)
-        DetailSectionCard(title = null) {
+        DetailSectionCard() {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 Icon(FontAwesomeIcons.Solid.Briefcase, contentDescription = null, modifier = Modifier.size(48.dp))
                 Spacer(Modifier.width(12.dp))
@@ -191,6 +198,18 @@ fun JobDetailContent(
     }
 }
 
+@Composable
+private fun HeaderItem(text: String){
+    Spacer(Modifier.height(12.dp))
+    Text(text, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold), color = MaterialTheme.colorScheme.secondary)
+}
+
+@Composable
+private fun  BodyItem(text: String){
+    Text(text, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Spacer(Modifier.height(12.dp))
+}
+
 /* Small building block used above */
 @Composable
 private fun DetailRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, onClick: (() -> Unit)? = null) {
@@ -210,11 +229,12 @@ object JobDetailPreviewData {
     val job = com.stopgalere.domain.model.Job(
         id = "1", title = "Comptable Senior", city = "Abidjan",
         date = "28-08-2025", dateAdded = "2025-08-28",
+        deadline = "28-09-2025",
         description = "Gestion comptable, rapports mensuels, etc.",
         sectorName = "Finances/Comptabilité", genderName = "Homme et femme",
         contractTypeName = "CDI", workModeName = "Plein temps",
         authorEmail = "secretaire@attractivbusinessforsign.net",
-        authorWebsite = "www.cidj.com", authorMobile1 = "09632578\n22568963",
+        authorWebsite = "www.cidj.com", authorMobile1 = "09632578\n22568963",authorMobile2 = "03632378\n775665963",
         authorLongitude = null, authorLatitude = null, company = "Attractiv Business",
         companyLogoUrl = "", salary = 450000, experience = "4 ans d'expérience(s)",
         educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"
@@ -222,12 +242,12 @@ object JobDetailPreviewData {
 }
 
 @Preview(name = "Small – Light",  widthDp = 320, heightDp = 640, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Small_Light()  { MaterialTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Small_Light()  { StopGalereTheme (dynamicColor = true) { JobDetailContent(job = JobDetailPreviewData.job) } }
 @Preview(name = "Medium – Light", widthDp = 360, heightDp = 740, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Medium_Light() { MaterialTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Medium_Light() { StopGalereTheme(dynamicColor = false) { JobDetailContent(job = JobDetailPreviewData.job) } }
 @Preview(name = "Large – Light",  widthDp = 411, heightDp = 891, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Large_Light()  { MaterialTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Large_Light()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
 @Preview(name = "Tablet – Light", widthDp = 800, heightDp = 1280, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Tablet_Light() { MaterialTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Tablet_Light() { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
 @Preview(name = "Medium – Dark",  widthDp = 360, heightDp = 740, showBackground = true, backgroundColor = 0xFF000000)
-@Composable fun Preview_JobDetail_Medium_Dark()  { MaterialTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Medium_Dark()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job) } }

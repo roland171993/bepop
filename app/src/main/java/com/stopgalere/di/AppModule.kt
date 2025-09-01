@@ -46,7 +46,9 @@ object AppModule {
 
     @Provides @Singleton
     fun provideDb(@ApplicationContext ctx: Context): AppDatabase =
-        Room.databaseBuilder(ctx, AppDatabase::class.java, AppConstants.DATABASE_NAME).build()
+        Room
+            .databaseBuilder(ctx, AppDatabase::class.java, AppConstants.DATABASE_NAME)
+            .build()
 
     @Provides @Singleton
     fun provideJobRepo(db: AppDatabase, api: ApiService): JobRepoInterface =
