@@ -22,6 +22,7 @@ data class JobDto(
     val authorEmail: String? = null,
     val authorWebsite: String? = null,
     val authorMobile1: String? = null,
+    val authorMobile2: String? = null,
     val authorLongitude: Double? = null,
     val authorLatitude: Double? = null,
     val company: String? = null,
@@ -34,7 +35,8 @@ data class JobDto(
     val educationLevel: String? = null,
 
     // timestamps we keep
-    @SerializedName("dateAdded") val dateAdded: String? = null
+    @SerializedName("dateAdded") val dateAdded: String? = null,
+    val deadline: String? = null
 )
 
 data class JobsResponse(

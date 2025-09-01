@@ -15,6 +15,7 @@ data class JobEntity(
     // dates
     val date: String,          // normalized for UI (dd-MM-yyyy)
     val dateAdded: String,     // RAW from API for sorting in Room
+    val deadline: String,
 
     // details
     val description: String,
@@ -29,6 +30,7 @@ data class JobEntity(
     val authorEmail: String,
     val authorWebsite: String,
     val authorMobile1: String,
+    val authorMobile2: String,
     val authorLongitude: Double?,
     val authorLatitude: Double?,
     val company: String,
@@ -45,6 +47,7 @@ fun JobEntity.toDomain() = Job(
     title = title,
     city = city,
     date = date,                 // UI uses normalized date
+    deadline = deadline,
     dateAdded = dateAdded,
     description = description,
     sectorName = sectorName,
@@ -54,6 +57,7 @@ fun JobEntity.toDomain() = Job(
     authorEmail = authorEmail,
     authorWebsite = authorWebsite,
     authorMobile1 = authorMobile1,
+    authorMobile2 = authorMobile2,
     authorLongitude = authorLongitude,
     authorLatitude = authorLatitude,
     company = company,

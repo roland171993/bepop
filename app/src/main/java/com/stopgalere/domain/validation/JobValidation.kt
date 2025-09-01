@@ -140,6 +140,7 @@ object JobValidation {
         title: String?,
         city: String?,
         dateRaw: String?,
+        deadlineRaw: String?,
         description: String?,
         sectorName: String?,
         company: String?,
@@ -150,6 +151,9 @@ object JobValidation {
 
         // Step 2: normalize date to dd-MM-yyyy (also re-parses defensively)
         val normalizedDate = validateAndFormatDate(dateRaw) ?: return null
+
+        // Step 2: normalize date to dd-MM-yyyy (also re-parses defensively)
+        if (validateAndFormatDate(deadlineRaw).isNullOrEmpty()) return null
 
         // Step 3: business/policy skip criteria
         if (shouldSkipByPolicy(description, sectorName, company)) return null

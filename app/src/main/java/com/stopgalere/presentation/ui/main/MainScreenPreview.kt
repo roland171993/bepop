@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.stopgalere.presentation.theme.StopGalereTheme
 import com.stopgalere.presentation.ui.job.JobUi
 import com.stopgalere.presentation.ui.main.components.DrawerContent
 import com.stopgalere.presentation.ui.main.components.MainScreenContent
@@ -36,6 +37,7 @@ fun MainScreenPreview() {
                 title = "Android Engineer",
                 city = "Abidjan",
                 date = "2025-08-01",
+                deadline = "28-09-2025",
                 description = "Gestion comptable, rapports mensuels, etc.",
                 sectorName = "Finances/Comptabilité",
                 genderName = "Homme et femme",
@@ -44,6 +46,7 @@ fun MainScreenPreview() {
                 authorEmail = "secretaire@attractivbusinessforsign.net",
                 authorWebsite = "www.cidj.com",
                 authorMobile1 = "09632578\n22568963",
+                authorMobile2 = "03632378\n775665963",
                 authorLongitude = null,
                 authorLatitude = null,
                 company = "Attractiv Business",
@@ -55,6 +58,7 @@ fun MainScreenPreview() {
                 title = "Kotlin Dev",
                 city = "Côte d'Ivoire",
                 date = "2025-07-22",
+                deadline = "28-09-2025",
                 description = "Gestion comptable, rapports mensuels, etc.",
                 sectorName = "Finances/Comptabilité",
                 genderName = "Homme et femme",
@@ -63,6 +67,7 @@ fun MainScreenPreview() {
                 authorEmail = "secretaire@attractivbusinessforsign.net",
                 authorWebsite = "www.cidj.com",
                 authorMobile1 = "09632578\n22568963",
+                authorMobile2 = "03632378\n775665963",
                 authorLongitude = null,
                 authorLatitude = null,
                 company = "Attractiv Business",
@@ -74,6 +79,7 @@ fun MainScreenPreview() {
                 title = "COMMERCIAL B TO B",
                 city = "Cocody",
                 date = "2025-07-10",
+                deadline = "28-09-2025",
                 description = "Gestion comptable, rapports mensuels, etc.",
                 sectorName = "Finances/Comptabilité",
                 genderName = "Homme et femme",
@@ -82,6 +88,7 @@ fun MainScreenPreview() {
                 authorEmail = "secretaire@attractivbusinessforsign.net",
                 authorWebsite = "www.cidj.com",
                 authorMobile1 = "09632578\n22568963",
+                authorMobile2 = "03632378\n775665963",
                 authorLongitude = null,
                 authorLatitude = null,
                 company = "Attractiv Business",
@@ -169,16 +176,18 @@ fun Preview_Phone_Offline() {
             title = "Offline Example",
             city = "Abidjan",
             date = "2025-08-01",
+            deadline = "28-09-2025",
             description = "Gestion comptable, rapports mensuels, etc.",
             sectorName = "Finances/Comptabilité", genderName = "Homme et femme",
             contractTypeName = "CDI", workModeName = "Plein temps",
             authorEmail = "secretaire@attractivbusinessforsign.net",
             authorWebsite = "www.cidj.com", authorMobile1 = "09632578\n22568963",
+            authorMobile2 = "03632378\n775665963",
             authorLongitude = null, authorLatitude = null, company = "Attractiv Business",
             companyLogoUrl = "", salary = 450000, experience = "4 ans d'expérience(s)",
             educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"))
     )
-    MaterialTheme {
+    StopGalereTheme {
         ModalDrawer(
             drawerState = drawerState,
             drawerBackgroundColor = Color.Transparent,

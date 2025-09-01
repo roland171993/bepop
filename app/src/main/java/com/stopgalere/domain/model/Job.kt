@@ -8,6 +8,7 @@ data class Job(
     // dates
     val date: String,          // normalized for UI (dd-MM-yyyy)
     val dateAdded: String,     // raw from API (ISO, etc.) for Room sorting
+    val deadline: String,
 
     // details
     val description: String,
@@ -20,6 +21,7 @@ data class Job(
     val authorEmail: String,
     val authorWebsite: String,
     val authorMobile1: String,
+    val authorMobile2: String,
     val authorLongitude: Double?,
     val authorLatitude: Double?,
     val company: String,
