@@ -50,6 +50,9 @@ import coil.compose.AsyncImage
 import com.stopgalere.presentation.theme.Green
 import compose.icons.fontawesomeicons.solid.Building
 import androidx.core.net.toUri
+import compose.icons.fontawesomeicons.solid.ArrowLeft
+import compose.icons.fontawesomeicons.solid.Backward
+import compose.icons.fontawesomeicons.solid.PhoneAlt
 
 
 @Composable
@@ -115,136 +118,160 @@ fun JobDetailContent(
         }
     }
 
-    val topBarBg = MaterialTheme.colorScheme.primary
-    val onTopBar = MaterialTheme.colorScheme.onPrimary
+    val topBarBg = MaterialTheme.colorScheme.secondary
+    val onTopBar = MaterialTheme.colorScheme.onSecondary
+    val iconSize = 20.dp
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .statusBarsPadding()
             .background(MaterialTheme.colorScheme.background)
             .semantics { testTag = "JobDetail" },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         // Top action icons
         Row(
             Modifier
                 .fillMaxWidth()
-                .background(topBarBg)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .background(topBarBg),
             horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = { doCall1(job.authorMobile1) }, content = {
-                Icon(FontAwesomeIcons.Solid.Phone, contentDescription = "Call1", tint = onTopBar)
+                Icon(FontAwesomeIcons.Solid.ArrowLeft, contentDescription = "Call1", tint = onTopBar, modifier = modifier.size(iconSize))
             })
-            IconButton(onClick = { doCall2(job.authorMobile2) }, content = {
-                Icon(FontAwesomeIcons.Solid.Phone, contentDescription = "Call2", tint = onTopBar)
-            })
-            IconButton(onClick = { doMail(job.authorEmail) },
-                content = {
-                Icon(FontAwesomeIcons.Solid.PaperPlane, contentDescription = "Send", tint = onTopBar)
-            })
-            if (job.authorWebsite.isNotEmpty()) {
-                IconButton(onClick = { doWeb(job.authorWebsite) },
-                    content = {
-                    Icon(FontAwesomeIcons.Solid.Globe, contentDescription = "Website", tint = onTopBar)
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .background(topBarBg)
+                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                IconButton(onClick = { doCall1(job.authorMobile1) }, content = {
+                    Icon(FontAwesomeIcons.Solid.PhoneAlt, contentDescription = "Call1", tint = onTopBar, modifier = modifier.size(iconSize))
                 })
+                IconButton(onClick = { doCall2(job.authorMobile2) }, content = {
+                    Icon(FontAwesomeIcons.Solid.Phone, contentDescription = "Call2", tint = onTopBar, modifier = modifier.size(iconSize))
+                })
+                IconButton(onClick = { doMail(job.authorEmail) },
+                    content = {
+                        Icon(FontAwesomeIcons.Solid.PaperPlane, contentDescription = "Send", tint = onTopBar, modifier = modifier.size(iconSize))
+                    })
+                if (job.authorWebsite.isNotEmpty()) {
+                    IconButton(onClick = { doWeb(job.authorWebsite) },
+                        content = {
+                            Icon(FontAwesomeIcons.Solid.Globe, contentDescription = "Website", tint = onTopBar, modifier = modifier.size(iconSize))
+                        })
+                }
+
+                IconButton(onClick = {
+                    doShare() },
+                    content = {
+                        Icon(FontAwesomeIcons.Solid.Share, contentDescription = "Share", tint = onTopBar, modifier = modifier.size(iconSize))
+                    })
             }
-
-            IconButton(onClick = {
-                doShare() },
-                content = {
-                    Icon(FontAwesomeIcons.Solid.Share, contentDescription = "Share", tint = onTopBar)
-            })
         }
 
-        Text(job.title, style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary), maxLines = 2, overflow = TextOverflow.Ellipsis)
 
-        HeaderItem("DESCRIPTION")
-        BodyItem(job.description)
-
-        HeaderItem("EMPLOYEUR")
-        BodyItem(job.company )
-        CompanyLogo(url = job.companyLogoUrl, isOnline = isOnline)
-
-        HeaderItem("PUBLICATION")
-        BodyItem(job.date )
-
-        HeaderItem("DATE LIMITE")
-        Text(job.deadline, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold), color = Color.Red)
-
-        if (job.authorMobile1.isNotEmpty() or job.authorMobile2.isNotEmpty()) {
-            HeaderItem("CONTACT(S)")
-            val phone =  job.authorMobile1 + "\n" + job.authorMobile2
-            Text(phone, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-
-        HeaderItem("SECTEUR D'ACTIVITÉ")
-        BodyItem(job.sectorName )
-
-        if (job.authorWebsite.isNotEmpty()) {
-            HeaderItem("SITE WEB")
-            BodyItem(job.authorWebsite )
-        }
-
-        if (job.authorEmail.isNotEmpty()) {
-            HeaderItem("EMAIL")
-            BodyItem(job.authorEmail )
-        }
-
-        // Salary strip
-        DetailSectionCard(backgroudColor = Orange, modifier = modifier.height(200.dp)) {
-            Row(Modifier
+        Column(
+            modifier = modifier
                 .fillMaxSize()
-                .padding(16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically) {
-                Text(job.salary, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold), color = Color.White)
-                Spacer(Modifier.width(12.dp))
-                Icon(FontAwesomeIcons.Solid.PiggyBank,
-                    contentDescription = null,
-                    modifier = modifier
-                        .size(59.dp),
-                    tint = Color.White)
-            }
-        }
+                .verticalScroll(rememberScrollState())
+                .background(MaterialTheme.colorScheme.background)
+                .semantics { testTag = "JobDetail" },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(job.title, style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary), maxLines = 2, overflow = TextOverflow.Ellipsis)
 
-        // Work details (contract / mode / city)
-        DetailSectionCard(backgroudColor = Color.White, modifier = modifier.height(200.dp)) {
-            Row(Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically) {
-                Icon(FontAwesomeIcons.Solid.Briefcase,
-                    contentDescription = null,
-                    modifier = Modifier.size(49.dp))
-                Spacer(Modifier.width(12.dp))
-                Column {
-                    DetailChip(label = job.contractTypeName ,isOnline = isOnline, isCity = false)
-                    DetailChip(label = job.workModeName,isOnline = isOnline, isCity = false)
-                    DetailChip(label = job.city,isOnline = isOnline, isCity = true)
+            HeaderItem("DESCRIPTION")
+            BodyItem(job.description)
+
+            HeaderItem("EMPLOYEUR")
+            BodyItem(job.company )
+            CompanyLogo(url = job.companyLogoUrl, isOnline = isOnline)
+
+            HeaderItem("PUBLICATION")
+            BodyItem(job.date )
+
+            HeaderItem("DATE LIMITE")
+            Text(job.deadline, style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold), color = Color.Red)
+
+            if (job.authorMobile1.isNotEmpty() or job.authorMobile2.isNotEmpty()) {
+                HeaderItem("CONTACT(S)")
+                val phone =  job.authorMobile1 + "\n" + job.authorMobile2
+                Text(phone, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black), color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+
+            HeaderItem("SECTEUR D'ACTIVITÉ")
+            BodyItem(job.sectorName )
+
+            if (job.authorWebsite.isNotEmpty()) {
+                HeaderItem("SITE WEB")
+                BodyItem(job.authorWebsite )
+            }
+
+            if (job.authorEmail.isNotEmpty()) {
+                HeaderItem("EMAIL")
+                BodyItem(job.authorEmail )
+            }
+
+            // Salary strip
+            DetailSectionCard(backgroudColor = Orange, modifier = modifier.height(200.dp)) {
+                Row(Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Text(job.salary, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold), color = Color.White)
+                    Spacer(Modifier.width(12.dp))
+                    Icon(FontAwesomeIcons.Solid.PiggyBank,
+                        contentDescription = null,
+                        modifier = modifier
+                            .size(59.dp),
+                        tint = Color.White)
                 }
             }
+
+            // Work details (contract / mode / city)
+            DetailSectionCard(backgroudColor = Color.White, modifier = modifier.height(200.dp)) {
+                Row(Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Icon(FontAwesomeIcons.Solid.Briefcase,
+                        contentDescription = null,
+                        modifier = Modifier.size(49.dp))
+                    Spacer(Modifier.width(12.dp))
+                    Column {
+                        DetailChip(label = job.contractTypeName ,isOnline = isOnline, isCity = false)
+                        DetailChip(label = job.workModeName,isOnline = isOnline, isCity = false)
+                        DetailChip(label = job.city,isOnline = isOnline, isCity = true)
+                    }
+                }
+            }
+
+            // Requirements strip
+            DetailSectionCard (backgroudColor = Green, modifier = modifier.height(200.dp)){
+                Column(Modifier
+                    .fillMaxSize()
+                    .padding(top = 8.dp, bottom = 10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center) {
+                    Icon(FontAwesomeIcons.Solid.Search, contentDescription = null, modifier = Modifier.size(49.dp), tint = Color.White)
+                    DetailItem(job.genderName)
+                    DetailItem(job.educationLevel)
+                    DetailItem(job.experience)
+                }
+            }
+            Spacer(Modifier.height(50.dp)) // avoid cutoff on real device cause Scafold not used we want from scratch
         }
 
-        // Requirements strip
-        DetailSectionCard (backgroudColor = Green, modifier = modifier.height(200.dp)){
-            Column(Modifier
-                .fillMaxSize()
-                .padding(top = 8.dp, bottom = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center) {
-                Icon(FontAwesomeIcons.Solid.Search, contentDescription = null, modifier = Modifier.size(49.dp), tint = Color.White)
-                DetailItem(job.genderName)
-                DetailItem(job.educationLevel)
-                DetailItem(job.experience)
-            }
-        }
 
     }
 }
+
 
 @Composable
 fun CompanyLogo( modifier: Modifier = Modifier, url: String, isOnline: Boolean) {
