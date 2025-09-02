@@ -1,5 +1,7 @@
 package com.stopgalere.presentation.ui.job.components
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -12,6 +14,16 @@ import androidx.compose.ui.unit.dp
 import com.stopgalere.presentation.theme.StopGalereTheme
 import com.stopgalere.presentation.ui.job.JobDetailContent
 import com.stopgalere.presentation.ui.job.JobDetailPreviewData
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import androidx.core.net.toUri
 
 @Composable
 fun DetailSectionCard(
@@ -29,6 +41,34 @@ fun DetailSectionCard(
 }
 
 @Composable
-fun DetailChip(label: String, modifier: Modifier = Modifier) {
-    AssistChip(onClick = {}, label = { Text(label) }, modifier = modifier)
+fun DetailChip(
+    modifier: Modifier = Modifier,
+    label: String,
+    isOnline: Boolean,
+    isCity: Boolean = false
+) {
+    val context = LocalContext.current
+    AssistChip(
+        onClick = {
+            if (isOnline) {
+                val intent = if (isCity) {
+                    // Open city in Google Maps
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        "https://www.google.com/maps/search/?api=1&query=${Uri.encode(label)}".toUri()
+                    )
+                } else {
+                    // Default: open Google search for definition
+                    Intent(
+                        Intent.ACTION_VIEW,
+                        ("https://www.google.com/search?q=définir+travail+" + Uri.encode(label)).toUri()
+                    )
+                }
+                context.startActivity(intent)
+            }
+        },
+        label = { Text(text = label, maxLines = 2, overflow = TextOverflow.Ellipsis) },
+        modifier = modifier,
+        enabled = isOnline
+    )
 }

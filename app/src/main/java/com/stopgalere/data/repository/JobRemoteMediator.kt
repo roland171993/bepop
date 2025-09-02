@@ -88,7 +88,8 @@ class JobRemoteMediator(
             val description = dto.description?.trim()
             val sectorName  = dto.sector?.name?.trim()
             val company     = dto.company?.trim()
-            val deadlineRaw    = dto.deadline?.trim()
+            val deadlineRaw = dto.deadline?.trim()
+            val salaryRaw      = dto.salary
             // One-shot validation: returns normalized "dd-MM-yyyy" or null
             val normalized = JobValidation.validateAll(
                 title = title,
@@ -98,6 +99,7 @@ class JobRemoteMediator(
                 description = description,
                 sectorName = sectorName,
                 company = company,
+                salary = salaryRaw,
                 gate = listOf(
                     title, city, description, sectorName, company,
                     dto.contractType?.name, dto.authorEmail, dto.authorWebsite, dto.authorMobile1 ,
@@ -117,6 +119,7 @@ class JobRemoteMediator(
             val educationLevel   = dto.educationLevel?.trim().orEmpty()
             val workModeName     = dto.workMode?.name?.trim().orEmpty()
             val deadline         = JobValidation.validateAndFormatDate(deadlineRaw)
+            val salary           = JobValidation.validateAndFormatMoney(salaryRaw)
 
             JobEntity(
                 id = id,
@@ -138,7 +141,7 @@ class JobRemoteMediator(
                 authorLatitude = dto.authorLatitude,   // can stay null
                 company = company!!,
                 companyLogoUrl = companyLogoUrl,     // null → ""
-                salary = dto.salary,                 // can stay null
+                salary = salary,
                 experience = experience,             // null → ""
                 educationLevel = educationLevel      // null → ""
             )

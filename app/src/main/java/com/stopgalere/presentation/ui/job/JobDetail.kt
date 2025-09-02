@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -40,6 +41,16 @@ import compose.icons.fontawesomeicons.solid.Phone
 import compose.icons.fontawesomeicons.solid.PiggyBank
 import compose.icons.fontawesomeicons.solid.Search
 import compose.icons.fontawesomeicons.solid.Share
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import com.stopgalere.presentation.theme.Green
+import compose.icons.fontawesomeicons.solid.Building
+import androidx.core.net.toUri
+
 
 @Composable
 fun JobDetailScreen(
@@ -47,10 +58,11 @@ fun JobDetailScreen(
     viewModel: JobDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState
+    val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
     when (val s = uiState) {
         is JobDetailUiState.Loading -> Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
         is JobDetailUiState.Error   -> Box(Modifier.fillMaxSize(), Alignment.Center) { Text(s.message ?: "Unable to load job", color = MaterialTheme.colorScheme.error) }
-        is JobDetailUiState.Success -> JobDetailContent(job = s.job, modifier = modifier)
+        is JobDetailUiState.Success -> JobDetailContent(job = s.job, isOnline = isOnline, modifier = modifier)
     }
 }
 
@@ -58,16 +70,27 @@ fun JobDetailScreen(
 @Composable
 fun JobDetailContent(
     job: JobUi,
+    isOnline: Boolean,
     modifier: Modifier = Modifier,
-    onCall: (String) -> Unit = {},
-    onMail: (String) -> Unit = {},
-    onWeb: (String) -> Unit = {},
-    onShare: (String) -> Unit = {},
 ) {
     val ctx = LocalContext.current
 
     // Default platform actions (still overridable for testing)
-    val doCall = remember(job.authorMobile1) {
+    val doWeb = remember(job.authorWebsite) {
+        { url: String ->
+            if (url.isNotBlank()) {
+                val safe = if (url.startsWith("http")) url else "https://$url"
+                ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(safe)))
+            }
+        }
+    }
+
+    val doCall1 = remember(job.authorMobile1) {
+        { phone: String ->
+            if (phone.isNotBlank()) ctx.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone")))
+        }
+    }
+    val doCall2 = remember(job.authorMobile2) {
         { phone: String ->
             if (phone.isNotBlank()) ctx.startActivity(Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone")))
         }
@@ -77,21 +100,14 @@ fun JobDetailContent(
             if (email.isNotBlank()) ctx.startActivity(Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:$email")))
         }
     }
-    val doWeb = remember(job.authorWebsite) {
-        { url: String ->
-            if (url.isNotBlank()) {
-                val safe = if (url.startsWith("http")) url else "https://$url"
-                ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(safe)))
-            }
-        }
-    }
+
     val doShare = remember(job) {
         {
             val txt = buildString {
                 appendLine(job.title)
-                appendLine(job.company ?: "")
-                appendLine(job.city ?: "")
-                appendLine(job.description ?: "")
+                appendLine(job.company )
+                appendLine(job.city )
+                appendLine(job.description)
             }
             ctx.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
                 type = "text/plain"; putExtra(Intent.EXTRA_TEXT, txt)
@@ -110,16 +126,37 @@ fun JobDetailContent(
             .semantics { testTag = "JobDetail" },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         // Top action icons
         Row(
-            Modifier.fillMaxWidth().background(topBarBg).padding(horizontal = 16.dp, vertical = 12.dp),
+            Modifier
+                .fillMaxWidth()
+                .background(topBarBg)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton({ (job.authorMobile1 ?: "").also { onCall(it); doCall(it) } }) { Icon(FontAwesomeIcons.Solid.Phone, contentDescription = "Call", tint = onTopBar) }
-            IconButton({ (job.authorMobile1 ?: "").also { onCall(it); doCall(it) } }) { Icon(FontAwesomeIcons.Solid.Phone, contentDescription = "Phone", tint = onTopBar) }
-            IconButton({ doShare(); onShare(job.title) }) { Icon(FontAwesomeIcons.Solid.PaperPlane, contentDescription = "Send", tint = onTopBar) }
-            IconButton({ (job.authorWebsite ?: "").also { onWeb(it); doWeb(it) } }) { Icon(FontAwesomeIcons.Solid.Globe, contentDescription = "Website", tint = onTopBar) }
-            IconButton({ doShare(); onShare(job.title) }) { Icon(FontAwesomeIcons.Solid.Share, contentDescription = "Share", tint = onTopBar) }
+            IconButton(onClick = { doCall1(job.authorMobile1) }, content = {
+                Icon(FontAwesomeIcons.Solid.Phone, contentDescription = "Call1", tint = onTopBar)
+            })
+            IconButton(onClick = { doCall2(job.authorMobile2) }, content = {
+                Icon(FontAwesomeIcons.Solid.Phone, contentDescription = "Call2", tint = onTopBar)
+            })
+            IconButton(onClick = { doMail(job.authorEmail) },
+                content = {
+                Icon(FontAwesomeIcons.Solid.PaperPlane, contentDescription = "Send", tint = onTopBar)
+            })
+            if (job.authorWebsite.isNotEmpty()) {
+                IconButton(onClick = { doWeb(job.authorWebsite) },
+                    content = {
+                    Icon(FontAwesomeIcons.Solid.Globe, contentDescription = "Website", tint = onTopBar)
+                })
+            }
+
+            IconButton(onClick = {
+                doShare() },
+                content = {
+                    Icon(FontAwesomeIcons.Solid.Share, contentDescription = "Share", tint = onTopBar)
+            })
         }
 
         Text(job.title, style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary), maxLines = 2, overflow = TextOverflow.Ellipsis)
@@ -129,6 +166,7 @@ fun JobDetailContent(
 
         HeaderItem("EMPLOYEUR")
         BodyItem(job.company )
+        CompanyLogo(url = job.companyLogoUrl, isOnline = isOnline)
 
         HeaderItem("PUBLICATION")
         BodyItem(job.date )
@@ -156,47 +194,69 @@ fun JobDetailContent(
         }
 
         // Salary strip
-        DetailSectionCard(backgroudColor = Orange, modifier = modifier.height(170.dp)) {
-            Row(Modifier.fillMaxSize().padding(16.dp), Arrangement.Center, Alignment.CenterVertically) {
-                val salaryText = job.salary?.let { String.format("%,d FCFA", it).replace(',', ' ') } ?: "Salaire non renseigné"
-                Text(salaryText, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold), color = Color.White)
+        DetailSectionCard(backgroudColor = Orange, modifier = modifier.height(200.dp)) {
+            Row(Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically) {
+                Text(job.salary, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold), color = Color.White)
+                Spacer(Modifier.width(12.dp))
                 Icon(FontAwesomeIcons.Solid.PiggyBank,
                     contentDescription = null,
-                    modifier = modifier.size(59.dp).padding(5.dp,0.dp,0.dp,0.dp),
+                    modifier = modifier
+                        .size(59.dp),
                     tint = Color.White)
             }
         }
-        Surface(Modifier.fillMaxWidth().padding(top = 8.dp), color = Color(0xFFDB7A3D), contentColor = Color.White, shadowElevation = 1.dp) {
-
-        }
 
         // Work details (contract / mode / city)
-        DetailSectionCard() {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Icon(FontAwesomeIcons.Solid.Briefcase, contentDescription = null, modifier = Modifier.size(48.dp))
+        DetailSectionCard(backgroudColor = Color.White, modifier = modifier.height(200.dp)) {
+            Row(Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically) {
+                Icon(FontAwesomeIcons.Solid.Briefcase,
+                    contentDescription = null,
+                    modifier = Modifier.size(49.dp))
                 Spacer(Modifier.width(12.dp))
                 Column {
-                    DetailChip(job.contractTypeName ?: "—"); Spacer(Modifier.height(4.dp))
-                    DetailChip(job.workModeName     ?: "—"); Spacer(Modifier.height(4.dp))
-                    DetailChip(job.city             ?: "—")
+                    DetailChip(label = job.contractTypeName ,isOnline = isOnline, isCity = false)
+                    DetailChip(label = job.workModeName,isOnline = isOnline, isCity = false)
+                    DetailChip(label = job.city,isOnline = isOnline, isCity = true)
                 }
             }
         }
 
         // Requirements strip
-        Surface(Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 24.dp), color = Color(0xFF4CAF50), contentColor = Color.White) {
-            Column(Modifier.fillMaxWidth().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(FontAwesomeIcons.Solid.Search, contentDescription = null, modifier = Modifier.size(64.dp))
-                Spacer(Modifier.height(8.dp))
-                Text(job.genderName     ?: "—", style = MaterialTheme.typography.titleMedium)
-                Spacer(Modifier.height(4.dp))
-                Text(job.educationLevel ?: "—", style = MaterialTheme.typography.bodyMedium)
-                Spacer(Modifier.height(4.dp))
-                Text(job.experience     ?: "—", style = MaterialTheme.typography.bodyMedium)
+        DetailSectionCard (backgroudColor = Green, modifier = modifier.height(200.dp)){
+            Column(Modifier
+                .fillMaxSize()
+                .padding(top = 8.dp, bottom = 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center) {
+                Icon(FontAwesomeIcons.Solid.Search, contentDescription = null, modifier = Modifier.size(49.dp), tint = Color.White)
+                DetailItem(job.genderName)
+                DetailItem(job.educationLevel)
+                DetailItem(job.experience)
             }
         }
+
     }
 }
+
+@Composable
+fun CompanyLogo( modifier: Modifier = Modifier, url: String, isOnline: Boolean) {
+    if (url.isNotEmpty() and url.contains("http") and isOnline) {
+        AsyncImage(
+            model = url,
+            contentDescription = "Company Logo",
+            modifier = modifier.size(80.dp)
+        )
+    }
+}
+
 
 @Composable
 private fun HeaderItem(text: String){
@@ -212,17 +272,9 @@ private fun  BodyItem(text: String){
 
 /* Small building block used above */
 @Composable
-private fun DetailRow(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, onClick: (() -> Unit)? = null) {
-    val row: @Composable () -> Unit = {
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, null); Spacer(Modifier.width(8.dp)); Text(label, style = MaterialTheme.typography.bodyLarge)
-        }
-    }
-    Row(
-        Modifier.fillMaxWidth().padding(vertical = 6.dp)
-            .then(if (onClick != null) Modifier.semantics { testTag = "DetailRow_$label" } else Modifier),
-        verticalAlignment = Alignment.CenterVertically
-    ) { row() }
+private fun DetailItem(text: String) {
+    Spacer(Modifier.height(4.dp))
+    Text(text, style = MaterialTheme.typography.bodyMedium.copy(color = Color.White),maxLines = 2, overflow = TextOverflow.Ellipsis)
 }
 
 object JobDetailPreviewData {
@@ -236,18 +288,18 @@ object JobDetailPreviewData {
         authorEmail = "secretaire@attractivbusinessforsign.net",
         authorWebsite = "www.cidj.com", authorMobile1 = "09632578\n22568963",authorMobile2 = "03632378\n775665963",
         authorLongitude = null, authorLatitude = null, company = "Attractiv Business",
-        companyLogoUrl = "", salary = 450000, experience = "4 ans d'expérience(s)",
+        companyLogoUrl = "", salary = "450000", experience = "4 ans d'expérience(s)",
         educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"
     ).toUi()
 }
 
 @Preview(name = "Small – Light",  widthDp = 320, heightDp = 640, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Small_Light()  { StopGalereTheme (dynamicColor = true) { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Small_Light()  { StopGalereTheme (dynamicColor = true) { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }
 @Preview(name = "Medium – Light", widthDp = 360, heightDp = 740, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Medium_Light() { StopGalereTheme(dynamicColor = false) { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Medium_Light() { StopGalereTheme(dynamicColor = false) { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }
 @Preview(name = "Large – Light",  widthDp = 411, heightDp = 891, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Large_Light()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Large_Light()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }
 @Preview(name = "Tablet – Light", widthDp = 800, heightDp = 1280, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Tablet_Light() { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Tablet_Light() { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }
 @Preview(name = "Medium – Dark",  widthDp = 360, heightDp = 740, showBackground = true, backgroundColor = 0xFF000000)
-@Composable fun Preview_JobDetail_Medium_Dark()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job) } }
+@Composable fun Preview_JobDetail_Medium_Dark()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }

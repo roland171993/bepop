@@ -116,7 +116,7 @@ private val previewJob = JobUi(
     authorMobile1 = "09632578\n22568963",
     authorMobile2 = "09632578\n22568963",
     authorLongitude = null, authorLatitude = null, company = "Attractiv Business",
-    companyLogoUrl = "", salary = 450000, experience = "4 ans d'expérience(s)",
+    companyLogoUrl = "", salary = "450000", experience = "4 ans d'expérience(s)",
     educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"
 )
 

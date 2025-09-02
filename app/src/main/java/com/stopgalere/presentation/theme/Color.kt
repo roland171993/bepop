@@ -15,6 +15,8 @@ val MaterialGrey600 = Color(0xFF757575)
 
 val Orange = Color(0xFFDB7A3D)
 
+val Green = Color(0xFF4CAF50)
+
 val SplashColor = Color(0xFF3375BA)
 private val BackgroundColor = Color(0xFFE7E7E7)
 private val TextColor       = Color(0xFF525252)

@@ -30,7 +30,7 @@ data class JobUi(
     val companyLogoUrl: String,
 
     // misc
-    val salary: Int?,
+    val salary: String,
     val experience: String,
     val educationLevel: String
 )
