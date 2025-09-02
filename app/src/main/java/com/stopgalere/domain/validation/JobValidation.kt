@@ -55,6 +55,13 @@ object JobValidation {
         return true
     }
 
+    fun validateAndFormatMoney(salary: Int?): String {
+        return when {
+            salary == null || salary <= 0 -> "Salaire non renseigné"
+            else -> String.format(Locale.FRANCE,"%,d FCFA", salary).replace(',', ' ')
+        }
+    }
+
     fun validateAndFormatDate(raw: String?): String? {
         if (raw == null) return null
         val d = raw.trim()
@@ -144,6 +151,7 @@ object JobValidation {
         description: String?,
         sectorName: String?,
         company: String?,
+        salary: Int? = null,
         gate: List<String?> = emptyList()
     ): String? {
         // Step 1: high-level shape validation + date presence
@@ -151,6 +159,8 @@ object JobValidation {
 
         // Step 2: normalize date to dd-MM-yyyy (also re-parses defensively)
         val normalizedDate = validateAndFormatDate(dateRaw) ?: return null
+
+        if (salary == null) return null
 
         // Step 2: normalize date to dd-MM-yyyy (also re-parses defensively)
         if (validateAndFormatDate(deadlineRaw).isNullOrEmpty()) return null

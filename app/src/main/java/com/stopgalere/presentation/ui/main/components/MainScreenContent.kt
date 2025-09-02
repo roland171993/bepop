@@ -200,7 +200,7 @@ private fun OfflineBanner(visible: Boolean) {
         contentColor = MaterialTheme.colorScheme.onErrorContainer,
     ) {
         Text(
-            text = "Vous n’êtes pas connecté à Internet.",
+            text = stringResource(R.string.no_internet),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 10.dp)

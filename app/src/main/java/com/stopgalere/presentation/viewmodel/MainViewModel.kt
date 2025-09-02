@@ -33,8 +33,7 @@ class MainViewModel @Inject constructor(
     private val _isSearchOpen = MutableStateFlow(saved[KEY_SEARCH_OPEN] ?: false)
     val isSearchOpen: StateFlow<Boolean> = _isSearchOpen.asStateFlow()
 
-    val isOnline: StateFlow<Boolean> =
-        network.isOnline.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+    val isOnline: StateFlow<Boolean> = network.isOnline
 
     fun updateSearchQuery(newQuery: String) {
         _searchQuery.value = newQuery

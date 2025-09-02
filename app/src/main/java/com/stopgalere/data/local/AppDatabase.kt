@@ -10,10 +10,10 @@ import com.stopgalere.data.model.JobRemoteKeys
 
 @Database(
     entities = [JobEntity::class, JobRemoteKeys::class],
-    version = 3,
+    version = 4,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 2, to = 3)
+        AutoMigration(from = 3, to = 4)
     ]
 )
 abstract class AppDatabase : RoomDatabase() {

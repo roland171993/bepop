@@ -13,6 +13,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -59,8 +62,11 @@ object AppModule {
     fun providePrefs(@ApplicationContext ctx: Context): Prefs =
         Prefs(ctx)
 
-    @Provides @Singleton
-    fun provideNetworkMonitor(@ApplicationContext ctx: Context): com.stopgalere.data.remote.NetworkMonitor =
-        com.stopgalere.data.remote.NetworkMonitor(ctx)
+    @Provides
+    @Singleton
+    @ApplicationScope
+    fun provideApplicationScope(): CoroutineScope =
+        CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
 
 }

@@ -28,7 +28,7 @@ data class Job(
     val companyLogoUrl: String,
 
     // misc
-    val salary: Int?,
+    val salary: String,
     val experience: String,
     val educationLevel: String
 )

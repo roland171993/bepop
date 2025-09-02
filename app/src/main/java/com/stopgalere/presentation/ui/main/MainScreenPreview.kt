@@ -51,7 +51,7 @@ fun MainScreenPreview() {
                 authorLatitude = null,
                 company = "Attractiv Business",
                 companyLogoUrl = "",
-                salary = 450000,
+                salary = "450000",
                 experience = "4 ans d'expérience(s)",
                 educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"),
             JobUi(id = "2",
@@ -72,7 +72,7 @@ fun MainScreenPreview() {
                 authorLatitude = null,
                 company = "Attractiv Business",
                 companyLogoUrl = "",
-                salary = 450000,
+                salary = "450000",
                 experience = "4 ans d'expérience(s)",
                 educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"),
             JobUi(id = "3",
@@ -93,7 +93,7 @@ fun MainScreenPreview() {
                 authorLatitude = null,
                 company = "Attractiv Business",
                 companyLogoUrl = "",
-                salary = 450000,
+                salary = "450000",
                 experience = "4 ans d'expérience(s)",
                 educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7")
         )
@@ -184,7 +184,7 @@ fun Preview_Phone_Offline() {
             authorWebsite = "www.cidj.com", authorMobile1 = "09632578\n22568963",
             authorMobile2 = "03632378\n775665963",
             authorLongitude = null, authorLatitude = null, company = "Attractiv Business",
-            companyLogoUrl = "", salary = 450000, experience = "4 ans d'expérience(s)",
+            companyLogoUrl = "", salary = "450000", experience = "4 ans d'expérience(s)",
             educationLevel = "BAC+4, BAC+5, BAC+6, BAC+7"))
     )
     StopGalereTheme {

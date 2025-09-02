@@ -5,11 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.stopgalere.data.remote.NetworkMonitor
 import com.stopgalere.domain.model.Job
 import com.stopgalere.domain.repository.JobRepoInterface
 import com.stopgalere.presentation.ui.job.JobUi
 import com.stopgalere.presentation.ui.job.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -25,12 +27,15 @@ sealed interface JobDetailUiState {
 @HiltViewModel
 class JobDetailViewModel @Inject constructor(
     private val repo: JobRepoInterface,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    network: NetworkMonitor
 ) : ViewModel() {
 
     private val jobId: String = checkNotNull(savedStateHandle["jobId"]) {
         "jobId must be provided in navigation arguments"
     }
+
+    val isOnline: StateFlow<Boolean> = network.isOnline
 
     val uiState = mutableStateOf<JobDetailUiState>(JobDetailUiState.Loading)
 

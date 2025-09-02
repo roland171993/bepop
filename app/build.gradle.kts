@@ -112,8 +112,9 @@ dependencies {
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.1")
 
 
-    //Coil (image loading in Compose) ---
+    //Coil (image loading in Compose), Picasso
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("com.squareup.picasso:picasso:2.8")
 
     // Paging 3
     implementation ("androidx.paging:paging-runtime-ktx:3.3.0")
