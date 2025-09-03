@@ -2,6 +2,7 @@ package com.stopgalere.presentation.ui.job
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
@@ -50,6 +51,7 @@ import coil.compose.AsyncImage
 import com.stopgalere.presentation.theme.Green
 import compose.icons.fontawesomeicons.solid.Building
 import androidx.core.net.toUri
+import androidx.navigation.NavHostController
 import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.Backward
 import compose.icons.fontawesomeicons.solid.PhoneAlt
@@ -58,23 +60,31 @@ import compose.icons.fontawesomeicons.solid.PhoneAlt
 @Composable
 fun JobDetailScreen(
     modifier: Modifier = Modifier,
+    navController: NavHostController,
     viewModel: JobDetailViewModel = hiltViewModel()
 ) {
+    BackHandler { navController.popBackStack() }
+
     val uiState by viewModel.uiState
     val isOnline by viewModel.isOnline.collectAsStateWithLifecycle()
     when (val s = uiState) {
         is JobDetailUiState.Loading -> Box(Modifier.fillMaxSize(), Alignment.Center) { CircularProgressIndicator() }
         is JobDetailUiState.Error   -> Box(Modifier.fillMaxSize(), Alignment.Center) { Text(s.message ?: "Unable to load job", color = MaterialTheme.colorScheme.error) }
-        is JobDetailUiState.Success -> JobDetailContent(job = s.job, isOnline = isOnline, modifier = modifier)
+        is JobDetailUiState.Success -> JobDetailContent(
+            modifier = modifier,
+            job = s.job,
+            isOnline = isOnline,
+            onBack = { navController.popBackStack() } )
     }
 }
 
 /** Stateless content → great for previews and UI tests. */
 @Composable
 fun JobDetailContent(
+    modifier: Modifier = Modifier,
     job: JobUi,
     isOnline: Boolean,
-    modifier: Modifier = Modifier,
+    onBack: () -> Unit
 ) {
     val ctx = LocalContext.current
 
@@ -132,16 +142,17 @@ fun JobDetailContent(
     ) {
         // Top action icons
         Row(
-            Modifier
+            modifier
                 .fillMaxWidth()
                 .background(topBarBg),
             horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { doCall1(job.authorMobile1) }, content = {
-                Icon(FontAwesomeIcons.Solid.ArrowLeft, contentDescription = "Call1", tint = onTopBar, modifier = modifier.size(iconSize))
+            // Custom BackPress Icon
+            IconButton(onClick = { onBack() }, content = {
+                Icon(FontAwesomeIcons.Solid.ArrowLeft, contentDescription = "BackPress", tint = onTopBar, modifier = modifier.size(iconSize))
             })
             Row(
-                Modifier
+                modifier
                     .fillMaxWidth()
                     .background(topBarBg)
                     .padding(horizontal = 14.dp, vertical = 8.dp),
@@ -182,7 +193,7 @@ fun JobDetailContent(
                 .semantics { testTag = "JobDetail" },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(job.title, style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.secondary), maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Text(job.title, style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant), maxLines = 3, overflow = TextOverflow.Ellipsis)
 
             HeaderItem("DESCRIPTION")
             BodyItem(job.description)
@@ -218,13 +229,13 @@ fun JobDetailContent(
 
             // Salary strip
             DetailSectionCard(backgroudColor = Orange, modifier = modifier.height(200.dp)) {
-                Row(Modifier
+                Row(modifier
                     .fillMaxSize()
                     .padding(16.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically) {
                     Text(job.salary, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold), color = Color.White)
-                    Spacer(Modifier.width(12.dp))
+                    Spacer(modifier.width(12.dp))
                     Icon(FontAwesomeIcons.Solid.PiggyBank,
                         contentDescription = null,
                         modifier = modifier
@@ -235,15 +246,15 @@ fun JobDetailContent(
 
             // Work details (contract / mode / city)
             DetailSectionCard(backgroudColor = Color.White, modifier = modifier.height(200.dp)) {
-                Row(Modifier
+                Row(modifier
                     .fillMaxWidth()
                     .padding(16.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically) {
                     Icon(FontAwesomeIcons.Solid.Briefcase,
                         contentDescription = null,
-                        modifier = Modifier.size(49.dp))
-                    Spacer(Modifier.width(12.dp))
+                        modifier = modifier.size(49.dp))
+                    Spacer(modifier.width(12.dp))
                     Column {
                         DetailChip(label = job.contractTypeName ,isOnline = isOnline, isCity = false)
                         DetailChip(label = job.workModeName,isOnline = isOnline, isCity = false)
@@ -254,7 +265,7 @@ fun JobDetailContent(
 
             // Requirements strip
             DetailSectionCard (backgroudColor = Green, modifier = modifier.height(200.dp)){
-                Column(Modifier
+                Column(modifier
                     .fillMaxSize()
                     .padding(top = 8.dp, bottom = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -265,7 +276,7 @@ fun JobDetailContent(
                     DetailItem(job.experience)
                 }
             }
-            Spacer(Modifier.height(50.dp)) // avoid cutoff on real device cause Scafold not used we want from scratch
+            Spacer(modifier.height(50.dp)) // avoid cutoff on real device cause Scafold not used we want from scratch
         }
 
 
@@ -321,12 +332,12 @@ object JobDetailPreviewData {
 }
 
 @Preview(name = "Small – Light",  widthDp = 320, heightDp = 640, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Small_Light()  { StopGalereTheme (dynamicColor = true) { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }
+@Composable fun Preview_JobDetail_Small_Light()  { StopGalereTheme (dynamicColor = true) { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false, onBack = {}) } }
 @Preview(name = "Medium – Light", widthDp = 360, heightDp = 740, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Medium_Light() { StopGalereTheme(dynamicColor = false) { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }
+@Composable fun Preview_JobDetail_Medium_Light() { StopGalereTheme(dynamicColor = false) { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false, onBack = {}) } }
 @Preview(name = "Large – Light",  widthDp = 411, heightDp = 891, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Large_Light()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }
+@Composable fun Preview_JobDetail_Large_Light()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false, onBack = {}) } }
 @Preview(name = "Tablet – Light", widthDp = 800, heightDp = 1280, showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable fun Preview_JobDetail_Tablet_Light() { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }
+@Composable fun Preview_JobDetail_Tablet_Light() { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false, onBack = {}) } }
 @Preview(name = "Medium – Dark",  widthDp = 360, heightDp = 740, showBackground = true, backgroundColor = 0xFF000000)
-@Composable fun Preview_JobDetail_Medium_Dark()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false) } }
+@Composable fun Preview_JobDetail_Medium_Dark()  { StopGalereTheme { JobDetailContent(job = JobDetailPreviewData.job, isOnline = false, onBack = {}) } }

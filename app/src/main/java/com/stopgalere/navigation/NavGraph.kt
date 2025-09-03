@@ -41,13 +41,12 @@ fun NavGraph(
             MainScreen(navController = navController)
         }
 
-        // ---------- Job Detail ----------
         composable(
             route = Route.JobDetail.path,
             arguments = listOf(navArgument(Route.JobDetail.ARG_ID) { type = NavType.StringType })
         ) {
             // Hilt will inject JobDetailViewModel and read the "jobId" from SavedStateHandle
-            JobDetailScreen()
+            JobDetailScreen(navController = navController)
         }
     }
 }
