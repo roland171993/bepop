@@ -19,5 +19,14 @@
     <string name="screen_main_welcome">Bientôt disponible</string>
     <string name="no_internet">Vous n’êtes pas connecté à Internet.</string>
     <string name="job_list_no_more">Impossible de charger plus.</string>
+    <string name="screen_job_detail_not_loaded">Impossibilité de charger le détail du job</string>
+    <string name="screen_job_detail_description">DESCRIPTION</string>
+    <string name="screen_job_detail_company">EMPLOYEUR</string>
+    <string name="screen_job_detail_publish">PUBLICATION</string>
+    <string name="screen_job_detail_deadline">DATE LIMITE</string>
+    <string name="screen_job_detail_contacts">CONTACT(S)</string>
+    <string name="screen_job_detail_sector">SECTEUR D\'ACTIVITÉ</string>
+    <string name="screen_job_detail_website">SITE WEB</string>
+    <string name="screen_job_detail_email">EMAIL</string>
 
 </resources>

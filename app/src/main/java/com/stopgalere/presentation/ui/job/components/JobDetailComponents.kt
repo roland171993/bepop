@@ -18,6 +18,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -68,7 +70,7 @@ fun DetailChip(
             }
         },
         label = { Text(text = label, maxLines = 2, overflow = TextOverflow.Ellipsis) },
-        modifier = modifier,
+        modifier = modifier.semantics { testTag = "JobDetail_Chip_$label" },
         enabled = isOnline
     )
 }

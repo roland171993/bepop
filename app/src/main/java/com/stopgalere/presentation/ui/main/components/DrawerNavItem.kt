@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -82,17 +83,24 @@ fun DrawerContent(
     width: Dp,
     onItemSelected: (String) -> Unit
 ) {
+    val scheme = MaterialTheme.colorScheme
+
+    // Use a dynamic gradient based on Material You colors
+    val bgBrush = Brush.verticalGradient(
+        colors = listOf(
+            scheme.primary,
+            scheme.primaryContainer
+        )
+    )
+    // A content color that keeps good contrast on the gradient
+    val content = scheme.onPrimary
+
     Column(
         modifier = Modifier
             .fillMaxHeight()
             .width(width)
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0xFF4FAAF5),
-                        Color(0xFF2942E1)
-                    )
-                )
+                brush = bgBrush
             )
     ) {
         DrawerNavItemDefaults.items.forEachIndexed { index, item ->
@@ -109,16 +117,16 @@ fun DrawerContent(
                     imageVector   = item.icon,
                     contentDescription = item.label,
                     modifier      = Modifier.size(56.dp),
-                    tint          = Color.White
+                    tint          = content
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text  = item.label,
-                    color = Color.White
+                    color = content
                 )
             }
             if (index < DrawerNavItemDefaults.items.lastIndex) {
-                Divider(color = Color.White, thickness = 1.dp)
+                Divider(color = content, thickness = 1.dp)
             }
         }
     }

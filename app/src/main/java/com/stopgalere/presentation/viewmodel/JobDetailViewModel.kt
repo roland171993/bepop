@@ -1,21 +1,69 @@
 package com.stopgalere.presentation.viewmodel
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stopgalere.data.remote.NetworkMonitor
-import com.stopgalere.domain.model.Job
 import com.stopgalere.domain.repository.JobRepoInterface
+import com.stopgalere.navigation.Route // <-- use the NavGraph key, don't re-declare
 import com.stopgalere.presentation.ui.job.JobUi
 import com.stopgalere.presentation.ui.job.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+
+@HiltViewModel
+class JobDetailViewModel @Inject constructor(
+    private val repo: JobRepoInterface,
+    private val network: NetworkMonitor,
+    private val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    private val jobId: String = checkNotNull(savedStateHandle.get<String>(Route.JobDetail.ARG_ID)) {
+        "JobDetailViewModel requires '${Route.JobDetail.ARG_ID}' in SavedStateHandle"
+    }
+
+    // Backing UI state (hot, survives configuration changes)
+    private val _uiState = MutableStateFlow<JobDetailUiState>(JobDetailUiState.Loading)
+
+    val screenState: StateFlow<JobDetailScreenState> =
+        combine(_uiState, network.isOnline) { ui, online ->
+            JobDetailScreenState(ui = ui, isOnline = online)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = JobDetailScreenState(JobDetailUiState.Loading, isOnline = false)
+        )
+
+    init {
+        viewModelScope.launch {
+            repo.jobById(jobId) // Flow<Job?>
+                .onStart {
+                    _uiState.value = JobDetailUiState.Loading
+                }
+                .catch { e ->
+                    _uiState.value = JobDetailUiState.Error(e.message ?: "Unknown error")
+                }
+                .collectLatest { job ->
+                    _uiState.value = job?.let { JobDetailUiState.Success(it.toUi()) }
+                        ?: JobDetailUiState.Error("Job not found")
+                }
+        }
+    }
+}
+
+
 
 @Immutable
 sealed interface JobDetailUiState {
@@ -24,29 +72,8 @@ sealed interface JobDetailUiState {
     data class Success(val job: JobUi) : JobDetailUiState
 }
 
-@HiltViewModel
-class JobDetailViewModel @Inject constructor(
-    private val repo: JobRepoInterface,
-    savedStateHandle: SavedStateHandle,
-    network: NetworkMonitor
-) : ViewModel() {
-
-    private val jobId: String = checkNotNull(savedStateHandle["jobId"]) {
-        "jobId must be provided in navigation arguments"
-    }
-
-    val isOnline: StateFlow<Boolean> = network.isOnline
-
-    val uiState = mutableStateOf<JobDetailUiState>(JobDetailUiState.Loading)
-
-    init {
-        viewModelScope.launch {
-            repo.jobById(jobId)
-                .catch { e -> uiState.value = JobDetailUiState.Error(e.message) }
-                .collectLatest { job ->
-                    uiState.value = job?.let { JobDetailUiState.Success(it.toUi()) }
-                        ?: JobDetailUiState.Error("Job not found")
-                }
-        }
-    }
-}
+@Immutable
+data class JobDetailScreenState(
+    val ui: JobDetailUiState,
+    val isOnline: Boolean
+)
