@@ -38,7 +38,6 @@ fun JobItem(
     Card(
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(
-            // If you *must* hard-force pure white, swap to Color.White here.
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
         ),

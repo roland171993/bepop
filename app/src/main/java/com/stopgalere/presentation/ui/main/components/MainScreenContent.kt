@@ -1,5 +1,6 @@
 package com.stopgalere.presentation.ui.main.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
@@ -98,7 +99,6 @@ fun MainScreenContent(
     }
 }
 
-/* ---------------- small, reusable bits ---------------- */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -113,16 +113,17 @@ private fun MainTopBar(
     SmallTopAppBar(
         modifier = Modifier.semantics { testTag = "TopAppBar" },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFF3B8ED0),
-            titleContentColor = Color.White,
-            navigationIconContentColor = Color.White,
-            actionIconContentColor = Color.White
+            containerColor = MaterialTheme.colorScheme.primary,
+            titleContentColor = MaterialTheme.colorScheme.onPrimary,
+            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
         ),
         title = {
             if (!isSearchOpen) {
                 Text(
                     text = stringResource(R.string.screen_main_app_name),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.semantics { testTag = "AppBarTitle" }

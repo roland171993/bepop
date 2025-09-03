@@ -58,8 +58,6 @@ fun MainScreen(
     val jobsPaging = viewModel.jobs.collectAsLazyPagingItems()
     val welcomeMsg = stringResource(R.string.screen_main_welcome)
 
-    println("SEARCH Main ")
-
     ModalDrawer(
         drawerState = drawerState,
         modifier = Modifier

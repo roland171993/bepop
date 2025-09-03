@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 
 @Composable
 fun AppBarSearchField(
@@ -29,6 +30,8 @@ fun AppBarSearchField(
     onSearch: () -> Unit,
     onClear: () -> Unit
 ) {
+    val colors = MaterialTheme.colorScheme
+
     TextField(
         value = query,
         onValueChange = onQueryChange,
@@ -36,23 +39,23 @@ fun AppBarSearchField(
             .padding(end = 8.dp)
             .heightIn(min = 56.dp),
         singleLine = true,
-        textStyle = TextStyle(fontSize = 16.sp, color = Color.White),
-        placeholder = { Text("Rechercher…", color = Color(0xCCFFFFFF)) },
-        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = Color.White) },
+        textStyle = TextStyle(fontSize = 16.sp, color = colors.onPrimary),
+        placeholder = { Text("Rechercher…", color = colors.onPrimary) },
+        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = colors.onPrimary) },
         trailingIcon = {
             if (query.isNotEmpty()) {
                 IconButton(onClick = onClear) {
-                    Icon(Icons.Default.Close, contentDescription = "Clear", tint = Color.White)
+                    Icon(Icons.Default.Close, contentDescription = "Clear", tint = colors.onPrimary)
                 }
             }
         },
         shape = RoundedCornerShape(10.dp),
         colors = TextFieldDefaults.textFieldColors(
-            textColor = Color.White,
-            cursorColor = Color.White,
-            placeholderColor = Color(0xCCFFFFFF),
-            leadingIconColor = Color.White,
-            trailingIconColor = Color.White,
+            textColor = colors.onPrimary,
+            cursorColor = colors.onPrimary,
+            placeholderColor = colors.onPrimary.copy(alpha = 0.7f),
+            leadingIconColor = colors.onPrimary,
+            trailingIconColor = colors.onPrimary,
             backgroundColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
