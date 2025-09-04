@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.stringResource
+import com.RolandAssoh.stopgalere.ci.R
 
 @Composable
 fun AppBarSearchField(
@@ -40,7 +42,7 @@ fun AppBarSearchField(
             .heightIn(min = 56.dp),
         singleLine = true,
         textStyle = TextStyle(fontSize = 16.sp, color = colors.onPrimary),
-        placeholder = { Text("Rechercher…", color = colors.onPrimary) },
+        placeholder = { Text(stringResource(R.string.screen_main_search_title), color = colors.onPrimary) },
         leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = colors.onPrimary) },
         trailingIcon = {
             if (query.isNotEmpty()) {

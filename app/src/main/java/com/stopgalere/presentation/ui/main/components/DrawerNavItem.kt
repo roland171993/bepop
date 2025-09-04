@@ -1,5 +1,6 @@
 package com.stopgalere.presentation.ui.main.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.Dp
@@ -27,6 +29,7 @@ import compose.icons.fontawesomeicons.solid.IdCard
 import compose.icons.fontawesomeicons.solid.InfoCircle
 import compose.icons.fontawesomeicons.solid.QuestionCircle
 import compose.icons.fontawesomeicons.solid.Star
+import com.RolandAssoh.stopgalere.ci.R
 
 
 /**
@@ -35,7 +38,7 @@ import compose.icons.fontawesomeicons.solid.Star
 data class DrawerNavItem(
     val route: String,
     val icon: ImageVector,
-    val label: String
+    @StringRes val labelRes: Int
 )
 
 object DrawerNavItemDefaults {
@@ -43,37 +46,37 @@ object DrawerNavItemDefaults {
         DrawerNavItem(
             route = "cover_letter",
             icon  = FontAwesomeIcons.Solid.FileAlt,
-            label = "L.Motivation"
+            labelRes = R.string.screen_main_drawer_cover_letter
         ),
         DrawerNavItem(
             route = "cv",
             icon  = FontAwesomeIcons.Solid.IdCard,
-            label = "CV"
+            labelRes = R.string.screen_main_drawer_cv
         ),
         DrawerNavItem(
             route = "noter",
             icon  = FontAwesomeIcons.Solid.Star,
-            label = "Noter"
+            labelRes = R.string.screen_main_drawer_rate
         ),
         DrawerNavItem(
             route = "apropos",
             icon  = FontAwesomeIcons.Solid.InfoCircle,
-            label = "A Propos"
+            labelRes = R.string.screen_main_drawer_about
         ),
         DrawerNavItem(
             route = "aide",
             icon  = FontAwesomeIcons.Solid.QuestionCircle,
-            label = "Aide"
+            labelRes = R.string.screen_main_drawer_help
         ),
         DrawerNavItem(
             route = "deposer",
             icon  = FontAwesomeIcons.Solid.Bullhorn,
-            label = "Déposer"
+            labelRes = R.string.screen_main_drawer_upload
         ),
         DrawerNavItem(
             route = "page",
             icon  = FontAwesomeIcons.Brands.Facebook,
-            label = "Page"
+            labelRes = R.string.screen_main_drawer_page
         )
     )
 }
@@ -104,6 +107,7 @@ fun DrawerContent(
             )
     ) {
         DrawerNavItemDefaults.items.forEachIndexed { index, item ->
+            val label = stringResource(item.labelRes)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
@@ -115,13 +119,13 @@ fun DrawerContent(
             ) {
                 Icon(
                     imageVector   = item.icon,
-                    contentDescription = item.label,
+                    contentDescription = label,
                     modifier      = Modifier.size(56.dp),
                     tint          = content
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text  = item.label,
+                    text  = label,
                     color = content
                 )
             }

@@ -61,7 +61,12 @@ fun JobDetailScreen(
         is JobDetailUiState.Error -> Box(
             Modifier.fillMaxSize().semantics { testTag = "JobDetail_Error" },
             contentAlignment = Alignment.Center
-        ) { Text(ui.message ?: stringResource(R.string.screen_job_detail_not_loaded), color = MaterialTheme.colorScheme.error) }
+        ) {
+            Text(
+                text = ui.message.asString(),
+                color = MaterialTheme.colorScheme.error
+            )
+        }
 
         is JobDetailUiState.Success -> JobDetailContent(
             modifier = modifier,
