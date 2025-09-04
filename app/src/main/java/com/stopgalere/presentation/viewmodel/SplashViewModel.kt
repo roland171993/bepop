@@ -31,11 +31,10 @@ class SplashViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<SplashUiState>(SplashUiState.Idle)
-    /** Idle → RequestPermissions */
+    // Idle → RequestPermissions
     val uiState: StateFlow<SplashUiState> = _uiState.asStateFlow()
 
     private val _events = MutableSharedFlow<SplashEvent>(replay = 0)
-    /** Emits [SplashEvent.Navigate] when ready to go to next screen */
     val events: SharedFlow<SplashEvent> = _events.asSharedFlow()
 
     init {
@@ -50,9 +49,9 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Call from your Activity/Composable when perms result arrives.
-     * If granted, continue; otherwise re-request.
+    /*
+      Call from your Activity/Composable when perms result arrives.
+      If granted, continue; otherwise re-request.
      */
     fun onPermissionsResult(allGranted: Boolean) {
         if (allGranted) {

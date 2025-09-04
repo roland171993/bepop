@@ -4,9 +4,11 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.RolandAssoh.stopgalere.ci.R
 import com.stopgalere.data.remote.NetworkMonitor
 import com.stopgalere.domain.repository.JobRepoInterface
 import com.stopgalere.navigation.Route // <-- use the NavGraph key, don't re-declare
+import com.stopgalere.presentation.ui.common.UiText
 import com.stopgalere.presentation.ui.job.JobUi
 import com.stopgalere.presentation.ui.job.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 @HiltViewModel
 class JobDetailViewModel @Inject constructor(
@@ -48,17 +51,29 @@ class JobDetailViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            repo.jobById(jobId) // Flow<Job?>
+            repo.jobById(jobId)
                 .onStart {
                     _uiState.value = JobDetailUiState.Loading
                 }
                 .catch { e ->
-                    _uiState.value = JobDetailUiState.Error(e.message ?: "Unknown error")
+                    _uiState.value = JobDetailUiState.Error(mapThrowableToUiText(e))
                 }
                 .collectLatest { job ->
-                    _uiState.value = job?.let { JobDetailUiState.Success(it.toUi()) }
-                        ?: JobDetailUiState.Error("Job not found")
+                    _uiState.value = job
+                        ?.let { JobDetailUiState.Success(it.toUi()) }
+                        ?: JobDetailUiState.Error(UiText.Resource(R.string.screen_job_detail_not_loaded))
                 }
+        }
+    }
+
+    // Map exceptions to user-facing, localized messages
+    private fun mapThrowableToUiText(t: Throwable): UiText {
+        return when (t) {
+            is IOException -> UiText.Resource(R.string.no_internet) // you already have this string
+            else -> {
+                val msg = t.message?.takeIf { it.isNotBlank() }
+                msg?.let { UiText.DynamicString(it) } ?: UiText.Resource(R.string.error_unknown)
+            }
         }
     }
 }
@@ -68,7 +83,7 @@ class JobDetailViewModel @Inject constructor(
 @Immutable
 sealed interface JobDetailUiState {
     data object Loading : JobDetailUiState
-    data class Error(val message: String?) : JobDetailUiState
+    data class Error(val message: UiText) : JobDetailUiState
     data class Success(val job: JobUi) : JobDetailUiState
 }
 

@@ -47,7 +47,7 @@ class MainViewModel @Inject constructor(
         saved[KEY_SEARCH_OPEN] = open
     }
 
-    /** Paging stream switches between online/offline sources automatically. */
+    // Paging stream switches between online/offline sources automatically.
     val jobs: Flow<PagingData<JobUi>> =
         combine(
             _searchQuery

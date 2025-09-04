@@ -17,6 +17,15 @@
     <string name="screen_main_cd_open_drawer">Ouvrir le menu</string>
     <string name="screen_main_app_name">StopGalere CI</string>
     <string name="screen_main_welcome">Bientôt disponible</string>
+    <string name="screen_main_search_title">Rechercher…</string>
+    <string name="screen_main_drawer_cover_letter">L.Motivation</string>
+    <string name="error_unknown">Quelque chose s\'est mal passé, nous travaillons à le résoudre.</string>
+    <string name="screen_main_drawer_cv">CV</string>
+    <string name="screen_main_drawer_rate">Noter</string>
+    <string name="screen_main_drawer_about">A Propos</string>
+    <string name="screen_main_drawer_help">Aide</string>
+    <string name="screen_main_drawer_upload">Déposer</string>
+    <string name="screen_main_drawer_page">Page</string>
     <string name="no_internet">Vous n’êtes pas connecté à Internet.</string>
     <string name="job_list_no_more">Impossible de charger plus.</string>
     <string name="screen_job_detail_not_loaded">Impossibilité de charger le détail du job</string>
