@@ -43,7 +43,8 @@ import com.stopgalere.presentation.viewmodel.MainViewModel
 @Composable
 fun MainScreen(
     navController: NavHostController,
-    viewModel: MainViewModel = hiltViewModel()
+    viewModel: MainViewModel = hiltViewModel(),
+    onOpenJobDetail: (jobId:String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -101,7 +102,7 @@ fun MainScreen(
                 onRefresh = { jobsPaging.refresh() },
                 listState = listState,
                 onJobClick = { job ->
-                    navController.navigateToJobDetail(job.id)
+                    onOpenJobDetail(job.id)
                 }
             )
             SnackbarHost(

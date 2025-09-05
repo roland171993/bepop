@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.stopgalere.presentation.ui.coverletter.CoverLetterScreen
 import com.stopgalere.presentation.ui.intro.WizardPagerScreen
 import com.stopgalere.presentation.ui.job.JobDetailScreen
 import com.stopgalere.presentation.ui.main.MainScreen
@@ -17,9 +18,16 @@ sealed class Route(val path: String) {
     data object Splash : Route("splash")
     data object Intro : Route("intro")
     data object Main : Route("main")
+
+    data object CoverLetter : Route("coverLetter")
     data object JobDetail : Route("jobDetail/{jobId}") {
         fun of(jobId: String) = "jobDetail/$jobId"
         const val ARG_ID = "jobId"
+    }
+
+    data object CoverLetterDetail : Route("coverLetterDetail/{coverLetterId}") {
+        fun of(id: String) = "coverLetterDetail/$id"
+        const val ARG_ID = "coverLetterId"
     }
 }
 @Composable
@@ -38,20 +46,40 @@ fun NavGraph(
             WizardPagerScreen(navController = navController)
         }
         composable(Route.Main.path) {
-            MainScreen(navController = navController)
+            MainScreen(
+                navController = navController,
+                onOpenJobDetail = {jobId ->
+                    navController.navigate(Route.JobDetail.of(jobId))
+                })
         }
 
         composable(
             route = Route.JobDetail.path,
             arguments = listOf(navArgument(Route.JobDetail.ARG_ID) { type = NavType.StringType })
         ) {
-            // Hilt will inject JobDetailViewModel and read the "jobId" from SavedStateHandle
             JobDetailScreen(navController = navController)
         }
+
+        composable(Route.CoverLetter.path){
+            CoverLetterScreen(
+                navController = navController,
+                onOpenDetail = { id ->
+                    navController.navigate(Route.CoverLetterDetail.of(id))
+                })
+        }
+
+        /*composable(
+            route = Route.CoverLetterDetail.path,
+            arguments = listOf(navArgument(Route.CoverLetterDetail.ARG_ID) { type = NavType.StringType })
+        ) {
+            CoverLetterDetailScreen(
+                navController = navController
+            )
+        }*/
     }
 }
 
 /** Helper for cleaner call-sites */
 fun NavHostController.navigateToJobDetail(jobId: String) {
-    navigate(Route.JobDetail.of(jobId))
+
 }

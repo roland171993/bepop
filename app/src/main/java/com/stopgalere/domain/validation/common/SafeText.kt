@@ -1,6 +1,7 @@
-package com.stopgalere.domain.validation
+package com.stopgalere.domain.validation.common
 
 import java.text.Normalizer
+import kotlin.text.iterator
 
 object SafeText {
 

@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 import javax.inject.Singleton
-// data/remote/NetworkMonitor.kt
+
 @Singleton
 class NetworkMonitor @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -34,8 +34,14 @@ class NetworkMonitor @Inject constructor(
         trySend(checkNow())
 
         val callback = object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) { trySend(true) }
-            override fun onLost(network: Network)     { trySend(checkNow()) }
+            override fun onAvailable(network: Network) {
+                trySend(true)
+            }
+
+            override fun onLost(network: Network) {
+                trySend(checkNow())
+            }
+
             override fun onCapabilitiesChanged(n: Network, nc: NetworkCapabilities) {
                 trySend(nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET))
             }
@@ -47,6 +53,5 @@ class NetworkMonitor @Inject constructor(
 
     // Hot, shared StateFlow (single OS callback for the whole app)
     val isOnline: StateFlow<Boolean> =
-        onlineFlow.stateIn(appScope, SharingStarted.Eagerly, false)
+        onlineFlow.stateIn(appScope, SharingStarted.Companion.Eagerly, false)
 }
-

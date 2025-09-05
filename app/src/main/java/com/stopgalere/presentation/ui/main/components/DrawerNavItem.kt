@@ -44,32 +44,32 @@ data class DrawerNavItem(
 object DrawerNavItemDefaults {
     val items = listOf(
         DrawerNavItem(
-            route = "cover_letter",
+            route = "coverLetter",
             icon  = FontAwesomeIcons.Solid.FileAlt,
             labelRes = R.string.screen_main_drawer_cover_letter
         ),
         DrawerNavItem(
-            route = "cv",
+            route = "resume",
             icon  = FontAwesomeIcons.Solid.IdCard,
             labelRes = R.string.screen_main_drawer_cv
         ),
         DrawerNavItem(
-            route = "noter",
+            route = "rate",
             icon  = FontAwesomeIcons.Solid.Star,
             labelRes = R.string.screen_main_drawer_rate
         ),
         DrawerNavItem(
-            route = "apropos",
+            route = "about",
             icon  = FontAwesomeIcons.Solid.InfoCircle,
             labelRes = R.string.screen_main_drawer_about
         ),
         DrawerNavItem(
-            route = "aide",
+            route = "help",
             icon  = FontAwesomeIcons.Solid.QuestionCircle,
             labelRes = R.string.screen_main_drawer_help
         ),
         DrawerNavItem(
-            route = "deposer",
+            route = "upload",
             icon  = FontAwesomeIcons.Solid.Bullhorn,
             labelRes = R.string.screen_main_drawer_upload
         ),

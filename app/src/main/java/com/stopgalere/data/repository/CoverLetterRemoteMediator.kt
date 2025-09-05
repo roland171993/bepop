@@ -11,7 +11,7 @@ import com.stopgalere.data.model.CoverLetterRemoteKeys
 import com.stopgalere.data.remote.ApiService
 import com.stopgalere.data.remote.dto.CoverLettersResponse
 import com.stopgalere.domain.validation.CoverLetterValidation
-import com.stopgalere.domain.validation.SafeText.isSafeText
+import com.stopgalere.domain.validation.common.SafeText.isSafeText
 
 @OptIn(ExperimentalPagingApi::class)
 class CoverLetterRemoteMediator(
@@ -68,9 +68,6 @@ class CoverLetterRemoteMediator(
                 content = content!!,
                 date = uiDate,            // dd-MM-yyyy from createdAt
                 dateAdded = createdAt!!,  // raw createdAt for sorting
-                updatedAt = updatedAt ?: createdAt, // fallback to createdAt
-                unpublished = unpublished,
-                version = version
             )
         }
 

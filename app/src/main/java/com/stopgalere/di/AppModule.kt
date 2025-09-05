@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.stopgalere.data.local.AppDatabase
 import com.stopgalere.data.local.Prefs
 import com.stopgalere.data.remote.ApiService
+import com.stopgalere.data.repository.CoverLetterRepository
 import com.stopgalere.data.repository.JobRepository
+import com.stopgalere.domain.repository.CoverLetterRepoInterface
 import com.stopgalere.domain.repository.JobRepoInterface
 import com.stopgalere.util.AppConstants
 import dagger.Module
@@ -56,6 +58,10 @@ object AppModule {
     @Provides @Singleton
     fun provideJobRepo(db: AppDatabase, api: ApiService): JobRepoInterface =
         JobRepository(db, api)
+
+    @Provides @Singleton
+    fun provideCoverLetterRepo(db: AppDatabase, api: ApiService): CoverLetterRepoInterface =
+        CoverLetterRepository(db, api)
 
     @Provides
     @Singleton
