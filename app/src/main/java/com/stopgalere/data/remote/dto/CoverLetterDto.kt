@@ -9,13 +9,7 @@ data class CoverLetterDto(
     val createdAt: String? = null,
 )
 
-data class CoverLettersResponse(
-    val coverLetters: List<CoverLetterDto> = emptyList(),
-    val pagination: Pagination? = null
-)
-
-/** Same shape you already use for Jobs. */
-data class Pagination(
+data class CoverLetterPagination(
     val total: Int? = null,
     val limit: Int? = null,
     val currentPage: Int? = null,
@@ -23,3 +17,11 @@ data class Pagination(
     val previousPage: Int? = null,
     val nextPage: Int? = null
 )
+
+data class CoverLettersResponse(
+    val coverLetters: List<CoverLetterDto> = emptyList(),
+    val pagination: CoverLetterPagination? = null
+)
+
+
+

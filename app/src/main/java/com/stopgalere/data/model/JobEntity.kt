@@ -1,5 +1,6 @@
 package com.stopgalere.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.stopgalere.domain.model.Job
@@ -29,8 +30,15 @@ data class JobEntity(
     // author/company
     val authorEmail: String,
     val authorWebsite: String,
+
+    // ✅ default must be SQL literal: "''" (empty string)
+    @ColumnInfo(defaultValue = "''")
     val authorMobile1: String,
+
+    // ✅ new NOT NULL column with proper default
+    @ColumnInfo(defaultValue = "''")
     val authorMobile2: String,
+
     val authorLongitude: Double?,
     val authorLatitude: Double?,
     val company: String,

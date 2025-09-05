@@ -11,7 +11,8 @@ import com.stopgalere.data.model.JobRemoteKeys
 import com.stopgalere.data.remote.ApiService
 import com.stopgalere.data.remote.dto.JobsResponse
 import com.stopgalere.domain.validation.JobValidation
-import com.stopgalere.domain.validation.SafeText.isSafeText
+import com.stopgalere.domain.validation.common.DateValidation.validateAndFormatDate
+import com.stopgalere.domain.validation.common.SafeText.isSafeText
 
 /**
  * DATA layer – keeps pagination state in Room (RemoteKeys),
@@ -118,7 +119,7 @@ class JobRemoteMediator(
             val experience       = dto.experience?.trim().orEmpty()
             val educationLevel   = dto.educationLevel?.trim().orEmpty()
             val workModeName     = dto.workMode?.name?.trim().orEmpty()
-            val deadline         = JobValidation.validateAndFormatDate(deadlineRaw)
+            val deadline         = validateAndFormatDate(deadlineRaw)
             val salary           = JobValidation.validateAndFormatMoney(salaryRaw)
 
             JobEntity(
