@@ -89,7 +89,7 @@ class CoverLetterRemoteMediator(
             }
         }
 
-        val endReached = nextKey == null || currentPage >= lastPage
+        val endReached = nextKey == null || currentPage >= lastPage || entities.isEmpty()
         MediatorResult.Success(endOfPaginationReached = endReached)
     } catch (t: Throwable) {
         MediatorResult.Error(t)

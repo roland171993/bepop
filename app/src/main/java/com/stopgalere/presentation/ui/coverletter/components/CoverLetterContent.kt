@@ -14,6 +14,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.stopgalere.presentation.ui.components.OfflineBanner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,18 +43,7 @@ fun CoverLetterContent(
             onBack = onBack
         )
 
-        if (!isOnline) {
-            Surface(
-                color = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer,
-            ) {
-                Text(
-                    text = "Pas de connexion Internet",
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
+        OfflineBanner(visible = !isOnline)
 
         val isRefreshing = covers.loadState.refresh is LoadState.Loading
         val state = rememberPullToRefreshState()
