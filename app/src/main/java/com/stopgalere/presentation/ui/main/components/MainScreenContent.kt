@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.RolandAssoh.stopgalere.ci.R
+import com.stopgalere.presentation.components.OfflineBanner
 import com.stopgalere.presentation.ui.job.JobList
 import com.stopgalere.presentation.ui.job.JobUi
 
@@ -192,22 +193,4 @@ fun SmallTopAppBar(
 )
 
 
-/** M3 banner shown only when offline. */
-@Composable
-private fun OfflineBanner(visible: Boolean) {
-    if (!visible) return
-    Surface(
-        color = MaterialTheme.colorScheme.errorContainer,
-        contentColor = MaterialTheme.colorScheme.onErrorContainer,
-    ) {
-        Text(
-            text = stringResource(R.string.no_internet),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp)
-                .semantics { testTag = "OfflineBanner" },
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
-        )
-    }
-}
+

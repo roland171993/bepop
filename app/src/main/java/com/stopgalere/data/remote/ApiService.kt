@@ -30,14 +30,12 @@ interface ApiService {
     @GET("jobs")
     suspend fun getJobs(
         @Query("page") page: Int,
-        @Query("limit") limit: Int,
         @Query("query") query: String? = null
     ): JobsResponse
 
     @GET("cover-letters")
     suspend fun getCoverLetters(
         @Query("page") page: Int,
-        @Query("limit") limit: Int,
         @Query("query") query: String? = null
     ): CoverLettersResponse
 

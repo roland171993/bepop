@@ -59,7 +59,7 @@ fun JobItem(
                 Text(
                     job.title.uppercase(),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
@@ -101,7 +101,7 @@ fun JobItem(
     }
 }
 
-/* -------------------- Previews -------------------- */
+// -------------------- Previews --------------------
 
 private val previewJob = JobUi(
     id = "1", title = "Comptable Senior", city = "Abidjan",

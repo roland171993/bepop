@@ -39,8 +39,7 @@ class CoverLetterRemoteMediator(
             }
         }
 
-        val pageSize = state.config.pageSize
-        val response: CoverLettersResponse = api.getCoverLetters(pageToLoad, pageSize, query)
+        val response: CoverLettersResponse = api.getCoverLetters(pageToLoad, query)
 
         val p = response.pagination
         val currentPage = p?.currentPage ?: pageToLoad
@@ -90,7 +89,7 @@ class CoverLetterRemoteMediator(
             }
         }
 
-        val endReached = nextKey == null || currentPage >= lastPage || entities.isEmpty()
+        val endReached = nextKey == null || currentPage >= lastPage
         MediatorResult.Success(endOfPaginationReached = endReached)
     } catch (t: Throwable) {
         MediatorResult.Error(t)
