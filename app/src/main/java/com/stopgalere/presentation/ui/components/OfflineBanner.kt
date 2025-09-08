@@ -1,4 +1,4 @@
-package com.stopgalere.presentation.components
+package com.stopgalere.presentation.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

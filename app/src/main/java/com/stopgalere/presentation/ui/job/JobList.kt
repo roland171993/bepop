@@ -76,7 +76,8 @@ fun JobList(
                 .navigationBarsPadding(),
                 contentPadding = contentPadding,
                 state = listState) {
-                items(jobs.itemCount) { index ->
+                items(count = jobs.itemCount,
+                    key = { index -> jobs.peek(index)?.id ?: index }) { index ->
                     jobs[index]?.let { job ->
                         JobItem(
                             job = job,

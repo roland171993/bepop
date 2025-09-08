@@ -1,6 +1,5 @@
 package com.stopgalere.presentation.ui.main.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
@@ -14,18 +13,16 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.RolandAssoh.stopgalere.ci.R
-import com.stopgalere.presentation.components.OfflineBanner
+import com.stopgalere.presentation.ui.components.OfflineBanner
 import com.stopgalere.presentation.ui.job.JobList
 import com.stopgalere.presentation.ui.job.JobUi
 
