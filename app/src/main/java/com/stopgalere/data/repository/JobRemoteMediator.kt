@@ -64,7 +64,6 @@ class JobRemoteMediator(
         // 2) Call API for that exact page
         val response: JobsResponse = api.getJobs(
             page = pageToLoad,
-            limit = pageSize,
             query = query
         )
 

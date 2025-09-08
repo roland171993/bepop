@@ -33,7 +33,7 @@ sealed class Route(val path: String) {
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Route.Main.path
+    startDestination: String = Route.CoverLetter.path
 ) {
     NavHost(
         navController = navController,

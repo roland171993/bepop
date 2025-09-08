@@ -27,7 +27,7 @@ object CoverLetterValidation {
         if (title.isNullOrBlank() || content.isNullOrBlank() || createdAtRaw.isNullOrBlank())
             return null
         if (title.length !in 3..225) return null
-        if (content.length !in 3..225) return null
+        if (content.length !in 3..5000) return null // Avoid ManInTheMiddle attacks limit string length
         if (createdAtRaw.length !in 3..225) return null
 
         if (gate.any { !isSafeText(it) }) return null

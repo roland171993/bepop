@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.*
 import androidx.compose.material3.pulltorefresh.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
@@ -65,7 +66,9 @@ fun CoverLetterContent(
                 PullToRefreshDefaults.Indicator(
                     state = state,
                     isRefreshing = isRefreshing,
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .padding(top = 8.dp),
                     containerColor = MaterialTheme.colorScheme.surface,
                     color = MaterialTheme.colorScheme.primary
                 )

@@ -63,7 +63,7 @@ object JobValidation {
         if (des.isNullOrEmpty() || sec.isNullOrEmpty() || com.isNullOrEmpty()) return true
 
         // length rules
-        if (des.length !in 3..225) return true
+        if (des.length !in 3..5000) return true // Avoid ManInTheMiddle attacks limit string length
         if (sec.length !in 3..225) return true
         if (com.length !in 2..225) return true
 

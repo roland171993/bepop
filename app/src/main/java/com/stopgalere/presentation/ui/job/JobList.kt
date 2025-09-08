@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import com.RolandAssoh.stopgalere.ci.R
+import com.stopgalere.presentation.theme.Gray101
 import com.stopgalere.presentation.ui.job.components.JobItem
 import com.stopgalere.presentation.ui.main.components.NoContentPlaceholder
 
@@ -70,7 +71,7 @@ fun JobList(
         else -> {
             LazyColumn(modifier = modifier
                 .fillMaxSize()
-                .background(Color(0xFFF2F2F2))
+                .background(color = Gray101)
                 .semantics { testTag = "JobList" }
                 .navigationBarsPadding(),
                 contentPadding = contentPadding,

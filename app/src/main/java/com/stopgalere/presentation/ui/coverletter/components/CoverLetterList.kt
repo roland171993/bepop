@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.RolandAssoh.stopgalere.ci.R
+import com.stopgalere.presentation.theme.Gray101
 import com.stopgalere.presentation.ui.main.components.NoContentPlaceholder
 
 @Composable
@@ -47,13 +48,15 @@ fun CoverLetterList(
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize()
-                    .background(Color(0xFFF2F2F2))
-                    .semantics { testTag = "CoverLetterList" }
-                    .navigationBarsPadding(),
+                    .background(color = Gray101)
+                    .navigationBarsPadding()
+                    .semantics { testTag = "CoverLetterList" },
                 contentPadding = contentPadding,
                 state = listState
             ) {
-                items(covers.itemCount) { index ->
+                items(count = covers.itemCount,
+                    key = { index -> covers.peek(index)?.id ?: index }
+                ) { index ->
                     covers[index]?.let { cover ->
                         CoverLetterItem(cover = cover, onClick = onItemClick)
                     }
