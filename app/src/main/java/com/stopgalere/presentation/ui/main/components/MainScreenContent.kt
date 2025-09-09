@@ -121,7 +121,6 @@ private fun MainTopBar(
                 Text(
                     text = stringResource(R.string.screen_main_app_name),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier.semantics { testTag = "AppBarTitle" }

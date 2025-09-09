@@ -8,7 +8,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.stopgalere.presentation.ui.coverletter.components.CoverLetterContent
-import com.stopgalere.presentation.viewmodel.CoverLetterViewModel
+import com.stopgalere.presentation.viewmodel.coverletter.CoverLetterViewModel
 
 @Composable
 fun CoverLetterScreen(

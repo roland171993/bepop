@@ -30,7 +30,7 @@ class CoverLetterRepository @Inject constructor(
         val config = PagingConfig(
             pageSize = pageSize,
             initialLoadSize = pageSize,
-            prefetchDistance = 0,
+            prefetchDistance = 3,
             enablePlaceholders = true
         )
 

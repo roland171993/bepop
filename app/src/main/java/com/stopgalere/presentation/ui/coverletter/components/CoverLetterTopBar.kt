@@ -7,6 +7,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +43,7 @@ fun CoverLetterTopBar(
                 )
             } else {
                 Text(
-                    text = "Lettres de motivation",
+                    text = stringResource(R.string.screen_cover_letters_title),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -53,13 +54,13 @@ fun CoverLetterTopBar(
             IconButton(onClick = {
                 if (isSearchOpen) onSetSearchActive(false) else onBack()
             }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Retour")
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
             }
         },
         actions = {
             if (!isSearchOpen) {
                 IconButton(onClick = { onSetSearchActive(true) }) {
-                    Icon(Icons.Default.Search, contentDescription = "Rechercher")
+                    Icon(Icons.Default.Search, contentDescription = "Search")
                 }
             }
         }

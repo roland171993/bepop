@@ -1,4 +1,4 @@
-package com.stopgalere.presentation.viewmodel
+package com.stopgalere.presentation.viewmodel.coverletter
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
