@@ -40,6 +40,7 @@ import com.stopgalere.presentation.theme.StopGalereTheme
 import compose.icons.fontawesomeicons.Solid
 import com.RolandAssoh.stopgalere.ci.R
 import androidx.core.net.toUri
+import com.stopgalere.presentation.ui.common.HeaderIconButton
 
 @Composable
 fun JobDetailScreen(
@@ -315,7 +316,8 @@ fun JobDetailContent(
                     DetailItem(job.experience)
                 }
             }
-            Spacer(Modifier.height(50.dp))
+
+            Spacer(Modifier.height(50.dp)) // fix cut on real phone cause scafold not used , we want from stratch
         }
     }
 }
@@ -331,20 +333,7 @@ fun CompanyLogo(modifier: Modifier = Modifier, url: String, isOnline: Boolean) {
     }
 }
 
-@Composable
-private fun HeaderIconButton(onClick: () -> Unit,
-                       tag:String,
-                       imageVector: ImageVector){
-    IconButton(
-        onClick = { onClick() },
-        modifier = Modifier.semantics { testTag = tag },
-        content = {
-            Icon(imageVector,
-                null,
-                tint = MaterialTheme.colorScheme.onSecondary,
-                modifier = Modifier.size(20.dp)) }
-    )
-}
+
 @Composable
 private fun HeaderItem(text: String) {
     Spacer(Modifier.height(12.dp))

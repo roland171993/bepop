@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stopgalere.presentation.theme.StopGalereTheme
 import com.stopgalere.presentation.ui.job.JobUi
 
 @Composable
@@ -126,7 +127,7 @@ private val previewJob = JobUi(
 )
 @Composable
 fun Preview_JobItem_Small_Light() {
-    MaterialTheme {
+    StopGalereTheme {
         JobItem(job = previewJob)
     }
 }
@@ -138,7 +139,7 @@ fun Preview_JobItem_Small_Light() {
 )
 @Composable
 fun Preview_JobItem_Medium_Light() {
-    MaterialTheme {
+    StopGalereTheme {
         JobItem(job = previewJob)
     }
 }
@@ -150,7 +151,7 @@ fun Preview_JobItem_Medium_Light() {
 )
 @Composable
 fun Preview_JobItem_Large_Light() {
-    MaterialTheme {
+    StopGalereTheme {
         JobItem(job = previewJob)
     }
 }
@@ -162,7 +163,7 @@ fun Preview_JobItem_Large_Light() {
 )
 @Composable
 fun Preview_JobItem_Tablet_Light() {
-    MaterialTheme {
+    StopGalereTheme {
         JobItem(job = previewJob)
     }
 }

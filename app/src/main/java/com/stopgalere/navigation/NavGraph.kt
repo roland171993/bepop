@@ -1,12 +1,14 @@
 package com.stopgalere.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.stopgalere.presentation.ui.coverletter.CoverLetterDetailScreen
 import com.stopgalere.presentation.ui.coverletter.CoverLetterScreen
 import com.stopgalere.presentation.ui.intro.WizardPagerScreen
 import com.stopgalere.presentation.ui.job.JobDetailScreen
@@ -30,10 +32,32 @@ sealed class Route(val path: String) {
         const val ARG_ID = "coverLetterId"
     }
 }
+
+// SingleTop + Save/Restore state navigation for all routes
+fun NavHostController.navigateSingleTopTo(route: String) {
+    navigate(route) {
+        // Keep only one instance and restore state if we had visited before
+        launchSingleTop = true
+        restoreState = true
+        // Do not grow the back stack when switching top-level items; keep state
+        popUpTo(graph.findStartDestination().id) {
+            saveState = true
+        }
+    }
+}
+
+/** Helpers for cleaner call-sites */
+fun NavHostController.navigateToJobDetail(jobId: String) =
+    navigateSingleTopTo(Route.JobDetail.of(jobId))
+
+fun NavHostController.navigateToCoverLetterDetail(id: String) =
+    navigateSingleTopTo(Route.CoverLetterDetail.of(id))
+
+
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Route.Main.path
+    startDestination: String = Route.CoverLetter.path
 ) {
     NavHost(
         navController = navController,
@@ -49,7 +73,7 @@ fun NavGraph(
             MainScreen(
                 navController = navController,
                 onOpenJobDetail = {jobId ->
-                    navController.navigate(Route.JobDetail.of(jobId))
+                    navController.navigateToJobDetail(jobId)
                 })
         }
 
@@ -64,22 +88,18 @@ fun NavGraph(
             CoverLetterScreen(
                 navController = navController,
                 onOpenDetail = { id ->
-                    navController.navigate(Route.CoverLetterDetail.of(id))
+                    navController.navigateToCoverLetterDetail(id)
                 })
         }
 
-        /*composable(
+        composable(
             route = Route.CoverLetterDetail.path,
             arguments = listOf(navArgument(Route.CoverLetterDetail.ARG_ID) { type = NavType.StringType })
         ) {
             CoverLetterDetailScreen(
                 navController = navController
             )
-        }*/
+        }
     }
 }
 
-/** Helper for cleaner call-sites */
-fun NavHostController.navigateToJobDetail(jobId: String) {
-
-}

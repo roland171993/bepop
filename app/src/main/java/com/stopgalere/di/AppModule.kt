@@ -53,6 +53,7 @@ object AppModule {
     fun provideDb(@ApplicationContext ctx: Context): AppDatabase =
         Room
             .databaseBuilder(ctx, AppDatabase::class.java, AppConstants.DATABASE_NAME)
+            .fallbackToDestructiveMigration(true)
             .build()
 
     @Provides @Singleton

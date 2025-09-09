@@ -5,7 +5,8 @@
     <string name="screen_splash_header">L’emploi vous poursuit</string>
     <string name="screen_jobs_title">Jobs</string>
     <string name="screen_resumes_title">Resumes</string>
-    <string name="screen_coverletters_title">Cover Letters</string>
+    <string name="screen_cover_letters_title">Lettres de motivation</string>
+    <string name="screen_cover_letters_detail_title">Lettres de motivation</string>
     <string name="screen_about_title">About</string>
     <string name="screen_wizard_next">Suivant</string>
     <string name="screen_wizard_finish">Terminer</string>
@@ -29,6 +30,7 @@
     <string name="no_internet">Vous n’êtes pas connecté à Internet.</string>
     <string name="job_list_no_more">Impossible de charger plus.</string>
     <string name="screen_job_detail_not_loaded">Impossibilité de charger le détail du job</string>
+    <string name="screen_cover_detail_not_loaded">Impossibilité de charger le détail de la lettre de motivation</string>
     <string name="screen_job_detail_description">DESCRIPTION</string>
     <string name="screen_job_detail_company">EMPLOYEUR</string>
     <string name="screen_job_detail_publish">PUBLICATION</string>
