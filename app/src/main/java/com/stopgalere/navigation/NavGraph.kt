@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.stopgalere.presentation.ui.about.AboutScreen
 import com.stopgalere.presentation.ui.coverletter.CoverLetterDetailScreen
 import com.stopgalere.presentation.ui.coverletter.CoverLetterScreen
 import com.stopgalere.presentation.ui.intro.WizardPagerScreen
@@ -20,6 +21,8 @@ sealed class Route(val path: String) {
     data object Splash : Route("splash")
     data object Intro : Route("intro")
     data object Main : Route("main")
+
+    data object About : Route("about")
 
     data object CoverLetter : Route("coverLetter")
     data object JobDetail : Route("jobDetail/{jobId}") {
@@ -68,6 +71,9 @@ fun NavGraph(
         }
         composable(Route.Intro.path) {
             WizardPagerScreen(navController = navController)
+        }
+        composable(Route.About.path) {
+            AboutScreen(navController = navController)
         }
         composable(Route.Main.path) {
             MainScreen(

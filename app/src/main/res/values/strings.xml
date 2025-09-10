@@ -1,5 +1,12 @@
 <resources>
-    <string name="app_name">StopGalere</string>
+    <string name="app_name">StopGalere CI</string>
+    <string name="app_version">4.0.2</string>
+    <string name="app_developper">© 2025 Bepop -Tous droits réservés</string>
+    <string name="app_slogan">Recevez quotidiennement et gratuitement des offres d\'emploi</string>
+    <string name="app_cgu">CGU</string>
+    <string name="facebook_videos">www.facebook.com/pg/Stopgalere-CI-243747339471646/videos/</string>
+    <string name="facebook_groupe">www.facebook.com/stopgalereci/</string>
+    <string name="app_email">contact@stopgalere-ci.com</string>
     <string name="screen_main_title">Home</string>
     <string name="screen_splash_title">Stop Galère</string>
     <string name="screen_splash_header">L’emploi vous poursuit</string>

@@ -28,6 +28,7 @@ import com.stopgalere.presentation.theme.StopGalereTheme
 import com.RolandAssoh.stopgalere.ci.R
 import com.stopgalere.presentation.preview.FakeData
 import com.stopgalere.presentation.preview.FakeData.coverLetter
+import com.stopgalere.presentation.ui.common.DetailTopBar
 import com.stopgalere.presentation.ui.common.HeaderIconButton
 import com.stopgalere.presentation.ui.coverletter.components.CoverLetterUi
 import compose.icons.FontAwesomeIcons
@@ -97,25 +98,12 @@ fun CoverLetterDetailContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Top bar
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary)
-                .semantics { testTag = "CoverDetail_TopBar" },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            HeaderIconButton(
-                onClick = onBack,
-                tag = "CoverDetail_Back",
-                imageVector = FontAwesomeIcons.Solid.ArrowLeft
-            )
-            Spacer(Modifier.width(16.dp))
-            Text(
-                text = stringResource(R.string.screen_cover_letters_detail_title),
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onPrimary
-            )
-        }
+        DetailTopBar(
+            modifier = modifier,
+            titleRes = R.string.screen_cover_letters_detail_title,
+            onNavClick = onBack,
+            testTag = "CoverDetail_TopBar",
+            navTestTag = "CoverDetail_Back")
 
         // Body
         Column(
