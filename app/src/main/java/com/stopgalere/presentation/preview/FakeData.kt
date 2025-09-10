@@ -9,8 +9,8 @@ object FakeData {
 
     val coverLetter = CoverLetterUi(
         id = "preview-1",
-        title = LoremIpsum.words300,
-        content = LoremIpsum.words300,
+        title = "lala",
+        content = "lll",
         date = "08-09-2025",
         dateAdded = "2025-09-08T10:30:00Z"
     )

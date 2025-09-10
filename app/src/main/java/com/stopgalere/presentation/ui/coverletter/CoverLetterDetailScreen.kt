@@ -126,18 +126,21 @@ fun CoverLetterDetailContent(
                 .semantics { testTag = "CoverDetail_Body" },
             horizontalAlignment = Alignment.Start
         ) {
-            Text(
-                cover.title,
-                style = MaterialTheme.typography.headlineMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                ),
-                modifier = Modifier
-                    .padding(12.dp)
-                    .semantics { testTag = "CoverDetail_Title" },
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+            Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center){
+                Text(
+                    cover.title,
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    ),
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .semantics { testTag = "CoverDetail_Title" },
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
 
             Text(
                 cover.content,
