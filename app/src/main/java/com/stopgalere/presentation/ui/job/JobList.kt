@@ -22,12 +22,15 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import com.RolandAssoh.stopgalere.ci.R
 import com.stopgalere.presentation.theme.Gray101
 import com.stopgalere.presentation.ui.job.components.JobItem
 import com.stopgalere.presentation.ui.main.components.NoContentPlaceholder
+import com.stopgalere.util.AppConstants.TAG
 
 /**
  * Stateless list that displays jobs using JobRow.
@@ -42,6 +45,24 @@ fun JobList(
     listState: LazyListState = rememberLazyListState(),
     onJobClick: (JobUi) -> Unit = {} // keeps the row reusable for navigation/detail later
 ) {
+    LaunchedEffect(jobs) {
+        snapshotFlow { jobs.loadState }
+            .collect { ls ->
+                val a = ls.append
+                val r = ls.refresh
+                println("[$TAG] UI.loadState refresh=$r append=$a itemCount=${jobs.itemCount}")
+            }
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .collect { lastVisible ->
+                if (lastVisible != null) {
+                    println("[$TAG] UI.scroll lastVisible=$lastVisible of count=${jobs.itemCount}")
+                }
+            }
+    }
+
     when {
         jobs.loadState.refresh is LoadState.Loading -> {
             // initial skeleton
@@ -78,6 +99,9 @@ fun JobList(
                 state = listState) {
                 items(count = jobs.itemCount,
                     key = { index -> jobs.peek(index)?.id ?: index }) { index ->
+                    if (index >= jobs.itemCount - 3) {
+                        println("[$TAG] UI.item near end index=$index")
+                    }
                     jobs[index]?.let { job ->
                         JobItem(
                             job = job,

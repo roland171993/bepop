@@ -10,9 +10,11 @@ import com.stopgalere.data.remote.NetworkMonitor
 import com.stopgalere.domain.usecase.GetJobsUseCase
 import com.stopgalere.presentation.ui.job.JobUi
 import com.stopgalere.presentation.ui.job.toUi
+import com.stopgalere.util.AppConstants.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -47,15 +49,29 @@ class MainViewModel @Inject constructor(
         saved[KEY_SEARCH_OPEN] = open
     }
 
+    init {
+        viewModelScope.launch {
+            _searchQuery
+                .map { it.trim().ifEmpty { null } }
+                .distinctUntilChanged()
+                .collect { q -> println("[$TAG] VM query changed → $q") }
+        }
+        viewModelScope.launch {
+            isOnline.collect { online -> println("[$TAG] VM isOnline → $online") }
+        }
+    }
+
     // Paging stream switches between online/offline sources automatically.
     val jobs: Flow<PagingData<JobUi>> =
         combine(
-            _searchQuery
-                .map { it.trim().ifEmpty { null } }
+            _searchQuery.map { it.trim().ifEmpty { null } }
                 .debounce(SEARCH_DEBOUNCE_MS)
                 .distinctUntilChanged(),
             isOnline
-        ) { q, online -> q to online }
+        ) { q, online ->
+            println("[$TAG] VM building new Pager for q=$q online=$online")
+            q to online
+        }
             .flatMapLatest { (q, online) ->
                 getJobs(q, online).map { paging -> paging.map { it.toUi() } }
             }

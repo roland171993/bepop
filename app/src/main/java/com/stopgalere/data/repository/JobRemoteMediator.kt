@@ -13,6 +13,7 @@ import com.stopgalere.data.remote.dto.JobsResponse
 import com.stopgalere.domain.validation.JobValidation
 import com.stopgalere.domain.validation.common.DateValidation.validateAndFormatDate
 import com.stopgalere.domain.validation.common.SafeText.isSafeText
+import com.stopgalere.util.AppConstants.TAG
 
 /**
  * DATA layer – keeps pagination state in Room (RemoteKeys),
@@ -59,6 +60,8 @@ class JobRemoteMediator(
             }
         }
 
+        println("[$TAG] RM.load() type=$loadType lastItem=${state.lastItemOrNull()?.id}")
+
         val pageSize = state.config.pageSize
 
         // 2) Call API for that exact page
@@ -66,6 +69,8 @@ class JobRemoteMediator(
             page = pageToLoad,
             query = query
         )
+
+
 
         val dtoList = response.jobs.orEmpty()
         val p = response.pagination
@@ -75,6 +80,8 @@ class JobRemoteMediator(
         val nextKey     = p?.nextPage
 
         println("JOBS page=$currentPage next=$nextKey last=$lastPage size=${dtoList.size}")
+
+        println("[$TAG] RM.API page=$currentPage prev=$prevKey next=$nextKey dtoSize=${dtoList.size}")
 
         // 3) Map/validate DTOs → Entities (use DOMAIN rules)
         val entities = dtoList.mapNotNull { dto ->
@@ -91,21 +98,6 @@ class JobRemoteMediator(
             val deadlineRaw = dto.deadline?.trim()
             val salaryRaw      = dto.salary
             // One-shot validation: returns normalized "dd-MM-yyyy" or null
-            val normalized = JobValidation.validateAll(
-                title = title,
-                city = city,
-                dateRaw = dateRaw,
-                deadlineRaw = deadlineRaw,
-                description = description,
-                sectorName = sectorName,
-                company = company,
-                salary = salaryRaw,
-                gate = listOf(
-                    title, city, description, sectorName, company,
-                    dto.contractType?.name, dto.authorEmail, dto.authorWebsite, dto.authorMobile1 ,
-                    dto.authorMobile2 , dto.companyLogoUrl, dto.experience, dto.educationLevel,
-                )
-            ) ?: return@mapNotNull null
 
             // Convert selected nulls → "" ; keep numbers nullable
             val genderName       = dto.gender?.name?.trim().orEmpty()
@@ -125,7 +117,7 @@ class JobRemoteMediator(
                 id = id,
                 title = title!!,
                 city = city!!,
-                date = normalized,                 // UI date (dd-MM-yyyy)
+                date =  validateAndFormatDate(dateRaw)!!,                 // UI date (dd-MM-yyyy)
                 deadline = deadline!!,
                 dateAdded = dateRaw!!,
                 description = description!!,
@@ -167,11 +159,14 @@ class JobRemoteMediator(
                         )
                     }
                 )
+                println("[$TAG] RM.DB after insert: inserted=${entities.size}")
+
             }
         }
 
         // 5) Stop when there’s no next page OR when current equals last
         val endReached = nextKey == null || currentPage >= lastPage || entities.isEmpty()
+        println("[$TAG] RM.result end=$endReached because nextKey=$nextKey current=$currentPage last=$lastPage")
         MediatorResult.Success(endOfPaginationReached = endReached)
     } catch (t: Throwable) {
         MediatorResult.Error(t)

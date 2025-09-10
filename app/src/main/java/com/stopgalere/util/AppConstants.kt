@@ -16,4 +16,7 @@ object AppConstants {
     const val KEY_USER_TOKEN = "user_token"
     const val PREFS_NAME = "stop_galere_prefs"
     const val PREF_KEY_FIRST_LAUNCH = "first_launch"
+
+    const val TAG = "JobsPaging"
+
 }

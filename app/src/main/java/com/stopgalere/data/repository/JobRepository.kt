@@ -12,6 +12,7 @@ import com.stopgalere.data.model.toDomain
 import com.stopgalere.data.remote.ApiService
 import com.stopgalere.domain.model.Job
 import com.stopgalere.domain.repository.JobRepoInterface
+import com.stopgalere.util.AppConstants.TAG
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -44,6 +45,9 @@ class JobRepository @Inject constructor(
             prefetchDistance = 0,     // allowed only if placeholders = true
             enablePlaceholders = true // shows “empty” rows until loaded; needs a count-capable source
         )
+
+        println("[$TAG] Repo Pager config: pageSize=$pageSize prefetch=0 placeholders=true query=$query online=$online")
+
 
         return if (online) {
             val mediator = JobRemoteMediator(db, api, query)

@@ -38,6 +38,7 @@ import com.stopgalere.navigation.navigateToJobDetail
 import com.stopgalere.presentation.ui.main.components.AppBarSearchField
 import com.stopgalere.presentation.ui.main.components.MainScreenContent
 import com.stopgalere.presentation.viewmodel.MainViewModel
+import com.stopgalere.util.AppConstants.TAG
 
 
 @Composable
@@ -46,6 +47,7 @@ fun MainScreen(
     viewModel: MainViewModel = hiltViewModel(),
     onOpenJobDetail: (jobId:String) -> Unit
 ) {
+
     val snackbarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -58,6 +60,14 @@ fun MainScreen(
     val listState = rememberSaveable(saver = LazyListState.Saver) { LazyListState() }
     val jobsPaging = viewModel.jobs.collectAsLazyPagingItems()
     val welcomeMsg = stringResource(R.string.screen_main_welcome)
+
+    // 🔍 Log whenever itemCount changes
+    LaunchedEffect(jobsPaging) {
+        snapshotFlow { jobsPaging.itemCount }
+            .collect { c ->
+                println("[$TAG] Screen itemCount=$c")
+            }
+    }
 
     ModalDrawer(
         drawerState = drawerState,
@@ -99,7 +109,10 @@ fun MainScreen(
                     if (active) viewModel.openSearch() else viewModel.closeSearch()
                 },
                 jobs = jobsPaging,
-                onRefresh = { jobsPaging.refresh() },
+                onRefresh = {
+                    println("[$TAG] Screen refresh() requested")
+                    jobsPaging.refresh()
+                            },
                 listState = listState,
                 onJobClick = { job ->
                     onOpenJobDetail(job.id)
