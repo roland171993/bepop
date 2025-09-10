@@ -38,10 +38,9 @@ fun CoverLetterItem(
             .clickable { onClick(cover) }
             .semantics { testTag = "CoverLetterCard_${cover.title}" }
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp)
-        ) {
+        Box(modifier = modifier
+            .fillMaxSize()
+            .padding(vertical = 16.dp, horizontal = 12.dp), contentAlignment = Alignment.Center){
             Text(
                 text = cover.title.uppercase(),
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -50,6 +49,7 @@ fun CoverLetterItem(
                 overflow = TextOverflow.Ellipsis
             )
         }
+
     }
 }
 
