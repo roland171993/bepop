@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
 import com.RolandAssoh.stopgalere.ci.R
+import com.stopgalere.presentation.theme.AppBackground
 
 @Composable
 fun AboutScreen(
@@ -30,7 +31,7 @@ fun AboutScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.app_background))
+            .background(color = AppBackground)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

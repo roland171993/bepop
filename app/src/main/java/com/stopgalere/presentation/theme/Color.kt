@@ -8,6 +8,8 @@ private val AppPrimary      = Color(0xFF1976D2)
 private val AppPrimaryDark  = Color(0xFF1565C0)
 private val AppOnPrimary    = Color.White
 
+val AppBackground    = Color(0xFFE7E7E7)
+
 val Gray101 = Color(0xFFF2F2F2)
 
 val MaterialBlue500 = Color(0xFF478FCC)
