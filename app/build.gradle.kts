@@ -79,6 +79,8 @@ dependencies {
     val retrofitVersion           = "2.9.0"
     val accompanistVersion        = "0.36.0"
 
+
+
     // Core Android
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
@@ -103,7 +105,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:${navComposeVersion}")
     implementation("androidx.hilt:hilt-navigation-compose:${hiltNavComposeVersion}")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${viewModelComposeVersion}")
-    implementation("androidx.compose.foundation:foundation:1.8.3")
     implementation("com.google.accompanist:accompanist-pager:${accompanistVersion}")
     implementation("com.google.accompanist:accompanist-pager-indicators:${accompanistVersion}")
     implementation("com.google.accompanist:accompanist-systemuicontroller:${accompanistVersion}")
@@ -117,8 +118,8 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
 
     // Paging 3
-    implementation ("androidx.paging:paging-runtime-ktx:3.3.0")
-    implementation ("androidx.paging:paging-compose:3.3.0")
+    implementation("androidx.paging:paging-runtime-ktx:3.3.2")
+    implementation("androidx.paging:paging-compose:3.3.2")
 
     // Room
     implementation ("androidx.room:room-ktx:${roomVersion}")

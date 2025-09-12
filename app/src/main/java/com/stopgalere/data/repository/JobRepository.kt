@@ -42,8 +42,8 @@ class JobRepository @Inject constructor(
         val config = PagingConfig(
             pageSize = pageSize,
             initialLoadSize = pageSize,
-            prefetchDistance = 0,     // allowed only if placeholders = true
-            enablePlaceholders = true // shows “empty” rows until loaded; needs a count-capable source
+            prefetchDistance = 1,     // allowed only if placeholders = true
+            enablePlaceholders = false // shows “empty” rows until loaded; needs a count-capable source
         )
 
         println("[$TAG] Repo Pager config: pageSize=$pageSize prefetch=0 placeholders=true query=$query online=$online")

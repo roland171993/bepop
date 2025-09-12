@@ -20,17 +20,20 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
-import androidx.paging.compose.LazyPagingItems
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
+import androidx.paging.compose.LazyPagingItems
 import com.RolandAssoh.stopgalere.ci.R
 import com.stopgalere.presentation.theme.Gray101
 import com.stopgalere.presentation.ui.job.components.JobItem
 import com.stopgalere.presentation.ui.main.components.NoContentPlaceholder
 import com.stopgalere.util.AppConstants.TAG
+import androidx.paging.compose.items
+
+
 
 /**
  * Stateless list that displays jobs using JobRow.
@@ -95,18 +98,10 @@ fun JobList(
                 .background(color = Gray101)
                 .semantics { testTag = "JobList" }
                 .navigationBarsPadding(),
-                contentPadding = contentPadding,
                 state = listState) {
-                items(count = jobs.itemCount,
-                    key = { index -> jobs.peek(index)?.id ?: index }) { index ->
-                    if (index >= jobs.itemCount - 3) {
-                        println("[$TAG] UI.item near end index=$index")
-                    }
-                    jobs[index]?.let { job ->
-                        JobItem(
-                            job = job,
-                            onClick = onJobClick
-                        )
+                items(jobs, key = { it.id }) { job ->
+                    if (job != null) {
+                        JobItem(job = job, onClick = onJobClick)
                     }
                 }
                 // show append state
