@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -39,10 +40,7 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Ban
 
-/* ------------------------------------------- */
-/*  Route composable: keeps nav/Hilt OUT of UI */
-/*  so previews don’t crash.                   */
-/* ------------------------------------------- */
+
 @Composable
 fun AboutScreen(
     navController: NavHostController,
@@ -60,9 +58,8 @@ fun AboutScreen(
     )
 }
 
-/* ------------------------------------------------- */
-/*  UI-only composable that previews can call safely */
-/* ------------------------------------------------- */
+// UI-only composable that previews can call safely
+
 @VisibleForTesting
 @Composable
 internal fun AboutScreenContent(
@@ -183,10 +180,10 @@ internal fun AboutScreenContent(
     }
 }
 
-/* -------------------------------------------------------------------- */
-/*  Dimensions in one place so both runtime & previews share same sizes */
-/*  → change once, reflected everywhere.                                */
-/* -------------------------------------------------------------------- */
+
+//  Dimensions in one place so both runtime & previews share same sizes */
+//  → change once, reflected everywhere.                                */
+
 @Stable
 data class AboutDimens(
     val screenPadding: Dp = 16.dp,
@@ -200,32 +197,22 @@ object AboutDefaults {
     val dimens = AboutDimens()
 }
 
-/* ----------------------------- */
-/*  Lightweight preview theme    */
-/*  NOTE: Replace with your app  */
-/*  theme if you have one, e.g.  */
-/*  StopGalereTheme(darkTheme,   */
-/*  dynamicColor).               */
-/* ----------------------------- */
+
 @Composable
 private fun PreviewTheme(
     darkTheme: Boolean,
     dynamicColor: Boolean, // kept for parity; no-op here unless wired to your theme
     content: @Composable () -> Unit
 ) {
-    // If you already have StopGalereTheme(darkTheme, dynamicColor),
-    // call that here instead of plain MaterialTheme.
     StopGalereTheme {
         content()
     }
 }
 
-/* ===================== */
-/* ===== PREVIEWS ====== */
-/* ===================== */
+// PREVIEWS
 
 /* Small – Light */
-@androidx.compose.ui.tooling.preview.Preview(
+@Preview(
     name = "Small – Light",
     widthDp = 320, heightDp = 640,
     showBackground = true, backgroundColor = 0xFFFFFFFF
@@ -237,8 +224,8 @@ private fun Preview_About_Small_Light() {
     }
 }
 
-/* Medium – Light */
-@androidx.compose.ui.tooling.preview.Preview(
+// Medium – Light
+@Preview(
     name = "Medium – Light",
     widthDp = 360, heightDp = 740,
     showBackground = true, backgroundColor = 0xFFFFFFFF
@@ -250,8 +237,8 @@ private fun Preview_About_Medium_Light() {
     }
 }
 
-/* Large – Light */
-@androidx.compose.ui.tooling.preview.Preview(
+// Large – Light
+@Preview(
     name = "Large – Light",
     widthDp = 411, heightDp = 891,
     showBackground = true, backgroundColor = 0xFFFFFFFF
@@ -263,8 +250,8 @@ private fun Preview_About_Large_Light() {
     }
 }
 
-/* Medium – Dark */
-@androidx.compose.ui.tooling.preview.Preview(
+// Medium – Dark
+@Preview(
     name = "Medium – Dark",
     widthDp = 360, heightDp = 740,
     showBackground = true, backgroundColor = 0xFF000000,
@@ -277,16 +264,14 @@ private fun Preview_About_Medium_Dark() {
     }
 }
 
-/* DynamicColor = false (old devices) */
-@androidx.compose.ui.tooling.preview.Preview(
+// DynamicColor = false (old devices)
+@Preview(
     name = "DynamicColor = false",
     widthDp = 360, heightDp = 740,
     showBackground = true, backgroundColor = 0xFFFFFFFF
 )
 @Composable
 private fun Preview_About_Medium_Light_NoDynamic() {
-    // If you have a real theme function that supports dynamic color flags,
-    // replace PreviewTheme(...) with StopGalereTheme(darkTheme = false, dynamicColor = false)
     PreviewTheme(darkTheme = false, dynamicColor = false) {
         AboutScreenContent(isOnline = false)
     }
