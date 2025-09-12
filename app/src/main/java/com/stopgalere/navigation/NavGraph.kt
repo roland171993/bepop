@@ -60,7 +60,7 @@ fun NavHostController.navigateToCoverLetterDetail(id: String) =
 @Composable
 fun NavGraph(
     navController: NavHostController = rememberNavController(),
-    startDestination: String = Route.Main.path
+    startDestination: String = Route.About.path
 ) {
     NavHost(
         navController = navController,

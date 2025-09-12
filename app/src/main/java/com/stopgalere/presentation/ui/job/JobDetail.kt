@@ -1,11 +1,9 @@
 package com.stopgalere.presentation.ui.job
 
 import android.content.Intent
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -13,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
@@ -28,12 +25,11 @@ import com.stopgalere.presentation.theme.Green
 import com.stopgalere.presentation.theme.Orange
 import com.stopgalere.presentation.ui.job.components.DetailChip
 import com.stopgalere.presentation.ui.job.components.DetailSectionCard
-import com.stopgalere.presentation.viewmodel.JobDetailUiState
-import com.stopgalere.presentation.viewmodel.JobDetailViewModel
+import com.stopgalere.presentation.viewmodel.job.JobDetailUiState
+import com.stopgalere.presentation.viewmodel.job.JobDetailViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.solid.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.stopgalere.presentation.theme.StopGalereTheme

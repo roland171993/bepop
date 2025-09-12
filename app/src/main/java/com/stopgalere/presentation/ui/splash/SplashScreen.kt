@@ -8,8 +8,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.stopgalere.presentation.theme.StopGalereTheme
-import com.stopgalere.presentation.viewmodel.SplashEvent
-import com.stopgalere.presentation.viewmodel.SplashViewModel
+import com.stopgalere.presentation.viewmodel.splash.SplashEvent
+import com.stopgalere.presentation.viewmodel.splash.SplashViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 /**

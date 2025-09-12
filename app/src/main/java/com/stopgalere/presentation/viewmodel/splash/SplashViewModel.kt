@@ -1,4 +1,4 @@
-package com.stopgalere.presentation.viewmodel
+package com.stopgalere.presentation.viewmodel.splash
 
 import android.os.Build
 import androidx.lifecycle.ViewModel
@@ -7,7 +7,6 @@ import com.stopgalere.data.local.Prefs
 import com.stopgalere.di.MainDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

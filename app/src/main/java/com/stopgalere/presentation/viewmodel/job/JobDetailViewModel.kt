@@ -1,4 +1,4 @@
-package com.stopgalere.presentation.viewmodel
+package com.stopgalere.presentation.viewmodel.job
 
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.SavedStateHandle
