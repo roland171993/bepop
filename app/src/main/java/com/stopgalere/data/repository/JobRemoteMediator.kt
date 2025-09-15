@@ -12,18 +12,7 @@ import com.stopgalere.data.remote.ApiService
 import com.stopgalere.data.remote.dto.JobsResponse
 import com.stopgalere.domain.validation.JobValidation
 import com.stopgalere.domain.validation.common.DateValidation.validateAndFormatDate
-import com.stopgalere.domain.validation.common.SafeText.isSafeText
 import com.stopgalere.util.AppConstants.TAG
-
-/**
- * DATA layer – keeps pagination state in Room (RemoteKeys),
- * using server-provided pagination: currentPage/lastPage/previousPage/nextPage.
- *
- * MVVM split:
- * - DOMAIN: validation (JobValidation)
- * - DATA: fetch, map, validate, persist, remember next/previous page
- * - PRESENTATION: reads PagingData only (no networking/pagination math)
- */
 
 @OptIn(ExperimentalPagingApi::class)
 class JobRemoteMediator(
@@ -39,39 +28,30 @@ class JobRemoteMediator(
         loadType: LoadType,
         state: PagingState<Int, JobEntity>
     ): MediatorResult = try {
-
-        // 1) Decide which page to load
         val pageToLoad = when (loadType) {
-            LoadType.REFRESH -> {
-                // First run: page=1 (requirement)
-                1
-            }
-            LoadType.PREPEND -> {
-                // We never go "back" for an infinite list; stop here.
-                return MediatorResult.Success(endOfPaginationReached = true)
-            }
+            LoadType.REFRESH -> 1
+            LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
-                // Look at the last item’s saved "nextKey" (our in-memory nextPage)
-                val lastId = state.lastItemOrNull()?.id
-                    ?: return MediatorResult.Success(endOfPaginationReached = true)
-                val next = keysDao.remoteKeysById(lastId)?.nextKey
-                    ?: return MediatorResult.Success(endOfPaginationReached = true)
+                // 1) Try the "last item" path (standard Paging3)
+                val nextFromLast = state.lastItemOrNull()?.let { last ->
+                    keysDao.remoteKeysById(last.id)?.nextKey
+                }
+                // 2) Fallback: if last-item keys are missing (first-run timing / ordering quirks),
+                //    use the global latest nextKey we stored for this feed.
+                val fallbackGlobalNext = keysDao.globalNextKey()
+
+                val next = nextFromLast ?: fallbackGlobalNext
+                if (next == null) {
+                    println("[$TAG] RM.APPEND no nextKey (last=${state.lastItemOrNull()?.id}); declaring end")
+                    return MediatorResult.Success(endOfPaginationReached = true)
+                }
                 next
             }
         }
 
         println("[$TAG] RM.load() type=$loadType lastItem=${state.lastItemOrNull()?.id}")
 
-        val pageSize = state.config.pageSize
-
-        // 2) Call API for that exact page
-        val response: JobsResponse = api.getJobs(
-            page = pageToLoad,
-            query = query
-        )
-
-
-
+        val response: JobsResponse = api.getJobs(page = pageToLoad, query = query)
         val dtoList = response.jobs.orEmpty()
         val p = response.pagination
         val currentPage = p?.currentPage ?: pageToLoad
@@ -80,66 +60,40 @@ class JobRemoteMediator(
         val nextKey     = p?.nextPage
 
         println("JOBS page=$currentPage next=$nextKey last=$lastPage size=${dtoList.size}")
-
         println("[$TAG] RM.API page=$currentPage prev=$prevKey next=$nextKey dtoSize=${dtoList.size}")
 
-        // 3) Map/validate DTOs → Entities (use DOMAIN rules)
         val entities = dtoList.mapNotNull { dto ->
             val id = dto.id ?: return@mapNotNull null
-            // Trim upfront
-            val title = dto.title?.trim()
-            val city  = dto.city?.trim()
-
-            // Keep your existing high-level validation (title/city/date + normalization)
-            val dateRaw = dto.dateAdded?.trim()
-            val description = dto.description?.trim()
-            val sectorName  = dto.sector?.name?.trim()
-            val company     = dto.company?.trim()
-            val deadlineRaw = dto.deadline?.trim()
-            val salaryRaw      = dto.salary
-            // One-shot validation: returns normalized "dd-MM-yyyy" or null
-
-            // Convert selected nulls → "" ; keep numbers nullable
-            val genderName       = dto.gender?.name?.trim().orEmpty()
-            val contractTypeName = dto.contractType?.name?.trim().orEmpty()
-            val authorEmail      = dto.authorEmail?.trim().orEmpty()
-            val authorWebsite    = dto.authorWebsite?.trim().orEmpty()
-            val authorMobile1    = dto.authorMobile1?.trim().orEmpty()
-            val authorMobile2    = dto.authorMobile2?.trim().orEmpty()
-            val companyLogoUrl   = dto.companyLogoUrl?.trim().orEmpty()
-            val experience       = dto.experience?.trim().orEmpty()
-            val educationLevel   = dto.educationLevel?.trim().orEmpty()
-            val workModeName     = dto.workMode?.name?.trim().orEmpty()
-            val deadline         = validateAndFormatDate(deadlineRaw)
-            val salary           = JobValidation.validateAndFormatMoney(salaryRaw)
+            val title = dto.title?.trim() ?: return@mapNotNull null
+            val city  = dto.city?.trim() ?: return@mapNotNull null
+            val dateRaw = dto.dateAdded?.trim() ?: return@mapNotNull null
 
             JobEntity(
                 id = id,
-                title = title!!,
-                city = city!!,
-                date =  validateAndFormatDate(dateRaw)!!,                 // UI date (dd-MM-yyyy)
-                deadline = deadline!!,
-                dateAdded = dateRaw!!,
-                description = description!!,
-                sectorName = sectorName!!,
-                genderName = genderName,             // null → ""
-                contractTypeName = contractTypeName, // null → ""
-                workModeName = workModeName,           // null → ""
-                authorEmail = authorEmail,           // null → ""
-                authorWebsite = authorWebsite,       // null → ""
-                authorMobile1 = authorMobile1,       // null → ""
-                authorMobile2 = authorMobile2,       // null → ""
-                authorLongitude = dto.authorLongitude, // can stay null
-                authorLatitude = dto.authorLatitude,   // can stay null
-                company = company!!,
-                companyLogoUrl = companyLogoUrl,     // null → ""
-                salary = salary,
-                experience = experience,             // null → ""
-                educationLevel = educationLevel      // null → ""
+                title = title,
+                city = city,
+                date = validateAndFormatDate(dateRaw)!!,
+                deadline = validateAndFormatDate(dto.deadline?.trim())!!,
+                dateAdded = dateRaw,
+                description = dto.description?.trim()!!,
+                sectorName = dto.sector?.name?.trim()!!,
+                genderName = dto.gender?.name?.trim().orEmpty(),
+                contractTypeName = dto.contractType?.name?.trim().orEmpty(),
+                workModeName = dto.workMode?.name?.trim().orEmpty(),
+                authorEmail = dto.authorEmail?.trim().orEmpty(),
+                authorWebsite = dto.authorWebsite?.trim().orEmpty(),
+                authorMobile1 = dto.authorMobile1?.trim().orEmpty(),
+                authorMobile2 = dto.authorMobile2?.trim().orEmpty(),
+                authorLongitude = dto.authorLongitude,
+                authorLatitude = dto.authorLatitude,
+                company = dto.company?.trim()!!,
+                companyLogoUrl = dto.companyLogoUrl?.trim().orEmpty(),
+                salary = JobValidation.validateAndFormatMoney(dto.salary),
+                experience = dto.experience?.trim().orEmpty(),
+                educationLevel = dto.educationLevel?.trim().orEmpty()
             )
         }
 
-        // 4) Persist to DB in a single transaction
         db.withTransaction {
             if (loadType == LoadType.REFRESH) {
                 keysDao.clearKeys()
@@ -149,7 +103,7 @@ class JobRemoteMediator(
             if (entities.isNotEmpty()) {
                 jobDao.upsertAll(entities)
 
-                // Save the page neighbors alongside each item (our “in-memory” next/prev)
+                // Write per-item keys (standard)
                 keysDao.insertAll(
                     entities.map { e ->
                         JobRemoteKeys(
@@ -159,12 +113,15 @@ class JobRemoteMediator(
                         )
                     }
                 )
-                println("[$TAG] RM.DB after insert: inserted=${entities.size}")
 
+                // Also keep/update a single "global" nextKey entry so APPEND can proceed
+                // even if the last-item keys aren't discoverable yet.
+                keysDao.upsertGlobal(nextKey)
+
+                println("[$TAG] RM.DB after insert: inserted=${entities.size}")
             }
         }
 
-        // 5) Stop when there’s no next page OR when current equals last
         val endReached = nextKey == null || currentPage >= lastPage || entities.isEmpty()
         println("[$TAG] RM.result end=$endReached because nextKey=$nextKey current=$currentPage last=$lastPage")
         MediatorResult.Success(endOfPaginationReached = endReached)

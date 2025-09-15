@@ -62,18 +62,7 @@ class MainViewModel @Inject constructor(
     }
 
     // Paging stream switches between online/offline sources automatically.
-    val jobs: Flow<PagingData<JobUi>> =
-        combine(
-            _searchQuery.map { it.trim().ifEmpty { null } }
-                .debounce(SEARCH_DEBOUNCE_MS)
-                .distinctUntilChanged(),
-            isOnline
-        ) { q, online ->
-            println("[$TAG] VM building new Pager for q=$q online=$online")
-            q to online
-        }
-            .flatMapLatest { (q, online) ->
-                getJobs(q, online).map { paging -> paging.map { it.toUi() } }
-            }
-            .cachedIn(viewModelScope)
+    val jobs = getJobs(null, true)
+        .map { it.map { it.toUi() } }
+        .cachedIn(viewModelScope)
 }

@@ -31,7 +31,6 @@ import com.stopgalere.presentation.theme.Gray101
 import com.stopgalere.presentation.ui.job.components.JobItem
 import com.stopgalere.presentation.ui.main.components.NoContentPlaceholder
 import com.stopgalere.util.AppConstants.TAG
-import androidx.paging.compose.items
 
 
 
@@ -99,9 +98,13 @@ fun JobList(
                 .semantics { testTag = "JobList" }
                 .navigationBarsPadding(),
                 state = listState) {
-                items(jobs, key = { it.id }) { job ->
-                    if (job != null) {
-                        JobItem(job = job, onClick = onJobClick)
+                items(count = jobs.itemCount,
+                    key = { index -> jobs.peek(index)?.id ?: index }) { index ->
+                    jobs[index]?.let { job ->
+                        JobItem(
+                            job = job,
+                            onClick = onJobClick
+                        )
                     }
                 }
                 // show append state

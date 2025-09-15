@@ -1,4 +1,3 @@
-// data/repository/JobRepository.kt
 package com.stopgalere.data.repository
 
 import androidx.paging.ExperimentalPagingApi
@@ -27,27 +26,20 @@ class JobRepository @Inject constructor(
 
     private val jobDao = db.jobDao()
 
-    /**
-     * DATA layer:
-     * - Use Paging3 with RemoteMediator online, or DB-only offline.
-     * - critical: initialLoadSize = pageSize (only first page at start)
-     * - critical: prefetchDistance = 0 (fetch next page ONLY at the very end)
-     *
-     * DOMAIN layer does not do pagination.
-     * PRESENTATION only consumes PagingData.
-     */
     override fun getJobs(query: String?, online: Boolean): Flow<PagingData<Job>> {
+        // Recommended: placeholders OFF + prefetchDistance >= pageSize
         val pageSize = 15
+        val initialLoad = pageSize * 2
+        val prefetch = pageSize
 
         val config = PagingConfig(
             pageSize = pageSize,
-            initialLoadSize = pageSize,
-            prefetchDistance = 1,     // allowed only if placeholders = true
-            enablePlaceholders = false // shows “empty” rows until loaded; needs a count-capable source
+            initialLoadSize = initialLoad,
+            prefetchDistance = prefetch,
+            enablePlaceholders = false
         )
 
-        println("[$TAG] Repo Pager config: pageSize=$pageSize prefetch=0 placeholders=true query=$query online=$online")
-
+        println("[$TAG] Repo Pager config: pageSize=$pageSize prefetch=$prefetch placeholders=${config.enablePlaceholders} query=$query online=$online")
 
         return if (online) {
             val mediator = JobRemoteMediator(db, api, query)
@@ -66,5 +58,4 @@ class JobRepository @Inject constructor(
 
     override fun jobById(id: String): Flow<Job?> =
         db.jobDao().observeById(id).map { it?.toDomain() }
-
 }

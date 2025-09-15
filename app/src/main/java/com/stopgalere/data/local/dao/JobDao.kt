@@ -15,10 +15,13 @@ interface JobDao {
         SELECT * FROM jobs
         WHERE (:query IS NULL OR title LIKE '%' || :query || '%' OR city LIKE '%' || :query || '%')
         ORDER BY 
+          -- Prefer server-provided dateAdded when present, otherwise fallback to parsed legacy 'date'
           CASE 
             WHEN dateAdded IS NOT NULL AND dateAdded != '' THEN dateAdded
             ELSE (substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2))
-          END DESC
+          END DESC,
+          -- Deterministic tie-breaker to keep last-item stable for Paging
+          id ASC
     """)
     fun pagingSource(query: String?): PagingSource<Int, JobEntity>
 
@@ -30,5 +33,4 @@ interface JobDao {
 
     @Query("SELECT * FROM jobs WHERE id = :id LIMIT 1")
     fun observeById(id: String): Flow<JobEntity?>
-
 }

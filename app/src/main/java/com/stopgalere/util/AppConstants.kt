@@ -2,7 +2,7 @@ package com.stopgalere.util
 
 object AppConstants {
     const val DATABASE_NAME = "app.db"
-    const val DEV_URL = "http://192.168.1.11:3000/api/"
+    const val DEV_URL = "http://192.168.1.6:3000/api/"
 
     const val PROD_URL = "changeMe"
     const val BASE_URL = DEV_URL
