@@ -46,5 +46,6 @@
     <string name="screen_job_detail_sector">SECTEUR D\'ACTIVITÉ</string>
     <string name="screen_job_detail_website">SITE WEB</string>
     <string name="screen_job_detail_email">EMAIL</string>
+    <string name="onesignal_notification_accent_color">FF00FF00</string>
 
 </resources>

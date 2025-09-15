@@ -2,7 +2,7 @@ package com.stopgalere.util
 
 object AppConstants {
     const val DATABASE_NAME = "app.db"
-    const val DEV_URL = "http://192.168.100.22:3000/api/"
+    const val DEV_URL = "http://192.168.1.6:3000/api/"
 
     const val PROD_URL = "changeMe"
     const val BASE_URL = DEV_URL
@@ -11,6 +11,8 @@ object AppConstants {
     // Paging
     const val STARTING_PAGE_INDEX = 1
     const val PAGE_SIZE = 15
+
+    const val ONESIGNAL_APP_ID  ="25bb0fa0-4d24-488e-b65a-55cef95600eb"
 
     // SharedPreferences
     const val KEY_USER_TOKEN = "user_token"

@@ -134,6 +134,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:${retrofitVersion}")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
+    // Notification
+    implementation("com.onesignal:OneSignal:[5.1.6, 5.1.99]")
+
 
     // Android Instrumentation Tests
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.00"))

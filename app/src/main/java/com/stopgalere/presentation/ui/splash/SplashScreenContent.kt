@@ -65,7 +65,7 @@ fun SplashScreenContent(modifier: Modifier = Modifier) {
             Spacer(Modifier.height(spacerLarge))
 
             Image(
-                painter = painterResource(R.drawable.ic_splash),
+                painter = painterResource(R.drawable.ic_logo_transparent),
                 contentDescription = null,
                 modifier = Modifier.size(200.dp),
                 contentScale = ContentScale.Fit
