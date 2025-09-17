@@ -1,6 +1,8 @@
 package com.stopgalere.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
+import com.stopgalere.data.model.JobEntity
+import com.stopgalere.domain.validation.JobValidation
 
 data class NamedRefDto(
     val id: String? = null,   // parsed but not stored (IDs are skipped)
@@ -52,5 +54,37 @@ data class JobsResponse(
     val jobs: List<JobDto> = emptyList(),
     val pagination: JobPagination? = null
 )
+
+data class JobDetailResponse(
+    val job: JobDto
+)
+
+fun JobDto.toEntity(): JobEntity? {
+    val validItem = JobValidation.validate(this) ?: return null
+    return JobEntity(
+        id = validItem.id,
+        title = validItem.title,
+        city = validItem.city,
+        date = validItem.date,
+        deadline = validItem.deadline,
+        dateAdded = validItem.dateAddedRaw,
+        description = validItem.description,
+        sectorName = validItem.sectorName,
+        genderName = validItem.genderName,
+        contractTypeName = validItem.contractTypeName,
+        workModeName = validItem.workModeName,
+        authorEmail = validItem.authorEmail,
+        authorWebsite = validItem.authorWebsite,
+        authorMobile1 = validItem.authorMobile1,
+        authorMobile2 = validItem.authorMobile2,
+        authorLongitude = validItem.authorLongitude,
+        authorLatitude = validItem.authorLatitude,
+        company = validItem.company,
+        companyLogoUrl = validItem.companyLogoUrl,
+        salary = validItem.salary,
+        experience = validItem.experience,
+        educationLevel = validItem.educationLevel
+    )
+}
 
 

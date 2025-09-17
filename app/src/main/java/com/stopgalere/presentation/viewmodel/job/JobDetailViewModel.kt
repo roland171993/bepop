@@ -19,8 +19,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -38,6 +42,8 @@ class JobDetailViewModel @Inject constructor(
     // Backing UI state (hot, survives configuration changes)
     private val _uiState = MutableStateFlow<JobDetailUiState>(JobDetailUiState.Loading)
 
+    private val _refreshing = MutableStateFlow(false)
+
     val screenState: StateFlow<JobDetailScreenState> =
         combine(_uiState, network.isOnline) { ui, online ->
             JobDetailScreenState(ui = ui, isOnline = online)
@@ -48,7 +54,9 @@ class JobDetailViewModel @Inject constructor(
         )
 
     init {
+        // 1) Observe DB; if null and we're refreshing, keep showing Loading
         viewModelScope.launch {
+            println("SEARCH DB")
             repo.jobById(jobId)
                 .onStart {
                     _uiState.value = JobDetailUiState.Loading
@@ -59,6 +67,21 @@ class JobDetailViewModel @Inject constructor(
                 .collectLatest { job ->
                     _uiState.value = job
                         ?.let { JobDetailUiState.Success(it.toUi()) }
+                        ?: JobDetailUiState.Error(UiText.Resource(R.string.screen_job_detail_not_loaded))
+                }
+        }
+
+        // 2) One-shot detail refresh to populate Room
+        viewModelScope.launch {
+            println("SEARCH REMOTE")
+            network.isOnline
+                .filter { it }
+                .take(1)
+                .flatMapLatest { repo.refreshJob(jobId) }
+                .onStart { _uiState.value = JobDetailUiState.Loading }
+                .catch { e -> _uiState.value = JobDetailUiState.Error(mapThrowableToUiText(e)) }
+                .collectLatest { job ->
+                    _uiState.value = job?.let { JobDetailUiState.Success(it.toUi()) }
                         ?: JobDetailUiState.Error(UiText.Resource(R.string.screen_job_detail_not_loaded))
                 }
         }

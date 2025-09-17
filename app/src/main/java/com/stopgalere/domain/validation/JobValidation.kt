@@ -1,131 +1,126 @@
 package com.stopgalere.domain.validation
 
-import com.stopgalere.domain.validation.common.SafeText.isSafeText
-import com.stopgalere.domain.validation.common.DateValidation
+import com.stopgalere.data.remote.dto.JobDto
 import com.stopgalere.domain.validation.common.DateValidation.validateAndFormatDate
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
+import com.stopgalere.domain.validation.common.SafeText.isSafeText
+import java.util.Locale
 
 /**
- * DOMAIN layer: Business rules + normalization for Job input.
- *
- * Responsibilities:
- * - Validate title/city/date basic constraints (null/length)
- * - Validate acceptable date inputs
- * - Normalize date to French "dd-MM-yyyy"
- *
- * Acceptable date inputs:
- *   - ISO instant:       2025-08-19T10:23:55.338Z
- *   - ISO local date:    2025-08-19
- *   - French date:       19-08-2025
- *
- * Note: uses java.text.* so it works on API 24+ without desugaring.
+ * Single-entry validator for Job DTOs used by the DATA layer.
+ * Returns a normalized snapshot if everything passes; otherwise null.
  */
-
 object JobValidation {
 
-    /**
-     * High-level object validation (DOMAIN). This does not mutate inputs.
-     * Use validateAndFormatDate(...) to obtain the normalized date string.
-     */
-    fun isValid(
-        title: String?,
-        city: String?,
-        dateAdded: String?
-    ): Boolean {
-        val t = title?.trim() ?: return false
-        val c = city?.trim() ?: return false
-        val d = dateAdded?.trim() ?: return false
+    data class ValidJob(
+        val id: String,
+        val title: String,
+        val city: String,
+        val date: String,          // dd-MM-yyyy
+        val deadline: String,      // dd-MM-yyyy
+        val description: String,
+        val sectorName: String,
+        val genderName: String,
+        val contractTypeName: String,
+        val workModeName: String,
+        val authorEmail: String,
+        val authorWebsite: String,
+        val authorMobile1: String,
+        val authorMobile2: String,
+        val authorLongitude: Double?,
+        val authorLatitude: Double?,
+        val company: String,
+        val companyLogoUrl: String,
+        val salary: String,        // formatted
+        val experience: String,
+        val educationLevel: String,
+        val dateAddedRaw: String   // keep for Room sorting
+    )
 
-        if (t.isEmpty() || c.isEmpty() || d.isEmpty()) return false
-        if (t.length !in 3..225) return false
-        if (c.length !in 3..225) return false
-        if (d.length !in 3..225) return false
+    /*fun validate(dto: JobDto): ValidJob? {
+        val id = dto.id?.trim() ?: return null
+        val title = dto.title?.trim().takeIf { !it.isNullOrEmpty() && it.length in 3..225 } ?: return null
+        val city  = dto.city?.trim().takeIf { !it.isNullOrEmpty() && it.length in 3..225 } ?: return null
 
-        return true
-    }
+        val dateRaw = dto.dateAdded?.trim() ?: return null
+        val date = validateAndFormatDate(dateRaw) ?: return null
+        val deadline = validateAndFormatDate(dto.deadline?.trim()) ?: return null
 
-    fun validateAndFormatMoney(salary: Int?): String {
-        return when {
-            salary == null || salary <= 0 -> "Salaire non renseigné"
-            else -> String.format(Locale.FRANCE,"%,d FCFA", salary).replace(',', ' ')
-        }
-    }
+        // required-ish content
+        val description = dto.description?.trim().orEmpty()
+        val sectorName  = dto.sector?.name?.trim().orEmpty()
+        val company     = dto.company?.trim().orEmpty()
 
-    /** Policy for skipping based on description/sector/company. */
-    fun shouldSkipByPolicy(description: String?, sectorName: String?, company: String?): Boolean {
-        val des = description?.trim()
-        val sec = sectorName?.trim()
-        val com = company?.trim()
+        if (description.isEmpty() || sectorName.isEmpty() || company.isEmpty()) return null
 
-        // null / empty
-        if (des.isNullOrEmpty() || sec.isNullOrEmpty() || com.isNullOrEmpty()) return true
-
-        // length rules
-        if (des.length !in 3..5000) return true // Avoid ManInTheMiddle attacks limit string length
-        if (sec.length !in 3..225) return true
-        if (com.length !in 2..225) return true
-
-        // regex safety
-        if (!isSafeText(des) || !isSafeText(sec) || !isSafeText(com)) return true
-
-        return false
-    }
-
-    /**
-     * Single-entry validator for jobs used by the DATA layer.
-     *
-     * Returns the normalized "dd-MM-yyyy" date if and only if ALL constraints pass:
-     *  - title/city/date basic rules
-     *  - date parsing/normalization
-     *  - policy rules on description/sector/company
-     *  - regex/allowlist gate on all provided fields
-     *
-     * If anything fails, returns null.
-     *
-     * Usage:
-     *   val normalized = JobValidation.validateAll(
-     *       title = ...,
-     *       city = ...,
-     *       dateRaw = ...,
-     *       description = ...,
-     *       sectorName = ...,
-     *       company = ...,
-     *       // any additional fields that should pass SafeText gate
-     *       extraSafeFields = listOf(...)
-     *   )
-     */
-    fun validateAll(
-        title: String?,
-        city: String?,
-        dateRaw: String?,
-        deadlineRaw: String?,
-        description: String?,
-        sectorName: String?,
-        company: String?,
-        salary: Int? = null,
-        gate: List<String?> = emptyList()
-    ): String? {
-        // Step 1: high-level shape validation + date presence
-        if (!isValid(title, city, dateRaw)) return null
-
-        // Step 2: normalize date to dd-MM-yyyy (also re-parses defensively)
-        val normalizedDate = validateAndFormatDate(dateRaw) ?: return null
-
-        if (salary == null) return null
-
-        // Step 2: normalize date to dd-MM-yyyy (also re-parses defensively)
-        if (validateAndFormatDate(deadlineRaw).isNullOrEmpty()) return null
-
-        // Step 3: business/policy skip criteria
-        if (shouldSkipByPolicy(description, sectorName, company)) return null
-
-        // Step 4: SafeText gate on all relevant fields (including normalized date)
+        // safe-text allowlist on critical strings
+        val gate = listOf(
+            title, city, description, sectorName, company,
+            dto.gender?.name, dto.contractType?.name, dto.workMode?.name,
+            dto.authorEmail, dto.authorWebsite, dto.authorMobile1, dto.authorMobile2,
+            dto.companyLogoUrl, dto.experience, dto.educationLevel
+        )
         if (gate.any { !isSafeText(it) }) return null
 
-        return normalizedDate
+        return ValidJob(
+            id = id,
+            title = title,
+            city = city,
+            date = date,
+            deadline = deadline,
+            dateAddedRaw = dateRaw,
+            description = description,
+            sectorName = sectorName,
+            genderName = dto.gender?.name?.trim().orEmpty(),
+            contractTypeName = dto.contractType?.name?.trim().orEmpty(),
+            workModeName = dto.workMode?.name?.trim().orEmpty(),
+            authorEmail = dto.authorEmail?.trim().orEmpty(),
+            authorWebsite = dto.authorWebsite?.trim().orEmpty(),
+            authorMobile1 = dto.authorMobile1?.trim().orEmpty(),
+            authorMobile2 = dto.authorMobile2?.trim().orEmpty(),
+            authorLongitude = dto.authorLongitude,
+            authorLatitude = dto.authorLatitude,
+            company = company,
+            companyLogoUrl = dto.companyLogoUrl?.trim().orEmpty(),
+            salary = validateAndFormatMoney(dto.salary),
+            experience = dto.experience?.trim().orEmpty(),
+            educationLevel = dto.educationLevel?.trim().orEmpty()
+        )
+    }*/
+
+    fun validate(dto: JobDto): ValidJob? {
+        val dateRaw = dto.dateAdded?.trim() ?: return null
+        val date = validateAndFormatDate(dateRaw) ?: return null
+        val deadline = validateAndFormatDate(dto.deadline?.trim()) ?: return null
+
+        println("SEARCH validate will ok")
+
+        return ValidJob(
+            id = dto.id!!,
+            title = dto.title!!,
+            city = dto.city!!,
+            date = date,
+            deadline = deadline,
+            dateAddedRaw = dateRaw,
+            description = dto.description!!,
+            sectorName = dto.sector?.name!!,
+            genderName = dto.gender?.name?.trim().orEmpty(),
+            contractTypeName = dto.contractType?.name?.trim().orEmpty(),
+            workModeName = dto.workMode?.name?.trim().orEmpty(),
+            authorEmail = dto.authorEmail?.trim().orEmpty(),
+            authorWebsite = dto.authorWebsite?.trim().orEmpty(),
+            authorMobile1 = dto.authorMobile1?.trim().orEmpty(),
+            authorMobile2 = dto.authorMobile2?.trim().orEmpty(),
+            authorLongitude = dto.authorLongitude,
+            authorLatitude = dto.authorLatitude,
+            company = dto.company!!,
+            companyLogoUrl = dto.companyLogoUrl?.trim().orEmpty(),
+            salary = validateAndFormatMoney(dto.salary),
+            experience = dto.experience?.trim().orEmpty(),
+            educationLevel = dto.educationLevel?.trim().orEmpty()
+        )
     }
 
+    fun validateAndFormatMoney(salary: Int?): String =
+        if (salary == null || salary <= 0) "Salaire non renseigné"
+        else String.format(Locale.FRANCE, "%,d FCFA", salary).replace(',', ' ')
 }
-

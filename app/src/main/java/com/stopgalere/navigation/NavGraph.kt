@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.stopgalere.presentation.ui.about.AboutScreen
 import com.stopgalere.presentation.ui.coverletter.CoverLetterDetailScreen
 import com.stopgalere.presentation.ui.coverletter.CoverLetterScreen
@@ -85,7 +86,10 @@ fun NavGraph(
 
         composable(
             route = Route.JobDetail.path,
-            arguments = listOf(navArgument(Route.JobDetail.ARG_ID) { type = NavType.StringType })
+            arguments = listOf(navArgument(Route.JobDetail.ARG_ID) { type = NavType.StringType }),
+            deepLinks = listOf(
+                navDeepLink { uriPattern = "stopgalere://job/{${Route.JobDetail.ARG_ID}}" }
+            )
         ) {
             JobDetailScreen(navController = navController)
         }

@@ -24,10 +24,21 @@
             android:theme="@style/Theme.StopGalere">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="stopgalere"
+                    android:host="job" />
+            </intent-filter>
         </activity>
+        <activity
+            android:name="com.stopgalere.presentation.ui.common.NoInternetActivity"
+            android:exported="false"
+            android:theme="@style/Theme.StopGalere" />
     </application>
 
 </manifest>

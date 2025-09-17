@@ -1,6 +1,8 @@
 package com.stopgalere.data.remote
 
 import com.stopgalere.data.remote.dto.CoverLettersResponse
+import com.stopgalere.data.remote.dto.JobDetailResponse
+import com.stopgalere.data.remote.dto.JobDto
 import com.stopgalere.data.remote.dto.JobsResponse
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -32,6 +34,11 @@ interface ApiService {
         @Query("page") page: Int,
         @Query("query") query: String? = null
     ): JobsResponse
+
+    @GET("jobs/{id}")
+    suspend fun getJob(
+        @Path("id") id: String
+    ): JobDetailResponse
 
     @GET("cover-letters")
     suspend fun getCoverLetters(
