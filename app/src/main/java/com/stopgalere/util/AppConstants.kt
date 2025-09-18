@@ -22,5 +22,9 @@ object AppConstants {
     const val PREFS_NAME = "stop_galere_prefs"
     const val PREF_KEY_FIRST_LAUNCH = "first_launch"
 
+    const val STRING_LENGTH_MAX = 225  // Avoid ManInTheMiddle attacks limit string length
+
+    const val STRING_LENGTH_MIN = 3
+
     const val TAG = "STG"
 }

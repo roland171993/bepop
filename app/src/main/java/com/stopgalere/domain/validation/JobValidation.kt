@@ -3,6 +3,8 @@ package com.stopgalere.domain.validation
 import com.stopgalere.data.remote.dto.JobDto
 import com.stopgalere.domain.validation.common.DateValidation.validateAndFormatDate
 import com.stopgalere.domain.validation.common.SafeText.isSafeText
+import com.stopgalere.util.AppConstants.STRING_LENGTH_MAX
+import com.stopgalere.util.AppConstants.STRING_LENGTH_MIN
 import java.util.Locale
 
 /**
@@ -36,28 +38,61 @@ object JobValidation {
         val dateAddedRaw: String   // keep for Room sorting
     )
 
-    /*fun validate(dto: JobDto): ValidJob? {
+    fun validate(dto: JobDto): ValidJob? {
         val id = dto.id?.trim() ?: return null
-        val title = dto.title?.trim().takeIf { !it.isNullOrEmpty() && it.length in 3..225 } ?: return null
-        val city  = dto.city?.trim().takeIf { !it.isNullOrEmpty() && it.length in 3..225 } ?: return null
 
-        val dateRaw = dto.dateAdded?.trim() ?: return null
+        val title = dto.title?.trim().takeIf { !it.isNullOrEmpty() && it.length in STRING_LENGTH_MIN..STRING_LENGTH_MAX } ?: return null
+        val city  = dto.city?.trim().takeIf { !it.isNullOrEmpty() && it.length in STRING_LENGTH_MIN..STRING_LENGTH_MAX } ?: return null
+
+        // date fields are strings in the DTO; enforce length first, then format
+        val dateRaw = dto.dateAdded?.trim()?.takeIf { it.length in STRING_LENGTH_MIN..STRING_LENGTH_MAX } ?: return null
+        val deadlineRaw = dto.deadline?.trim()?.takeIf { it.length in STRING_LENGTH_MIN..STRING_LENGTH_MAX } ?: return null
+
         val date = validateAndFormatDate(dateRaw) ?: return null
-        val deadline = validateAndFormatDate(dto.deadline?.trim()) ?: return null
+        val deadline = validateAndFormatDate(deadlineRaw) ?: return null
 
-        // required-ish content
-        val description = dto.description?.trim().orEmpty()
-        val sectorName  = dto.sector?.name?.trim().orEmpty()
-        val company     = dto.company?.trim().orEmpty()
+        // required-ish content + new length constraints
+        val description = dto.description?.trim()
+            ?.takeIf { it.length in STRING_LENGTH_MIN..5000 } ?: return null  // Avoid ManInTheMiddle attacks limit string length
 
-        if (description.isEmpty() || sectorName.isEmpty() || company.isEmpty()) return null
+        val sectorName = dto.sector?.name?.trim()
+            ?.takeIf { it.length in STRING_LENGTH_MIN..STRING_LENGTH_MAX } ?: return null
 
-        // safe-text allowlist on critical strings
+        val company = dto.company?.trim()
+            ?.takeIf { it.length in 2..STRING_LENGTH_MAX } ?: return null
+
+        // Optional/nested strings normalized
+        val genderName        = dto.gender?.name?.trim().orEmpty()
+        val contractTypeName  = dto.contractType?.name?.trim().orEmpty()
+        val workModeName      = dto.workMode?.name?.trim().orEmpty()
+        val authorEmail       = dto.authorEmail?.trim().orEmpty()
+        val authorWebsite     = dto.authorWebsite?.trim().orEmpty()
+        val authorMobile1     = dto.authorMobile1?.trim().orEmpty()
+        val authorMobile2     = dto.authorMobile2?.trim().orEmpty()
+        val companyLogoUrl    = dto.companyLogoUrl?.trim().orEmpty()
+        val experience        = dto.experience?.trim().orEmpty()
+        val educationLevel    = dto.educationLevel?.trim().orEmpty()
+
+        //  GATE: must contain ALL string fields (except longitude, latitude, salary)
         val gate = listOf(
-            title, city, description, sectorName, company,
-            dto.gender?.name, dto.contractType?.name, dto.workMode?.name,
-            dto.authorEmail, dto.authorWebsite, dto.authorMobile1, dto.authorMobile2,
-            dto.companyLogoUrl, dto.experience, dto.educationLevel
+            id,
+            title,
+            description,
+            sectorName,
+            genderName,
+            contractTypeName,
+            workModeName,
+            authorEmail,
+            authorWebsite,
+            authorMobile1,
+            authorMobile2,
+            company,
+            companyLogoUrl,
+            city,
+            experience,
+            educationLevel,
+            dateRaw,       // original strings before formatting
+            deadlineRaw
         )
         if (gate.any { !isSafeText(it) }) return null
 
@@ -70,53 +105,20 @@ object JobValidation {
             dateAddedRaw = dateRaw,
             description = description,
             sectorName = sectorName,
-            genderName = dto.gender?.name?.trim().orEmpty(),
-            contractTypeName = dto.contractType?.name?.trim().orEmpty(),
-            workModeName = dto.workMode?.name?.trim().orEmpty(),
-            authorEmail = dto.authorEmail?.trim().orEmpty(),
-            authorWebsite = dto.authorWebsite?.trim().orEmpty(),
-            authorMobile1 = dto.authorMobile1?.trim().orEmpty(),
-            authorMobile2 = dto.authorMobile2?.trim().orEmpty(),
+            genderName = genderName,
+            contractTypeName = contractTypeName,
+            workModeName = workModeName,
+            authorEmail = authorEmail,
+            authorWebsite = authorWebsite,
+            authorMobile1 = authorMobile1,
+            authorMobile2 = authorMobile2,
             authorLongitude = dto.authorLongitude,
             authorLatitude = dto.authorLatitude,
             company = company,
-            companyLogoUrl = dto.companyLogoUrl?.trim().orEmpty(),
+            companyLogoUrl = companyLogoUrl,
             salary = validateAndFormatMoney(dto.salary),
-            experience = dto.experience?.trim().orEmpty(),
-            educationLevel = dto.educationLevel?.trim().orEmpty()
-        )
-    }*/
-
-    fun validate(dto: JobDto): ValidJob? {
-        val dateRaw = dto.dateAdded?.trim() ?: return null
-        val date = validateAndFormatDate(dateRaw) ?: return null
-        val deadline = validateAndFormatDate(dto.deadline?.trim()) ?: return null
-
-        println("SEARCH validate will ok")
-
-        return ValidJob(
-            id = dto.id!!,
-            title = dto.title!!,
-            city = dto.city!!,
-            date = date,
-            deadline = deadline,
-            dateAddedRaw = dateRaw,
-            description = dto.description!!,
-            sectorName = dto.sector?.name!!,
-            genderName = dto.gender?.name?.trim().orEmpty(),
-            contractTypeName = dto.contractType?.name?.trim().orEmpty(),
-            workModeName = dto.workMode?.name?.trim().orEmpty(),
-            authorEmail = dto.authorEmail?.trim().orEmpty(),
-            authorWebsite = dto.authorWebsite?.trim().orEmpty(),
-            authorMobile1 = dto.authorMobile1?.trim().orEmpty(),
-            authorMobile2 = dto.authorMobile2?.trim().orEmpty(),
-            authorLongitude = dto.authorLongitude,
-            authorLatitude = dto.authorLatitude,
-            company = dto.company!!,
-            companyLogoUrl = dto.companyLogoUrl?.trim().orEmpty(),
-            salary = validateAndFormatMoney(dto.salary),
-            experience = dto.experience?.trim().orEmpty(),
-            educationLevel = dto.educationLevel?.trim().orEmpty()
+            experience = experience,
+            educationLevel = educationLevel
         )
     }
 

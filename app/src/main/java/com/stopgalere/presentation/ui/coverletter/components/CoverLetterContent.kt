@@ -14,7 +14,7 @@ import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
-import com.stopgalere.presentation.ui.components.OfflineBanner
+import com.stopgalere.presentation.ui.common.OfflineBanner
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

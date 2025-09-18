@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.RolandAssoh.stopgalere.ci.R
-import com.stopgalere.presentation.ui.components.OfflineBanner
+import com.stopgalere.presentation.ui.common.OfflineBanner
 import com.stopgalere.presentation.ui.job.JobList
 import com.stopgalere.presentation.ui.job.JobUi
 

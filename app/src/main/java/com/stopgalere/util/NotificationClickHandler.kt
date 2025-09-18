@@ -20,7 +20,6 @@ class NotificationClickHandler @Inject constructor(
         // read the latest connectivity snapshot
         val online = runBlocking { network.isOnline.first() } // single read, safe from SDK callback
         if (online) {
-            println("SEARCH onJobNotificationClicked cas Connected")
             val intent = Intent(
                 Intent.ACTION_VIEW,
                 "stopgalere://job/$jobId".toUri()
@@ -29,7 +28,6 @@ class NotificationClickHandler @Inject constructor(
             }
             context.startActivity(intent)
         } else {
-            println("SEARCH onJobNotificationClicked cas not Connected")
             val intent = Intent(context, NoInternetActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }

@@ -56,7 +56,6 @@ class JobDetailViewModel @Inject constructor(
     init {
         // 1) Observe DB; if null and we're refreshing, keep showing Loading
         viewModelScope.launch {
-            println("SEARCH DB")
             repo.jobById(jobId)
                 .onStart {
                     _uiState.value = JobDetailUiState.Loading
@@ -73,7 +72,6 @@ class JobDetailViewModel @Inject constructor(
 
         // 2) One-shot detail refresh to populate Room
         viewModelScope.launch {
-            println("SEARCH REMOTE")
             network.isOnline
                 .filter { it }
                 .take(1)
