@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.stopgalere.navigation.Route
 
 /**
  * ViewModel for the splash screen.
@@ -63,9 +64,9 @@ class SplashViewModel @Inject constructor(
     private fun navigateNext() {
         val nextRoute = if (!prefs.getFirstLaunch()) {
             prefs.setFirstLaunch(true)
-            "intro"
+            Route.Intro.path
         } else {
-            "main"
+            Route.Main.path
         }
         viewModelScope.launch {
             _events.emit(SplashEvent.Navigate(nextRoute))

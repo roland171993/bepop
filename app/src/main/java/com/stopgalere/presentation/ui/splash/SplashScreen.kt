@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import com.stopgalere.navigation.Route
 import com.stopgalere.presentation.theme.StopGalereTheme
 import com.stopgalere.presentation.viewmodel.splash.SplashEvent
 import com.stopgalere.presentation.viewmodel.splash.SplashViewModel
@@ -29,7 +30,7 @@ fun SplashScreen(
         viewModel.events.collectLatest { event ->
             if (event is SplashEvent.Navigate) {
                 navController.navigate(event.route) {
-                    popUpTo("splash") { inclusive = true }
+                    popUpTo(Route.Splash.path) { inclusive = true }
                 }
             }
         }

@@ -70,16 +70,11 @@ internal fun AboutScreenContent(
     // Single source of truth for dimensions to avoid “two size edits”
     val dimens = AboutDefaults.dimens
 
-    // Save scroll pos across recompositions & previews
-    val scrollState = rememberSaveable(saver = androidx.compose.foundation.ScrollState.Saver) {
-        androidx.compose.foundation.ScrollState(initial = 0)
-    }
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(color = AppBackground)
-            .systemBarsPadding()
-            .verticalScroll(scrollState),
+            .systemBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Top bar

@@ -13,6 +13,17 @@ import com.stopgalere.presentation.ui.job.toUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.BufferOverflow
+
+sealed class MainUiEvent {
+    data object RateApp : MainUiEvent()
+    data object OpenHelp : MainUiEvent()
+    data object OpenPage : MainUiEvent()
+
+    data object ResumePage : MainUiEvent()
+    data class Navigate(val route: String) : MainUiEvent()
+}
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -60,4 +71,28 @@ class MainViewModel @Inject constructor(
                 getJobs(q, online).map { paging -> paging.map { it.toUi() } }
             }
             .cachedIn(viewModelScope)
+
+    // Upload dialog state (ViewModel owns it)
+    private val _showUploadDialog = MutableStateFlow(false)
+    val showUploadDialog: StateFlow<Boolean> = _showUploadDialog.asStateFlow()
+    fun dismissUploadDialog() { _showUploadDialog.value = false }
+
+    // One-shot UI events
+    private val _events = MutableSharedFlow<MainUiEvent>(
+        replay = 0, extraBufferCapacity = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val events: SharedFlow<MainUiEvent> = _events
+
+    fun onDrawerRouteSelected(route: String) {
+        viewModelScope.launch {
+            when (route) {
+                "upload" -> _showUploadDialog.value = true
+                "rate"   -> _events.emit(MainUiEvent.RateApp)
+                "help"   -> _events.emit(MainUiEvent.OpenHelp)
+                "page"   -> _events.emit(MainUiEvent.OpenPage)
+                "resume"   -> _events.emit(MainUiEvent.ResumePage)
+                else     -> _events.emit(MainUiEvent.Navigate(route))
+            }
+        }
+    }
 }

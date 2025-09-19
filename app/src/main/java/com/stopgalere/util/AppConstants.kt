@@ -2,13 +2,14 @@ package com.stopgalere.util
 
 object AppConstants {
     const val DATABASE_NAME = "app.db"
+
     const val DEV_URL = "http://192.168.100.22:3000/api/"
 
-    const val PROD_URL = "changeMe"
+    const val PROD_URL = "https://stopgalere.rolandassoh.com/api/"
 
-    const val CASE_DEBUG = true
+    const val CASE_DEBUG = false
 
-    const val BASE_URL = DEV_URL
+    const val BASE_URL = PROD_URL
     const val NETWORK_TIMEOUT = 7_200_000L // 2 hours sometime We Have Bad Connection in Ivory Coast so it's take time
 
     // Paging

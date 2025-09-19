@@ -6,7 +6,7 @@
     <string name="app_cgu">CGU</string>
     <string name="facebook_videos">www.facebook.com/pg/Stopgalere-CI-243747339471646/videos/</string>
     <string name="facebook_groupe">www.facebook.com/stopgalereci/</string>
-    <string name="app_email">contact@stopgalere-ci.com</string>
+    <string name="app_email">jobs@rolandassoh.com</string>
     <string name="screen_main_title">Home</string>
     <string name="screen_splash_title">Stop Galère</string>
     <string name="screen_splash_header">L’emploi vous poursuit</string>
@@ -28,12 +28,15 @@
     <string name="screen_main_search_title">Rechercher…</string>
     <string name="screen_main_drawer_cover_letter">L.Motivation</string>
     <string name="error_unknown">Quelque chose s\'est mal passé, nous travaillons à le résoudre.</string>
+    <string name="screen_main_post_job">Déposer une Annonce</string>
+    <string name="screen_main_mail_us">Merci de nous écrire à l\'adresse : </string>
     <string name="screen_main_drawer_cv">CV</string>
     <string name="screen_main_drawer_rate">Noter</string>
     <string name="screen_main_drawer_about">A Propos</string>
     <string name="screen_main_drawer_help">Aide</string>
     <string name="screen_main_drawer_upload">Déposer</string>
     <string name="screen_main_drawer_page">Page</string>
+    <string name="ok">OK</string>
     <string name="no_internet">Vous n’êtes pas connecté à Internet.</string>
     <string name="job_list_no_more">Impossible de charger plus.</string>
     <string name="screen_job_detail_not_loaded">Impossibilité de charger le détail du job</string>
@@ -46,6 +49,7 @@
     <string name="screen_job_detail_sector">SECTEUR D\'ACTIVITÉ</string>
     <string name="screen_job_detail_website">SITE WEB</string>
     <string name="screen_job_detail_email">EMAIL</string>
+    <string name="screen_splash_android_update_msg">Veuillez patienter nous préparons une mise à jour pour le support de votre version d\'android</string>
     <string name="onesignal_notification_accent_color">FF00FF00</string>
 
 </resources>
