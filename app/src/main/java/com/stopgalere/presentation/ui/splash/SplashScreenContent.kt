@@ -2,9 +2,13 @@ package com.stopgalere.presentation.ui.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,52 +30,82 @@ import com.stopgalere.presentation.theme.StopGalereTheme
  * Stateless Splash screen UI.
  */
 @Composable
-fun SplashScreenContent(modifier: Modifier = Modifier) {
+fun SplashScreenContent(modifier: Modifier = Modifier,
+                        snackbarHostState: SnackbarHostState? = null) {
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
     val topPadding = screenHeight * 0.15f
     val spacerSmall = screenHeight * 0.02f
     val spacerLarge = screenHeight * 0.15f
 
+
     Surface(
         modifier = modifier.fillMaxSize(),
         color = SplashColor
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(Modifier.height(topPadding))
+        Box(modifier.fillMaxSize()){
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(Modifier.height(topPadding))
 
-            Text(
-                text = stringResource(R.string.screen_splash_title),
-                style = TextStyle(
-                    fontSize = 48.sp,
-                    color = Color.White,
-                    lineHeight = 57.sp
-                ),
-                textAlign = TextAlign.Center
-            )
+                Text(
+                    text = stringResource(R.string.screen_splash_title),
+                    style = TextStyle(
+                        fontSize = 48.sp,
+                        color = Color.White,
+                        lineHeight = 57.sp
+                    ),
+                    textAlign = TextAlign.Center
+                )
 
-            Spacer(Modifier.height(spacerSmall))
+                Spacer(Modifier.height(spacerSmall))
 
-            Text(
-                text = stringResource(R.string.screen_splash_header),
-                style = MaterialTheme.typography.headlineLarge.copy(color = Color.LightGray),
-                textAlign = TextAlign.Center
-            )
+                Text(
+                    text = stringResource(R.string.screen_splash_header),
+                    style = MaterialTheme.typography.headlineLarge.copy(color = Color.LightGray),
+                    textAlign = TextAlign.Center
+                )
 
-            Spacer(Modifier.height(spacerLarge))
+                Spacer(Modifier.height(spacerLarge))
 
-            Image(
-                painter = painterResource(R.drawable.ic_logo_transparent),
-                contentDescription = null,
-                modifier = Modifier.size(200.dp),
-                contentScale = ContentScale.Fit
-            )
+                Image(
+                    painter = painterResource(R.drawable.ic_logo_transparent),
+                    contentDescription = null,
+                    modifier = Modifier.size(200.dp),
+                    contentScale = ContentScale.Fit
+                )
+            }
+
+            if (snackbarHostState != null){
+                SnackbarHost(
+                    hostState = snackbarHostState,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(0.dp,0.dp,0.dp,50.dp)
+                )
+            }
+
         }
     }
+
+
+}
+
+@Composable
+fun UnsupportedApiDialog(onOk: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = { /* Block dismiss to force acknowledgement */ },
+        title = { Text(stringResource(R.string.screen_splash_android_update_title)) },
+        text = {
+            Text(stringResource(R.string.screen_splash_android_update_msg))
+        },
+        confirmButton = {
+            TextButton(onClick = onOk) { Text(stringResource(R.string.ok)) }
+        }
+    )
 }
 
 /**

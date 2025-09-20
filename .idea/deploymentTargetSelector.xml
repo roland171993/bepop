@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-09-16T16:24:52.902303067Z">
+        <DropdownSelection timestamp="2025-09-20T12:20:17.636230732Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="LocalEmulator" identifier="path=/home/centenier/.android/avd/MediumPhone_Pixel6_Android13.avd" />

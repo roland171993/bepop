@@ -49,7 +49,9 @@
     <string name="screen_job_detail_sector">SECTEUR D\'ACTIVITÉ</string>
     <string name="screen_job_detail_website">SITE WEB</string>
     <string name="screen_job_detail_email">EMAIL</string>
-    <string name="screen_splash_android_update_msg">Veuillez patienter nous préparons une mise à jour pour le support de votre version d\'android</string>
+    <string name="screen_splash_android_update_title">Mise à jour requise</string>
+    <string name="screen_splash_permission_required">Vous devez autoriser les permissions pour continuer</string>
+    <string name="screen_splash_android_update_msg">Votre version n\'android n\'est pas prise en charge veuillez patientez et installer la prochaine mise à jour</string>
     <string name="onesignal_notification_accent_color">FF00FF00</string>
 
 </resources>

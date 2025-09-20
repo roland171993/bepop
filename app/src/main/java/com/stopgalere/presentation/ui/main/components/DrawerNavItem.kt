@@ -92,7 +92,7 @@ fun DrawerContent(
     val bgBrush = Brush.verticalGradient(
         colors = listOf(
             scheme.primary,
-            scheme.primaryContainer
+            scheme.onPrimaryContainer
         )
     )
     // A content color that keeps good contrast on the gradient

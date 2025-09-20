@@ -100,7 +100,7 @@ fun MainScreenPreview() {
     )
 
     // Wrap preview in Material 3 theme so MainScreenContent’s M3 widgets render as intended
-    MaterialTheme {
+    StopGalereTheme {
         ModalDrawer(
             drawerState = drawerState,
             drawerBackgroundColor = Color.Transparent,

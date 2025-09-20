@@ -5,24 +5,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stopgalere.data.local.Prefs
 import com.stopgalere.di.MainDispatcher
+import com.stopgalere.navigation.Route
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import com.stopgalere.navigation.Route
 
 /**
- * ViewModel for the splash screen.
- * - Shows splash for 2s
- * - Then either requests permissions or navigates on
- * - Emits a navigation event when done.
+ * ViewModel for the Splash screen.
+ * - Exposes [unsupportedApi] boolean so the Composable doesn’t need sealed types.
+ * - Uses internal [SplashUiState] for permission gating.
+ * - Emits one-off [SplashEvent] (navigate / exit).
  */
 @HiltViewModel
 class SplashViewModel @Inject constructor(
@@ -30,34 +30,54 @@ class SplashViewModel @Inject constructor(
     @MainDispatcher private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
+    // Internal UI state (permission flow)
     private val _uiState = MutableStateFlow<SplashUiState>(SplashUiState.Idle)
-    // Idle → RequestPermissions
     val uiState: StateFlow<SplashUiState> = _uiState.asStateFlow()
 
+    // Simple flag for unsupported API (UI reads this; no sealed import needed)
+    private val _unsupportedApi = MutableStateFlow(false)
+    val unsupportedApi: StateFlow<Boolean> = _unsupportedApi.asStateFlow()
+
+    // One-off events
     private val _events = MutableSharedFlow<SplashEvent>(replay = 0)
     val events: SharedFlow<SplashEvent> = _events.asSharedFlow()
 
     init {
-        // Show splash, then decide
-        viewModelScope.launch(dispatcher) {
-            delay(2_000)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                _uiState.value = SplashUiState.RequestPermissions
-            } else {
-                navigateNext()
+        if (Build.VERSION.SDK_INT > 36) {
+            // Block devices above API 36 (per your requirement)
+            _unsupportedApi.value = true
+            _uiState.value = SplashUiState.Unsupported
+        } else {
+            // Normal splash bootstrap
+            viewModelScope.launch(dispatcher) {
+                delay(2_000)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    _uiState.value = SplashUiState.RequestPermissions
+                } else {
+                    navigateNext()
+                }
             }
         }
     }
 
-    /*
-      Call from your Activity/Composable when perms result arrives.
-      If granted, continue; otherwise re-request.
-     */
+    /** Called when the user acknowledges the “unsupported Android” dialog. */
+    fun onUnsupportedOkClicked() {
+        viewModelScope.launch { _events.emit(SplashEvent.ExitApp) }
+    }
+
+    /** Aggregated result from the permission launcher. */
     fun onPermissionsResult(allGranted: Boolean) {
         if (allGranted) {
             navigateNext()
         } else {
-            _uiState.value = SplashUiState.RequestPermissions
+            // User refused permissions → close the app now.
+            // Next time the app starts, Splash will request again.
+            // Ask again next launch: show snackbar now, UI will exit after it’s shown
+            viewModelScope.launch {
+                _events.emit(
+                    SplashEvent.ShowPermissionSnackbar
+                )
+            }
         }
     }
 
@@ -68,23 +88,20 @@ class SplashViewModel @Inject constructor(
         } else {
             Route.Main.path
         }
-        viewModelScope.launch {
-            _events.emit(SplashEvent.Navigate(nextRoute))
-        }
+        viewModelScope.launch { _events.emit(SplashEvent.Navigate(nextRoute)) }
     }
 }
 
-/** UI states for the splash screen. */
+/** Internal UI states for Splash. */
 sealed interface SplashUiState {
-    /** Still showing logo/timer. */
-    object Idle : SplashUiState
-
-    /** Trigger the permissions flow in UI. */
-    object RequestPermissions : SplashUiState
+    data object Idle : SplashUiState
+    data object RequestPermissions : SplashUiState
+    data object Unsupported : SplashUiState
 }
 
-/** One-off events from [SplashViewModel]. */
+/** One-off events emitted by the ViewModel. */
 sealed interface SplashEvent {
-    /** Navigate to the given route and clear splash from backstack. */
     data class Navigate(val route: String) : SplashEvent
+    data object ShowPermissionSnackbar : SplashEvent
+    data object ExitApp : SplashEvent
 }
