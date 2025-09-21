@@ -20,7 +20,8 @@ interface CoverLetterDao {
           CASE 
             WHEN dateAdded IS NOT NULL AND dateAdded != '' THEN dateAdded
             ELSE (substr(date, 7, 4) || '-' || substr(date, 4, 2) || '-' || substr(date, 1, 2))
-          END DESC
+          END DESC,
+          id ASC   -- Deterministic tie-breaker to keep last-item stable for Paging
     """)
     fun pagingSource(query: String?): PagingSource<Int, CoverLetterEntity>
 

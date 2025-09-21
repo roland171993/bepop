@@ -14,6 +14,7 @@ object AppConstants {
 
     // Paging
     const val STARTING_PAGE_INDEX = 1
+
     const val PAGE_SIZE = 15
 
     const val ONESIGNAL_APP_ID  ="25bb0fa0-4d24-488e-b65a-55cef95600eb"

@@ -31,16 +31,19 @@ class CoverLetterRemoteMediator(
             LoadType.REFRESH -> 1
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
-                val lastId = state.lastItemOrNull()?.id
-                    ?: return MediatorResult.Success(endOfPaginationReached = true)
-                val next = keysDao.remoteKeysById(lastId)?.nextKey
-                    ?: return MediatorResult.Success(endOfPaginationReached = true)
+                // Standard next from the "last item"
+                val fromLast = state.lastItemOrNull()?.id?.let { id ->
+                    keysDao.remoteKeysById(id)?.nextKey
+                }
+                // Fallback to GLOBAL when last-item keys are missing on first run
+                val fallback = keysDao.globalNextKey()
+                val next = fromLast ?: fallback
+                if (next == null) return MediatorResult.Success(endOfPaginationReached = true)
                 next
             }
         }
 
-        val response: CoverLettersResponse = api.getCoverLetters(pageToLoad, query)
-
+        val response = api.getCoverLetters(pageToLoad, query)
         val p = response.pagination
         val currentPage = p?.currentPage ?: pageToLoad
         val lastPage    = p?.lastPage ?: currentPage
@@ -53,7 +56,6 @@ class CoverLetterRemoteMediator(
             val content = dto.content?.trim()
             val createdAt = dto.createdAt?.trim()
 
-            // Validate fields + get normalized UI date (dd-MM-yyyy)
             val uiDate = CoverLetterValidation.validateAll(
                 title = title,
                 content = content,
@@ -65,8 +67,8 @@ class CoverLetterRemoteMediator(
                 id = id,
                 title = title!!,
                 content = content!!,
-                date = uiDate,            // dd-MM-yyyy from createdAt
-                dateAdded = createdAt!!,  // raw createdAt for sorting
+                date = uiDate,
+                dateAdded = createdAt!!,
             )
         }
 
@@ -77,6 +79,8 @@ class CoverLetterRemoteMediator(
             }
             if (entities.isNotEmpty()) {
                 dao.upsertAll(entities)
+
+                // per-item keys
                 keysDao.insertAll(
                     entities.map { e ->
                         CoverLetterRemoteKeys(
@@ -86,10 +90,18 @@ class CoverLetterRemoteMediator(
                         )
                     }
                 )
+
+                // GLOBAL nextKey for first-run APPEND fallback
+                keysDao.upsertGlobal(nextKey)
             }
         }
 
         val endReached = nextKey == null || currentPage >= lastPage || entities.isEmpty()
+        if (endReached) {
+            // no more pages => prevent stale fallback
+            db.withTransaction { keysDao.clearGlobal() }
+        }
+
         MediatorResult.Success(endOfPaginationReached = endReached)
     } catch (t: Throwable) {
         MediatorResult.Error(t)
@@ -98,3 +110,4 @@ class CoverLetterRemoteMediator(
 
 private fun <T : Any> PagingState<Int, T>.lastItemOrNull(): T? =
     pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
+
