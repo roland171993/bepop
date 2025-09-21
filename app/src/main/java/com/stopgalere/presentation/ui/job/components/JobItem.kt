@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +30,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.stopgalere.presentation.theme.StopGalereTheme
 import com.stopgalere.presentation.ui.job.JobUi
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.Ban
+import compose.icons.fontawesomeicons.solid.Calendar
 
 @Composable
 fun JobItem(
@@ -51,24 +57,24 @@ fun JobItem(
     ) {
         Box {
             Column(
-                Modifier
+                modifier
                     .fillMaxWidth()
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             ) {
-                Spacer(Modifier.height(6.dp))
+                Spacer(modifier.height(6.dp))
 
                 Text(
                     job.title.uppercase(),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = modifier.align(Alignment.CenterHorizontally)
                 )
 
-                Spacer(Modifier.height(6.dp))
+                Spacer(modifier.height(6.dp))
 
                 Row(
-                    Modifier
+                    modifier
                         .fillMaxWidth()
                         .padding(horizontal = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -79,21 +85,36 @@ fun JobItem(
                         style = MaterialTheme.typography.labelSmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f),
+                        modifier = modifier.weight(1f),
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
-                    Text(
-                        job.date,
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontStyle = FontStyle.Italic
-                        ),
-                        maxLines = 1,
-                        textAlign = TextAlign.End,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f),
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                    )
+                    Row(
+                        modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        horizontalArrangement = Arrangement.End,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = FontAwesomeIcons.Solid.Calendar,
+                            contentDescription = "calendar icon",
+                            modifier = modifier.size(12.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            job.date,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontStyle = FontStyle.Italic
+                            ),
+                            maxLines = 1,
+                            textAlign = TextAlign.End,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = modifier.padding(7.dp,0.dp,0.dp,0.dp),
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        )
+                    }
+
                 }
 
                 Spacer(Modifier.height(6.dp))
