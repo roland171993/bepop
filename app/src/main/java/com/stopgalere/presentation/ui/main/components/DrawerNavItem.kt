@@ -32,9 +32,9 @@ import compose.icons.fontawesomeicons.solid.Star
 import com.RolandAssoh.stopgalere.ci.R
 
 
-/**
- * A single item in the drawer: route, icon, and label.
- */
+
+//A single item in the drawer: route, icon, and label.
+
 data class DrawerNavItem(
     val route: String,
     val icon: ImageVector,

@@ -33,7 +33,7 @@ object SafeText {
             .replace(UNICODE_SPACES, " ")
             .trim()
 
-    /** True if every character is in the allowed array. */
+    // True if every character is in the allowed array.
     fun isSafeText(s: String?): Boolean {
         if (s == null) return true
         val t = normalize(s)
@@ -46,7 +46,7 @@ object SafeText {
         return true
     }
 
-    /** Helpful for debugging why something failed. */
+    // Helpful for debugging why something failed.
     fun firstIllegalChar(s: String?): Pair<Int, Char>? {
         if (s == null) return null
         val t = normalize(s)

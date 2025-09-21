@@ -15,9 +15,9 @@ import com.stopgalere.navigation.NavGraph
 import dagger.hilt.android.AndroidEntryPoint
 import com.stopgalere.presentation.theme.StopGalereTheme
 
-/**
- * The single Activity for the app. Hosts the Compose NavGraph,
- * applies the app theme, and configures window insets.
+/*
+  The single Activity for the app. Hosts the Compose NavGraph,
+  applies the app theme, and configures window insets.
  */
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

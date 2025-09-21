@@ -31,11 +31,11 @@ data class JobEntity(
     val authorEmail: String,
     val authorWebsite: String,
 
-    // ✅ default must be SQL literal: "''" (empty string)
+    // default must be SQL literal: "''" (empty string)
     @ColumnInfo(defaultValue = "''")
     val authorMobile1: String,
 
-    // ✅ new NOT NULL column with proper default
+    // new NOT NULL column with proper default
     @ColumnInfo(defaultValue = "''")
     val authorMobile2: String,
 

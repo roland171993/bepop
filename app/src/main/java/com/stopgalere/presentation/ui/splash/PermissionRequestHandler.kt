@@ -7,16 +7,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.*
 import com.stopgalere.presentation.viewmodel.splash.SplashUiState
 
-/**
- * Runtime permissions for Splash:
- * - Location: request BOTH COARSE + FINE (Android requirement)
- * - Storage: READ_MEDIA_* on Android 13+; READ_EXTERNAL_STORAGE below
- * - Notifications: POST_NOTIFICATIONS on Android 13+ (runtime)
- *
- * Re-asks when ViewModel re-enters RequestPermissions.
- *
- * @param uiState When it becomes [SplashUiState.RequestPermissions], we launch.
- * @param onPermissionsResult Single aggregated result across all requested permissions.
+/*
+  Runtime permissions for Splash:
+  - Location: request BOTH COARSE + FINE (Android requirement)
+  - Storage: READ_MEDIA_* on Android 13+; READ_EXTERNAL_STORAGE below
+  - Notifications: POST_NOTIFICATIONS on Android 13+ (runtime)
+
+  Re-asks when ViewModel re-enters RequestPermissions.
  */
 @Composable
 fun PermissionRequestHandler(

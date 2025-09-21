@@ -14,9 +14,9 @@ import java.util.TimeZone
 object CoverLetterValidation {
 
 
-    /**
-     * Validates mandatory fields and returns UI date (dd-MM-yyyy) from createdAt.
-     * Returns null to drop the item if critical fields are invalid.
+    /*
+      Validates mandatory fields and returns UI date (dd-MM-yyyy) from createdAt.
+      Returns null to drop the item if critical fields are invalid.
      */
     fun validateAll(
         title: String?,

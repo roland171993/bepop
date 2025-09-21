@@ -5,8 +5,8 @@ import com.stopgalere.util.AppConstants
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-/**
- * Simple wrapper around SharedPreferences, moved from Preferences.kt → Prefs.kt
+/*
+  Simple wrapper around SharedPreferences, moved from Preferences.kt → Prefs.kt
  */
 class Prefs @Inject constructor(
     @ApplicationContext private val context: Context

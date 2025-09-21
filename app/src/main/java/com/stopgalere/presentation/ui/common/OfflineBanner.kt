@@ -14,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.RolandAssoh.stopgalere.ci.R
 
-/** M3 banner shown only when offline. */
+// Material 3 banner shown only when offline.
 @Composable
 fun OfflineBanner(visible: Boolean) {
     if (!visible) return

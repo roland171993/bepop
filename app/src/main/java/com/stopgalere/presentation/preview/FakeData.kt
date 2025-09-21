@@ -2,8 +2,8 @@ package com.stopgalere.presentation.preview
 
 import com.stopgalere.presentation.ui.coverletter.components.CoverLetterUi
 
-/**
- * Fake data objects for Composable previews.
+/*
+  Fake data objects for Composable previews.
  */
 object FakeData {
 

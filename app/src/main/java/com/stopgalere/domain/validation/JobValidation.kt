@@ -7,9 +7,9 @@ import com.stopgalere.util.AppConstants.STRING_LENGTH_MAX
 import com.stopgalere.util.AppConstants.STRING_LENGTH_MIN
 import java.util.Locale
 
-/**
- * Single-entry validator for Job DTOs used by the DATA layer.
- * Returns a normalized snapshot if everything passes; otherwise null.
+/*
+  Single-entry validator for Job DTOs used by the DATA layer.
+  Returns a normalized snapshot if everything passes; otherwise null.
  */
 object JobValidation {
 

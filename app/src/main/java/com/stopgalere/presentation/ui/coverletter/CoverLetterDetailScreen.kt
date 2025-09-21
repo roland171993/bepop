@@ -37,9 +37,9 @@ import compose.icons.fontawesomeicons.solid.ArrowLeft
 import compose.icons.fontawesomeicons.solid.FileAlt
 import compose.icons.fontawesomeicons.solid.User
 
-/**
- * Screen for displaying a single Cover Letter details
- */
+
+//Screen for displaying a single Cover Letter details
+
 @Composable
 fun CoverLetterDetailScreen(
     modifier: Modifier = Modifier,
@@ -74,9 +74,8 @@ fun CoverLetterDetailScreen(
     }
 }
 
-/**
- * UI Content for Cover Letter detail
- */
+
+//UI Content for Cover Letter detail
 @Composable
 fun CoverLetterDetailContent(
     modifier: Modifier = Modifier,
@@ -147,9 +146,9 @@ fun CoverLetterDetailContent(
 
 
 
-/**
- * Previews for different devices and themes
- */
+
+//Previews for different devices and themes
+
 @Preview(name = "Small – Light", widthDp = 320, heightDp = 640, showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable fun Preview_CoverDetail_Small_Light()  {
     StopGalereTheme(dynamicColor = true) {

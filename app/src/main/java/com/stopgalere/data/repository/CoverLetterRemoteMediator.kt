@@ -108,6 +108,4 @@ class CoverLetterRemoteMediator(
     }
 }
 
-private fun <T : Any> PagingState<Int, T>.lastItemOrNull(): T? =
-    pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
 

@@ -26,9 +26,8 @@ import com.RolandAssoh.stopgalere.ci.R
 import com.stopgalere.presentation.theme.SplashColor
 import com.stopgalere.presentation.theme.StopGalereTheme
 
-/**
- * Stateless Splash screen UI.
- */
+
+// Stateless Splash screen UI.
 @Composable
 fun SplashScreenContent(modifier: Modifier = Modifier,
                         snackbarHostState: SnackbarHostState? = null) {
@@ -108,8 +107,8 @@ fun UnsupportedApiDialog(onOk: () -> Unit) {
     )
 }
 
-/**
- * Four-device previews for small/medium/large phone & tablet.
+/*
+  Four-device previews for small/medium/large phone & tablet.
  */
 @Preview(
     name = "Small Phone",

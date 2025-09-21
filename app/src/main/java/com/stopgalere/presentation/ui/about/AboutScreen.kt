@@ -206,7 +206,7 @@ private fun PreviewTheme(
 
 // PREVIEWS
 
-/* Small – Light */
+// Small – Light
 @Preview(
     name = "Small – Light",
     widthDp = 320, heightDp = 640,

@@ -29,10 +29,10 @@ import com.stopgalere.presentation.theme.Gray101
 import com.stopgalere.presentation.ui.job.components.JobItem
 import com.stopgalere.presentation.ui.main.components.NoContentPlaceholder
 
-/**
- * Stateless list that displays jobs using JobRow.
- * - Ready for UI testing (has semantically tagged root).
- * - Ready for mocking (pure data-in, UI-out).
+/*
+  Stateless list that displays jobs using JobRow.
+  - Ready for UI testing (has semantically tagged root).
+  - Ready for mocking (pure data-in, UI-out).
  */
 @Composable
 fun JobList(

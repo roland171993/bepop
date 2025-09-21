@@ -11,13 +11,13 @@ import com.stopgalere.presentation.ui.coverletter.components.CoverLetterContent
 import com.stopgalere.presentation.ui.coverletter.components.CoverLetterUi
 import kotlinx.coroutines.flow.flowOf
 
-/**
- * CoverLetter screen previews
- * - Small / Medium / Large (light)
- * - Medium (dark)
- * - Medium (dynamicColor = false) for old devices
- *
- * Uses fake PagingData to keep sizing identical across previews.
+/*
+  CoverLetter screen previews
+  - Small / Medium / Large (light)
+  - Medium (dark)
+  - Medium (dynamicColor = false) for old devices
+
+  Uses fake PagingData to keep sizing identical across previews.
  */
 @Preview(
     name = "Small – Light",

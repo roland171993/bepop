@@ -9,7 +9,7 @@ object AppConstants {
 
     const val CASE_DEBUG = false
 
-    const val BASE_URL = DEV_URL
+    const val BASE_URL = PROD_URL
     const val NETWORK_TIMEOUT = 7_200_000L // 2 hours sometime We Have Bad Connection in Ivory Coast so it's take time
 
     // Paging

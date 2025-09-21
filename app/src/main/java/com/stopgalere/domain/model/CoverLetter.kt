@@ -1,8 +1,7 @@
 package com.stopgalere.domain.model
 
-/*
-  keep normalized "date" for UI + raw "dateAdded" for sort.
- */
+
+// keep normalized "date" for UI + raw "dateAdded" for sort.
 data class CoverLetter(
     val id: String,
     val title: String,

@@ -36,9 +36,9 @@ class JobRepository @Inject constructor(
 
         val config = PagingConfig(
             pageSize = pageSize,
-            initialLoadSize = initialLoad,
-            prefetchDistance = prefetch,
-            enablePlaceholders = false
+            initialLoadSize = initialLoad,  // 30
+            prefetchDistance = prefetch,    // 15
+            enablePlaceholders = false      //  to avoid freeze
         )
 
         return if (online) {

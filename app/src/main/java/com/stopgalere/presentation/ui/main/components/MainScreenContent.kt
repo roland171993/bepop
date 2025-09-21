@@ -26,11 +26,11 @@ import com.stopgalere.presentation.ui.common.OfflineBanner
 import com.stopgalere.presentation.ui.job.JobList
 import com.stopgalere.presentation.ui.job.JobUi
 
-/**
- * Stateless main screen content (SRP):
- * - Top app bar
- * - Offline banner
- * - Pull-to-refresh container with job list
+/*
+  Stateless main screen content (SRP):
+  - Top app bar
+  - Offline banner
+  - Pull-to-refresh container with job list
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -20,12 +20,7 @@ import com.stopgalere.presentation.viewmodel.splash.SplashViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.RolandAssoh.stopgalere.ci.R
 
-/**
- * Orchestrates:
- *  1. UI rendering
- *  2. Permission flow
- *  3. Navigation side-effects
- */
+
 @Composable
 fun SplashScreen(
     navController: NavHostController,
@@ -81,9 +76,7 @@ fun SplashScreen(
     )
 }
 
-/**
- * Default preview wrapped in your app theme.
- */
+
 @Preview(showBackground = true, name = "Default Splash")
 @Composable
 fun SplashScreenDevicePreviews() {

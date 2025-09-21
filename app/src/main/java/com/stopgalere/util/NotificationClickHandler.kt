@@ -18,7 +18,7 @@ class NotificationClickHandler @Inject constructor(
 ) {
     fun onJobNotificationClicked(jobId: String) {
         // read the latest connectivity snapshot
-        val online = runBlocking { network.isOnline.first() } // single read, safe from SDK callback
+        val online = runBlocking { network.isOnline.first() }
         if (online) {
             val intent = Intent(
                 Intent.ACTION_VIEW,

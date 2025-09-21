@@ -1,8 +1,8 @@
 package com.stopgalere.presentation.preview
 
-/**
- * Static lorem ipsum used for UI previews and testing.
- * This is not part of production models, just to feed fake content.
+/*
+  Static lorem ipsum used for UI previews and testing.
+  This is not part of production models, just to feed fake content.
  */
 object LoremIpsum {
     val words300 = """

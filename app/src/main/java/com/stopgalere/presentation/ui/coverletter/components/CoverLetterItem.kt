@@ -53,7 +53,7 @@ fun CoverLetterItem(
     }
 }
 
-// ------------------------------- Preview setup -------------------------------
+//Preview setup
 
 @Composable
 private fun CoverLetterItemPreviewContent(dynamicColor: Boolean = true) {
@@ -65,8 +65,6 @@ private fun CoverLetterItemPreviewContent(dynamicColor: Boolean = true) {
         }
     }
 }
-
-//------------------------------- Previews -------------------------------
 
 @Preview(
     name = "Phone – light",

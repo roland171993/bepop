@@ -18,11 +18,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel for the Splash screen.
- * - Exposes [unsupportedApi] boolean so the Composable doesn’t need sealed types.
- * - Uses internal [SplashUiState] for permission gating.
- * - Emits one-off [SplashEvent] (navigate / exit).
+/*
+  ViewModel for the Splash screen.
+  - Exposes [unsupportedApi] boolean so the Composable doesn’t need sealed types.
+  - Uses internal [SplashUiState] for permission gating.
+  - Emits one-off [SplashEvent] (navigate / exit).
  */
 @HiltViewModel
 class SplashViewModel @Inject constructor(

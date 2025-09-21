@@ -5,15 +5,15 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-/**
- * Shared date parsing/formatting for DOMAIN layer.
- * Accepts:
- *  - ISO instant:    2025-08-19T10:23:55.338Z
- *  - ISO local date: 2025-08-19
- *  - French date:    19-08-2025
- *
- * Returns French "dd-MM-yyyy" or null if invalid.
- * Uses java.text.* for wide Android compatibility (API 24+).
+/*
+  Shared date parsing/formatting for DOMAIN layer.
+  Accepts:
+   - ISO instant:    2025-08-19T10:23:55.338Z
+   - ISO local date: 2025-08-19
+   - French date:    19-08-2025
+
+  Returns French "dd-MM-yyyy" or null if invalid.
+  Uses java.text.* for wide Android compatibility (API 24+).
  */
 object DateValidation {
 

@@ -32,11 +32,11 @@ class JobRemoteMediator(
             LoadType.REFRESH -> 1
             LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
             LoadType.APPEND -> {
-                // 1) Try the "last item" path (standard Paging3)
+                // 1- Try the "last item" path (standard Paging3)
                 val nextFromLast = state.lastItemOrNull()?.let { last ->
                     keysDao.remoteKeysById(last.id)?.nextKey
                 }
-                // 2) Fallback: if last-item keys are missing (first-run timing / ordering quirks),
+                // 2- Fallback: if last-item keys are missing (first-run timing / ordering quirks),
                 //    use the global latest nextKey we stored for this feed.
                 val fallbackGlobalNext = keysDao.globalNextKey()
 
@@ -96,7 +96,3 @@ class JobRemoteMediator(
         MediatorResult.Error(t)
     }
 }
-
-/** Helpers to safely access first/last loaded items */
-private fun <T : Any> PagingState<Int, T>.lastItemOrNull(): T? =
-    pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()

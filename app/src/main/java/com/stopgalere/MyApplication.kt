@@ -16,10 +16,10 @@ import com.stopgalere.di.NotificationHandlerEntryPoint
 import com.stopgalere.util.AppConstants.CASE_DEBUG
 import com.stopgalere.util.AppConstants.TAG
 
-/**
- * Base Application class for Stop Galère.
- * - Initializes OneSignal push
- * - Hooks notification click -> NotificationClickHandler (online => deep link, offline => NoInternetActivity)
+/*
+  Base Application class for Stop Galère.
+   - Initializes OneSignal push
+   - Hooks notification click -> NotificationClickHandler (online => deep link, offline => NoInternetActivity)
  */
 @HiltAndroidApp
 class MyApplication : Application() {
@@ -28,7 +28,6 @@ class MyApplication : Application() {
         super.onCreate()
         initOneSignal()
         setupNotificationClickRouting()
-        promptPushPermissionForTesting()
     }
 
     private fun initOneSignal() {
@@ -48,13 +47,11 @@ class MyApplication : Application() {
         }
     }
 
-    /**
-     * Add a click listener:
-     * - Extracts "jobId" from additionalData (e.g., {"jobId":"abc123"})
-     * - Delegates to NotificationClickHandler which checks isOnline:
-     *      - online  -> open deep link stopgalere://job/{jobId}
-     *      - offline -> open NoInternetActivity (shows R.string.no_internet)
-     */
+    // Add a click listener:
+    // - Extracts "jobId" from additionalData (e.g., {"jobId":"abc123"})
+    // - Delegates to NotificationClickHandler which checks isOnline:
+    // - online  -> open deep link stopgalere://job/{jobId}
+    // - offline -> open NoInternetActivity (shows R.string.no_internet)
     private fun setupNotificationClickRouting() {
         // The SDK holds a weak reference to the listener (per their docs), so it won’t leak your Application.
         // It stays registered until app process death, or until GC reclaims it (because you don’t hold a strong reference).
@@ -84,14 +81,5 @@ class MyApplication : Application() {
             }
         }
         OneSignal.Notifications.addClickListener(listener)
-    }
-
-    // Keep your current testing prompt behavior (you can remove this in prod)
-    private fun promptPushPermissionForTesting() {
-        CoroutineScope(Dispatchers.IO).launch {
-            // For Android 13+ notification permission prompt
-            OneSignal.Notifications.requestPermission(true)
-            println("[$TAG] Requested notification permission (Android 13+).")
-        }
     }
 }
