@@ -10,7 +10,6 @@ import com.stopgalere.presentation.viewmodel.splash.SplashUiState
 /*
   Runtime permissions for Splash:
   - Location: request BOTH COARSE + FINE (Android requirement)
-  - Storage: READ_MEDIA_* on Android 13+; READ_EXTERNAL_STORAGE below
   - Notifications: POST_NOTIFICATIONS on Android 13+ (runtime)
 
   Re-asks when ViewModel re-enters RequestPermissions.
@@ -33,15 +32,11 @@ fun PermissionRequestHandler(
         if (Build.VERSION.SDK_INT >= 33) {
             // Android 13+: media split + notifications
             baseLocationPerms + arrayOf(
-                Manifest.permission.READ_MEDIA_IMAGES,
-                Manifest.permission.READ_MEDIA_VIDEO,
                 Manifest.permission.POST_NOTIFICATIONS
             )
         } else {
             // Older: legacy external storage, no runtime notifications
-            baseLocationPerms + arrayOf(
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
+            baseLocationPerms
         }
     }
 
@@ -53,15 +48,6 @@ fun PermissionRequestHandler(
         val fineGranted   = results[Manifest.permission.ACCESS_FINE_LOCATION] == true
         val locationOk    = coarseGranted || fineGranted
 
-        // --- Media:
-        val mediaOk = if (Build.VERSION.SDK_INT >= 33) {
-            val images = results[Manifest.permission.READ_MEDIA_IMAGES] == true
-            val video  = results[Manifest.permission.READ_MEDIA_VIDEO]  == true
-            images && video
-        } else {
-            // On SDK < 33 this will be present in 'permissions'
-            results[Manifest.permission.READ_EXTERNAL_STORAGE] == true
-        }
 
         // --- Notifications (runtime only on 33+):
         val notificationsOk = if (Build.VERSION.SDK_INT >= 33) {
@@ -70,7 +56,7 @@ fun PermissionRequestHandler(
             true
         }
 
-        onPermissionsResult(locationOk && mediaOk && notificationsOk)
+        onPermissionsResult(locationOk  && notificationsOk)
     }
 
     // If VM re-requests permissions, allow re-launch
