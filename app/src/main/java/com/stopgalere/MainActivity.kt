@@ -1,47 +1,79 @@
 package com.stopgalere
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavGraph
+import com.stopgalere.navigation.NavGraph
 import com.stopgalere.presentation.theme.StopGalereTheme
+import com.stopgalere.presentation.ui.splash.SplashViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val splashViewModel: SplashViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Install the SplashScreen and keep it visible based on ViewModel state
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        splashScreen.setKeepOnScreenCondition {
+            splashViewModel.showSplash.value
+        }
+
         setContent {
             StopGalereTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = androidx.compose.material3.MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+                    NavGraph(navController = navController)
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
+@Preview(
+    name = "Main Screen – Light (EN)",
+    showBackground = true,
+    showSystemUi = true,
+    locale = "en"
+)
 @Composable
-fun GreetingPreview() {
-    StopGalereTheme {
-        Greeting("Android")
+fun MainActivityPreviewLightEN() {
+    StopGalereTheme(useDarkTheme = false) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            NavGraph(navController = rememberNavController())
+        }
     }
 }
+
+@Preview(
+    name = "Main Screen – Dark (FR)",
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    showBackground = true,
+    showSystemUi = true,
+    locale = "fr-rFR"
+)
+@Composable
+fun MainActivityPreviewDarkFR() {
+    StopGalereTheme(useDarkTheme = true) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            NavGraph(navController = rememberNavController())
+        }
+    }
+}
+

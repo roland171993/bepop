@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">StopGalere</string>
+    <string name="screen_main_title">Home</string>
+    <string name="screen_jobs_title">Jobs</string>
+    <string name="screen_resumes_title">Resumes</string>
+    <string name="screen_coverletters_title">Cover Letters</string>
+    <string name="screen_about_title">About</string>
+
 </resources>

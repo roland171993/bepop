@@ -1,7 +1,9 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.application) // id("com.android.application")
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android") version "2.56.2" apply false
 }
 
 android {
@@ -40,20 +42,42 @@ android {
 }
 
 dependencies {
+    // Core Android
+    implementation(libs.androidx.core.ktx) // "androidx.core:core-ktx"
+    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.androidx.lifecycle.runtime.ktx) // "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
+    // Jetpack Compose
+    implementation(platform(libs.androidx.compose.bom)) // Compose BOM
+    implementation(libs.androidx.ui)               // "androidx.compose.ui:ui"
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.material3)         // "androidx.compose.material3:material3"
+    implementation(libs.androidx.activity.compose)  // "androidx.activity:activity-compose:1.8.0"
+
+    // Hilt & Navigation
+    implementation("com.google.dagger:hilt-android:2.52")
+    kapt("com.google.dagger:hilt-compiler:2.52")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    // Retrofit / Room / Paging / Coroutines / etc.
+    // TODO: add missing dependencies here
+
+    // Android Instrumentation Tests
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.androidx.junit)               // "androidx.test.ext:junit"
+    androidTestImplementation(libs.androidx.espresso.core)      // "androidx.test.espresso:espresso-core"
+    androidTestImplementation(libs.androidx.ui.test.junit4)     // "androidx.compose.ui:ui-test-junit4"
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.52")
+    kaptAndroidTest("com.google.dagger:hilt-compiler:2.52")
+
+    // Debug Only
+    debugImplementation(libs.androidx.ui.tooling)               // Compose tooling
+    debugImplementation(libs.androidx.ui.test.manifest)         // Test manifest helper
+
+    // Unit / JVM Tests
+    testImplementation(libs.junit)                              // JUnit 4 or Jupiter as defined
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation("org.mockito:mockito-inline:5.3.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3") // if using JUnit 5
 }
