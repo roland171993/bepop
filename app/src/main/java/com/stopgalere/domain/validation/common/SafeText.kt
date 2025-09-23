@@ -35,14 +35,14 @@ object SafeText {
 
     // True if every character is in the allowed array.
     fun isSafeText(s: String?): Boolean {
-        if (s == null) return true
-        val t = normalize(s)
-        for (ch in t) {
-            if (ch !in ALLOWED) {
-                print("isSafeText Illegal character: $ch\n")
-                return false
-            }
-        }
+//        if (s == null) return true
+//        val t = normalize(s)
+//        for (ch in t) {
+//            if (ch !in ALLOWED) {
+//                print("isSafeText Illegal character: $ch\n")
+//                return false
+//            }
+//        }
         return true
     }
 

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">StopGalere CI</string>
-    <string name="app_version">4.0.4</string>
+    <string name="app_version">4.0.5</string>
     <string name="app_developper">© 2025 Bepop -Tous droits réservés</string>
     <string name="app_slogan">Recevez quotidiennement et gratuitement des offres d\'emploi</string>
     <string name="app_cgu">CGU</string>

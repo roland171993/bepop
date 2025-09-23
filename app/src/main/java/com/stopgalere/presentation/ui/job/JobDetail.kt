@@ -180,6 +180,7 @@ fun JobDetailContent(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
+                .padding(10.dp,0.dp,10.dp,0.dp)
                 .background(MaterialTheme.colorScheme.background)
                 .semantics { testTag = "JobDetail_Body" },
             horizontalAlignment = Alignment.CenterHorizontally
