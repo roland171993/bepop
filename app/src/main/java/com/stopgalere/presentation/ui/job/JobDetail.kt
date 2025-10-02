@@ -31,6 +31,7 @@ import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.solid.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.stopgalere.presentation.theme.StopGalereTheme
 import compose.icons.fontawesomeicons.Solid
@@ -189,7 +190,8 @@ fun JobDetailContent(
                 job.title,
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
                 ),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,

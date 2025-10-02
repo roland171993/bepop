@@ -64,11 +64,6 @@ object DrawerNavItemDefaults {
             labelRes = R.string.screen_main_drawer_about
         ),
         DrawerNavItem(
-            route = "help",
-            icon  = FontAwesomeIcons.Solid.QuestionCircle,
-            labelRes = R.string.screen_main_drawer_help
-        ),
-        DrawerNavItem(
             route = "upload",
             icon  = FontAwesomeIcons.Solid.Bullhorn,
             labelRes = R.string.screen_main_drawer_upload
@@ -77,7 +72,12 @@ object DrawerNavItemDefaults {
             route = "page",
             icon  = FontAwesomeIcons.Brands.Facebook,
             labelRes = R.string.screen_main_drawer_page
-        )
+        ),
+        DrawerNavItem(
+            route = "help",
+            icon  = FontAwesomeIcons.Solid.QuestionCircle,
+            labelRes = R.string.screen_main_drawer_help
+        ),
     )
 }
 

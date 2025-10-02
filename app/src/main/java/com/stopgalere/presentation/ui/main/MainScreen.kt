@@ -59,7 +59,7 @@ fun MainScreen(
 
     val listState = rememberSaveable(saver = LazyListState.Saver) { LazyListState() }
     val jobsPaging = viewModel.jobs.collectAsLazyPagingItems()
-    val welcomeMsg = stringResource(R.string.screen_main_welcome)
+    val commingSoonMsg = stringResource(R.string.screen_main_comming_soon)
     val context = LocalContext.current
     val mailText = stringResource(R.string.screen_main_mail_us) +
             stringResource(R.string.app_email)
@@ -84,11 +84,12 @@ fun MainScreen(
                     }
                 }
                 is MainUiEvent.OpenHelp -> {
-                    val url = context.getString(R.string.facebook_videos).trim()
-                    context.startActivity(
-                        Intent(Intent.ACTION_VIEW, "http://$url".toUri())
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    )
+                    snackbarHostState.showSnackbar(commingSoonMsg)
+//                    val url = context.getString(R.string.facebook_videos).trim()
+//                    context.startActivity(
+//                        Intent(Intent.ACTION_VIEW, "http://$url".toUri())
+//                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                    )
                 }
                 is MainUiEvent.OpenPage -> {
                     val url = context.getString(R.string.facebook_groupe).trim()
@@ -97,7 +98,7 @@ fun MainScreen(
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     )
                 }
-                is MainUiEvent.ResumePage -> snackbarHostState.showSnackbar(welcomeMsg)
+                is MainUiEvent.ResumePage -> snackbarHostState.showSnackbar(commingSoonMsg)
                 is MainUiEvent.Navigate -> navController.navigate(event.route)
             }
         }

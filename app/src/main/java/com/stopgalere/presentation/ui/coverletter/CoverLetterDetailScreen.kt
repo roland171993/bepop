@@ -16,6 +16,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -109,6 +110,7 @@ fun CoverLetterDetailContent(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(scrollState)
+                .padding(10.dp,0.dp,10.dp,0.dp)
                 .background(MaterialTheme.colorScheme.background)
                 .semantics { testTag = "CoverDetail_Body" },
             horizontalAlignment = Alignment.Start
@@ -118,7 +120,8 @@ fun CoverLetterDetailContent(
                     cover.title,
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = TextAlign.Center
                     ),
                     modifier = Modifier
                         .padding(12.dp)

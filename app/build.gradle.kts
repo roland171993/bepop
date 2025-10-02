@@ -22,8 +22,8 @@ android {
         applicationId = "com.RolandAssoh.stopgalere.ci"
         minSdk = 24
         targetSdk = 35
-        versionCode = 343
-        versionName = "4.0.5"
+        versionCode = 344
+        versionName = "4.1.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
     }
