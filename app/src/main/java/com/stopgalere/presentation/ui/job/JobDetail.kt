@@ -37,6 +37,8 @@ import com.stopgalere.presentation.theme.StopGalereTheme
 import compose.icons.fontawesomeicons.Solid
 import com.RolandAssoh.stopgalere.ci.R
 import androidx.core.net.toUri
+import com.stopgalere.navigation.navigateToAiCoverLetter
+import com.stopgalere.navigation.navigateToAiProPhoto
 import com.stopgalere.presentation.ui.common.HeaderIconButton
 
 @Composable
@@ -70,7 +72,21 @@ fun JobDetailScreen(
             modifier = modifier,
             job = ui.job,
             isOnline = state.isOnline,
-            onBack = { navController.popBackStack() }
+            onBack = { navController.popBackStack() },
+            onAiCoverLetter = { job ->
+                navController.navigateToAiCoverLetter(
+                    jobId = job.id,
+                    jobTitle = job.title,
+                    jobDescription = job.description,
+                    jobCompany = job.company
+                )
+            },
+            onAiProPhoto = { job ->
+                navController.navigateToAiProPhoto(
+                    jobId = job.id,
+                    jobTitle = job.title
+                )
+            }
         )
     }
 }
@@ -81,7 +97,9 @@ fun JobDetailContent(
     modifier: Modifier = Modifier,
     job: JobUi,
     isOnline: Boolean,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onAiCoverLetter: (JobUi) -> Unit = {},
+    onAiProPhoto: (JobUi) -> Unit = {}
 ) {
     val ctx = LocalContext.current
 
@@ -313,6 +331,28 @@ fun JobDetailContent(
                     DetailItem(job.genderName)
                     DetailItem(job.educationLevel)
                     DetailItem(job.experience)
+                }
+            }
+
+            // AI buttons
+            Spacer(Modifier.height(16.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = { onAiCoverLetter(job) },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("✨ Lettre IA", style = MaterialTheme.typography.labelMedium)
+                }
+                OutlinedButton(
+                    onClick = { onAiProPhoto(job) },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("📸 Photo IA", style = MaterialTheme.typography.labelMedium)
                 }
             }
 

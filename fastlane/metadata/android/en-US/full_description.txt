@@ -1,0 +1,22 @@
+Stop Galère is your intelligent job search assistant.
+
+🔍 JOB LISTINGS
+Browse personalized job offers with real-time search and offline cache.
+
+✨ AI COVER LETTER
+Generate a professional cover letter in seconds using AI (ChatGPT, Gemini, DeepSeek). Scan your diplomas with OCR, dictate your motivations by voice, and receive your letter by email.
+
+📸 AI PROFESSIONAL PHOTO
+Transform your selfie into a LinkedIn-ready professional photo with DALL·E. Choose your style, crop with precision using uCrop, and share by email.
+
+💬 SUPPORT CHAT
+Chat in real time with our support team. Share files, images and documents directly.
+
+📹 VIDEO CALL
+Connect via video with an advisor for personalized guidance.
+
+📝 COVER LETTERS
+Browse and manage your cover letter library.
+
+🔐 SECURITY
+JWT-secured authentication, Google and Apple Sign-In available.

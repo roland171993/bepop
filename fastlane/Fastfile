@@ -1,0 +1,153 @@
+# fastlane/Fastfile
+# ─────────────────────────────────────────────────────────────────────────────
+# Stop Galère — Fastlane pipeline
+# Lanes disponibles :
+#   fastlane test             → tests unitaires + instrumentés
+#   fastlane screenshots      → capture automatique (Screengrab)
+#   fastlane build_release    → compile AAB signé
+#   fastlane deploy_internal  → upload vers track "internal"
+#   fastlane deploy_beta      → promote internal → beta
+#   fastlane deploy_production → promote beta → production
+#   fastlane deploy           → build + deploy_internal (pipeline complet CI)
+# ─────────────────────────────────────────────────────────────────────────────
+
+default_platform(:android)
+
+platform :android do
+
+  # ── Avant chaque lane ──────────────────────────────────────────────────────
+  before_all do
+    ENV["GRADLE_OPTS"] ||= "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false"
+  end
+
+  # ── Tests ──────────────────────────────────────────────────────────────────
+  desc "Lance tous les tests unitaires (JVM)"
+  lane :test do
+    gradle(
+      task:        "test",
+      build_type:  "Debug",
+      print_command: true
+    )
+    UI.success("Tests unitaires termines")
+  end
+
+  desc "Lance les tests instrumentes sur un emulateur connecte"
+  lane :instrumented_tests do
+    gradle(
+      task:       "connectedAndroidTest",
+      build_type: "Debug"
+    )
+    UI.success("Tests instrumentes termines")
+  end
+
+  # ── Screenshots ────────────────────────────────────────────────────────────
+  desc "Capture automatique des screenshots pour le Play Store"
+  lane :screenshots do
+    screengrab(
+      locales:              ["fr-FR", "en-US"],
+      clear_previous_screenshots: true,
+      app_package_name:     "com.RolandAssoh.stopgalere.ci",
+      tests_package_name:   "com.RolandAssoh.stopgalere.ci.test",
+      use_tests_in_packages: ["com.RolandAssoh.stopgalere.ci"],
+      output_directory:     "fastlane/metadata/android"
+    )
+    UI.success("Screenshots captures dans fastlane/metadata/android/")
+  end
+
+  # ── Build ──────────────────────────────────────────────────────────────────
+  desc "Compile l'AAB signe (Release)"
+  lane :build_release do
+    # Incremente automatiquement le versionCode
+    increment_version_code(
+      gradle_file_path: "app/build.gradle.kts"
+    )
+
+    gradle(
+      task:          "bundle",
+      build_type:    "Release",
+      print_command: true,
+      properties: {
+        "android.injected.signing.store.file"     => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias"      => ENV["KEY_ALIAS"],
+        "android.injected.signing.key.password"   => ENV["KEY_PASSWORD"]
+      }
+    )
+
+    UI.success("AAB compile : #{lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]}")
+  end
+
+  # ── Deploy vers Google Play ────────────────────────────────────────────────
+  desc "Upload AAB vers le track 'internal' (testeurs internes)"
+  lane :deploy_internal do
+    build_release
+
+    upload_to_play_store(
+      track:              "internal",
+      aab:                lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      release_status:     "draft",
+      skip_upload_apk:    true,
+      skip_upload_images: false,
+      skip_upload_screenshots: false,
+      metadata_path:      "fastlane/metadata/android",
+      version_name:       get_version_name_from_gradle
+    )
+
+    UI.success("Deploye sur track INTERNAL")
+  end
+
+  desc "Promeut internal -> beta"
+  lane :deploy_beta do
+    upload_to_play_store(
+      track:        "internal",
+      track_promote_to: "beta",
+      skip_upload_apk:  true,
+      skip_upload_aab:  true
+    )
+    UI.success("Promu vers track BETA")
+  end
+
+  desc "Promeut beta -> production (rollout 10%)"
+  lane :deploy_production do
+    upload_to_play_store(
+      track:                 "beta",
+      track_promote_to:      "production",
+      rollout:               "0.1",
+      skip_upload_apk:       true,
+      skip_upload_aab:       true
+    )
+    UI.success("Promu vers PRODUCTION (rollout 10%)")
+  end
+
+  desc "Pipeline CI complet : test + build + deploy internal"
+  lane :deploy do
+    test
+    build_release
+    upload_to_play_store(
+      track:              "internal",
+      aab:                lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      release_status:     "draft",
+      skip_upload_apk:    true,
+      metadata_path:      "fastlane/metadata/android"
+    )
+    UI.success("Pipeline complet termine — app sur Internal Testing")
+  end
+
+  # ── Helpers ────────────────────────────────────────────────────────────────
+  desc "Retourne le versionName depuis build.gradle.kts"
+  private_lane :get_version_name_from_gradle do
+    content = File.read("app/build.gradle.kts")
+    match = content.match(/versionName\s*=\s*"([^"]+)"/)
+    match ? match[1] : "unknown"
+  end
+
+  # ── Notifications post-lane ────────────────────────────────────────────────
+  after_all do |lane|
+    UI.success("Lane '#{lane}' terminee avec succes")
+  end
+
+  error do |lane, exception|
+    UI.error("Lane '#{lane}' a echoue : #{exception.message}")
+  end
+
+end

@@ -1,0 +1,19 @@
+# fastlane/Screengrabfile
+app_package_name("com.RolandAssoh.stopgalere.ci")
+tests_package_name("com.RolandAssoh.stopgalere.ci.test")
+
+# Locales a capturer
+locales(["fr-FR", "en-US"])
+
+# Repertoire de sortie
+output_directory("fastlane/metadata/android")
+
+# Nettoyer les anciens screenshots avant chaque run
+clear_previous_screenshots(true)
+
+# Thème de l'app pour les screenshots
+app_apk_path("app/build/outputs/apk/debug/app-debug.apk")
+tests_apk_path("app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk")
+
+# Taille des emulateurs
+device_type("phone")

@@ -1,69 +1,88 @@
 package com.stopgalere
 
 import android.app.Application
+import com.google.firebase.FirebaseApp
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.onesignal.OneSignal
 import com.onesignal.debug.LogLevel
 import com.onesignal.notifications.INotificationClickEvent
 import com.onesignal.notifications.INotificationClickListener
+import com.stopgalere.util.AppConstants.CASE_DEBUG
 import com.stopgalere.util.AppConstants.ONESIGNAL_APP_ID
+import com.stopgalere.util.AppConstants.TAG
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.EntryPoints
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import com.stopgalere.di.NotificationHandlerEntryPoint
-import com.stopgalere.util.AppConstants.CASE_DEBUG
-import com.stopgalere.util.AppConstants.TAG
 
 /*
   Base Application class for Stop Galère.
+   - Initializes Firebase (Analytics + Crashlytics)
    - Initializes OneSignal push
-   - Hooks notification click -> NotificationClickHandler (online => deep link, offline => NoInternetActivity)
+   - Routes notification clicks to NotificationClickHandler
  */
 @HiltAndroidApp
 class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        initFirebase()
         initOneSignal()
         setupNotificationClickRouting()
     }
 
-    private fun initOneSignal() {
-        // Verbose logs only in debug builds
-        OneSignal.Debug.logLevel = if (CASE_DEBUG) LogLevel.VERBOSE else LogLevel.NONE
-
+    // ----------------------------------------------------------------
+    // Firebase — must be initialized before Crashlytics is used
+    // ----------------------------------------------------------------
+    private fun initFirebase() {
         try {
-            if (ONESIGNAL_APP_ID.isBlank()) {
-                println("[$TAG] OneSignal App Id is blank. Push will be disabled.")
-                return
+            FirebaseApp.initializeApp(this)
+
+            // Disable automatic data collection in debug builds to avoid
+            // polluting production Crashlytics data.
+            FirebaseCrashlytics.getInstance().apply {
+                isCrashlyticsCollectionEnabled = !CASE_DEBUG
             }
-            OneSignal.initWithContext(this, ONESIGNAL_APP_ID)
-            println("[$TAG] OneSignal initialized with AppId=$ONESIGNAL_APP_ID")
+
+            log("Firebase + Crashlytics initialized (collection=${!CASE_DEBUG})")
         } catch (t: Throwable) {
-            println("[$TAG] Failed to initialize OneSignal: ${t.message}")
-            t.printStackTrace()
+            // Don't crash the app if Firebase fails to init (e.g. missing google-services.json)
+            android.util.Log.e(TAG, "[${now()}] Failed to initialize Firebase: ${t.message}", t)
         }
     }
 
-    // Add a click listener:
-    // - Extracts "jobId" from additionalData (e.g., {"jobId":"abc123"})
-    // - Delegates to NotificationClickHandler which checks isOnline:
-    // - online  -> open deep link stopgalere://job/{jobId}
-    // - offline -> open NoInternetActivity (shows R.string.no_internet)
+    // ----------------------------------------------------------------
+    // OneSignal
+    // ----------------------------------------------------------------
+    private fun initOneSignal() {
+        OneSignal.Debug.logLevel = if (CASE_DEBUG) LogLevel.VERBOSE else LogLevel.NONE
+        try {
+            if (ONESIGNAL_APP_ID.isBlank()) {
+                log("OneSignal App Id is blank. Push will be disabled.")
+                return
+            }
+            OneSignal.initWithContext(this, ONESIGNAL_APP_ID)
+            log("OneSignal initialized AppId=$ONESIGNAL_APP_ID")
+        } catch (t: Throwable) {
+            // Report to Crashlytics but keep the app alive
+            FirebaseCrashlytics.getInstance().recordException(t)
+            android.util.Log.e(TAG, "[${now()}] Failed to initialize OneSignal: ${t.message}", t)
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // Notification deep-link routing
+    // ----------------------------------------------------------------
     private fun setupNotificationClickRouting() {
-        // The SDK holds a weak reference to the listener (per their docs), so it won’t leak your Application.
-        // It stays registered until app process death, or until GC reclaims it (because you don’t hold a strong reference).
         val listener = object : INotificationClickListener {
             override fun onClick(event: INotificationClickEvent) {
-                val data = event.notification.additionalData
+                val data  = event.notification.additionalData
                 val jobId = data?.optString("jobId")?.takeIf { it.isNotBlank() }
 
                 if (jobId == null) {
-                    if (CASE_DEBUG) {
-                        println("[$TAG] Notification clicked without jobId in additionalData: $data")
-                    }
+                    if (CASE_DEBUG) log("Notification clicked without jobId in additionalData: $data")
                     return
                 }
 
@@ -73,13 +92,22 @@ class MyApplication : Application() {
                         NotificationHandlerEntryPoint::class.java
                     )
                     entryPoint.handler().onJobNotificationClicked(jobId)
-                    println("[$TAG] Routed notification click for jobId=$jobId")
+                    log("Routed notification click jobId=$jobId")
                 }.onFailure { e ->
-                    println("[$TAG] Failed to route notification click for jobId=$jobId: ${e.message}")
-                    e.printStackTrace()
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                    android.util.Log.e(TAG, "[${now()}] Failed to route notification click jobId=$jobId: ${e.message}", e)
                 }
             }
         }
         OneSignal.Notifications.addClickListener(listener)
+    }
+
+    // ----------------------------------------------------------------
+    // Helpers
+    // ----------------------------------------------------------------
+    private fun now() = java.time.Instant.now().toString()
+
+    private fun log(msg: String) {
+        android.util.Log.d(TAG, "[${now()}] $msg")
     }
 }

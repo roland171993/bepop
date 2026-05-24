@@ -5,13 +5,14 @@ buildscript {
     }
 }
 
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.kapt")
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.gms.google-services")          // Firebase google-services
+    id("com.google.firebase.crashlytics")          // Crashlytics
 }
 
 android {
@@ -24,7 +25,7 @@ android {
         targetSdk = 35
         versionCode = 344
         versionName = "4.1.2"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.stopgalere.HiltTestRunner"
         vectorDrawables { useSupportLibrary = true }
     }
 
@@ -45,6 +46,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     packaging {
@@ -58,7 +60,6 @@ android {
             )
         }
     }
-
 }
 
 kapt {
@@ -71,20 +72,35 @@ kapt {
 }
 
 dependencies {
-    val navComposeVersion         = "2.6.0"
-    val hiltNavComposeVersion     = "1.0.0"
-    val viewModelComposeVersion   = "2.6.1"
-    val hiltVersion               = "2.56.2"
-    val roomVersion               = "2.7.0"
-    val retrofitVersion           = "2.9.0"
-    val accompanistVersion        = "0.36.0"
+    val navComposeVersion       = "2.6.0"
+    val hiltNavComposeVersion   = "1.0.0"
+    val viewModelComposeVersion = "2.6.1"
+    val hiltVersion             = "2.56.2"
+    val roomVersion             = "2.7.0"
+    val retrofitVersion         = "2.9.0"
+    val accompanistVersion      = "0.36.0"
 
+    // ----------------------------------------------------------------
+    // Firebase BOM — pins all Firebase library versions
+    // ----------------------------------------------------------------
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")       // Analytics (required by Crashlytics)
+    implementation("com.google.firebase:firebase-crashlytics-ktx")     // Crashlytics
+    implementation("com.google.firebase:firebase-auth-ktx")            // Firebase Auth (Google + Apple)
+
+    // Google Sign-In credential helper
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+
+    // ----------------------------------------------------------------
     // Core Android
+    // ----------------------------------------------------------------
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
+    // ----------------------------------------------------------------
     // Jetpack Compose
+    // ----------------------------------------------------------------
     implementation("androidx.activity:activity-compose:1.8.0")
     implementation(platform("androidx.compose:compose-bom:2024.09.00"))
     implementation("androidx.compose.ui:ui")
@@ -97,7 +113,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.compose.ui:ui-text-google-fonts:1.7.0-beta05")
 
-    // Navigation-Compose & ViewModel-Compose
+    // ----------------------------------------------------------------
+    // Navigation + Hilt
+    // ----------------------------------------------------------------
     implementation("com.google.dagger:hilt-android:${hiltVersion}")
     kapt("com.google.dagger:hilt-compiler:${hiltVersion}")
     implementation("androidx.navigation:navigation-compose:${navComposeVersion}")
@@ -111,55 +129,91 @@ dependencies {
 
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.1")
 
-
-    //Coil (image loading in Compose), Picasso
+    // ----------------------------------------------------------------
+    // Image loading
+    // ----------------------------------------------------------------
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("com.squareup.picasso:picasso:2.8")
 
+    // ----------------------------------------------------------------
     // Paging 3
-    implementation ("androidx.paging:paging-runtime-ktx:3.3.0")
-    implementation ("androidx.paging:paging-compose:3.3.0")
+    // ----------------------------------------------------------------
+    implementation("androidx.paging:paging-runtime-ktx:3.3.0")
+    implementation("androidx.paging:paging-compose:3.3.0")
 
+    // ----------------------------------------------------------------
     // Room
-    implementation ("androidx.room:room-ktx:${roomVersion}")
-    implementation ("androidx.room:room-paging:${roomVersion}")
-    kapt ("androidx.room:room-compiler:${roomVersion}")
+    // ----------------------------------------------------------------
+    implementation("androidx.room:room-ktx:${roomVersion}")
+    implementation("androidx.room:room-paging:${roomVersion}")
+    kapt("androidx.room:room-compiler:${roomVersion}")
 
+    // ----------------------------------------------------------------
     // Coroutines
+    // ----------------------------------------------------------------
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
+    // ----------------------------------------------------------------
     // Retrofit + OkHttp
+    // ----------------------------------------------------------------
     implementation("com.squareup.retrofit2:retrofit:${retrofitVersion}")
     implementation("com.squareup.retrofit2:converter-moshi:${retrofitVersion}")
     implementation("com.squareup.retrofit2:converter-gson:${retrofitVersion}")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
-    // Notification
+    // Multipart / file upload support
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+
+    // ----------------------------------------------------------------
+    // WebRTC — video call support
+    // ----------------------------------------------------------------
+    implementation("io.getstream:stream-webrtc-android:1.1.0")
+
+    // ----------------------------------------------------------------
+    // Socket.io client — real-time chat
+    // ----------------------------------------------------------------
+    implementation("io.socket:socket.io-client:2.1.0") {
+        // Exclude the okhttp transport already pulled in by OkHttp directly
+        exclude(group = "org.json", module = "json")
+    }
+
+    // ----------------------------------------------------------------
+    // OneSignal
+    // ----------------------------------------------------------------
     implementation("com.onesignal:OneSignal:[5.1.6, 5.1.99]")
 
+    // ----------------------------------------------------------------
+    // ML Kit + uCrop
+    // ----------------------------------------------------------------
+    implementation("com.google.mlkit:text-recognition:16.0.0")
+    implementation("com.yalantis:ucrop:2.2.8")
 
+    // ----------------------------------------------------------------
     // Android Instrumentation Tests
+    // ----------------------------------------------------------------
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.00"))
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.56.2")
-    // If you use MockK on androidTest:
+    androidTestImplementation("com.google.dagger:hilt-android-testing:${hiltVersion}")
+    kaptAndroidTest("com.google.dagger:hilt-compiler:${hiltVersion}")
     androidTestImplementation("io.mockk:mockk-android:1.13.11") {
         exclude(group = "org.junit.jupiter")
         exclude(group = "org.junit.platform")
     }
 
-    // Hilt testing
-    androidTestImplementation("com.google.dagger:hilt-android-testing:$hiltVersion")
-    kaptAndroidTest("com.google.dagger:hilt-compiler:$hiltVersion")
-
+    // ----------------------------------------------------------------
     // Debug Only
+    // ----------------------------------------------------------------
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    // ----------------------------------------------------------------
     // Unit / JVM Tests
+    // ----------------------------------------------------------------
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    testImplementation("io.mockk:mockk:1.13.11")
+    testImplementation("app.cash.turbine:turbine:1.1.0")   // Flow testing
 }

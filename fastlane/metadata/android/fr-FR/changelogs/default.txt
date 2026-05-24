@@ -1,0 +1,6 @@
+• ✨ Nouvelle fonctionnalité : Génération de lettres de motivation par IA (ChatGPT, Gemini, DeepSeek)
+• 📸 Nouvelle fonctionnalité : Génération de photos professionnelles par DALL·E
+• 🎙️ Reconnaissance vocale pour dicter vos motivations
+• 🔍 OCR pour scanner vos diplômes et certificats
+• 📹 Appel vidéo WebRTC amélioré
+• 🐛 Corrections de bugs et améliorations de performance

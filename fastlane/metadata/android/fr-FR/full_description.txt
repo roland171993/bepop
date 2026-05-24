@@ -1,0 +1,22 @@
+Stop Galère est votre assistant emploi intelligent.
+
+🔍 OFFRES D'EMPLOI
+Parcourez des offres d'emploi personnalisées avec recherche en temps réel et cache hors-ligne.
+
+✨ LETTRE DE MOTIVATION IA
+Générez une lettre de motivation professionnelle en quelques secondes grâce à l'intelligence artificielle (ChatGPT, Gemini, DeepSeek). Scannez vos diplômes par OCR, dictez vos motivations par voix, et recevez votre lettre par email.
+
+📸 PHOTO PROFESSIONNELLE IA
+Transformez votre selfie en photo professionnelle digne de LinkedIn grâce à DALL·E. Choisissez votre style (avec ou sans costume), recadrez avec précision et partagez par email.
+
+💬 CHAT ASSISTANCE
+Échangez en temps réel avec notre équipe support. Partagez des fichiers, images et documents directement dans le chat.
+
+📹 APPEL VIDÉO
+Connectez-vous en vidéo avec un conseiller pour un accompagnement personnalisé.
+
+📝 LETTRES DE MOTIVATION
+Consultez et gérez votre bibliothèque de lettres de motivation.
+
+🔐 SÉCURITÉ
+Authentification sécurisée par JWT, connexion Google et Apple disponibles.

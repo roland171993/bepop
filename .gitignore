@@ -13,3 +13,12 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Firebase — fichier sensible
+app/google-services.json
+
+# Fastlane — fichiers sensibles
+fastlane/play-store-key.json
+fastlane/keystore/
+.env.fastlane
+.env

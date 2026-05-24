@@ -1,0 +1,6 @@
+• ✨ New: AI-powered cover letter generation (ChatGPT, Gemini, DeepSeek)
+• 📸 New: AI professional photo generation with DALL·E
+• 🎙️ Voice recognition for dictating your motivations
+• 🔍 OCR to scan diplomas and certificates
+• 📹 Improved WebRTC video calls
+• 🐛 Bug fixes and performance improvements

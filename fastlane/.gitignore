@@ -1,0 +1,12 @@
+# Google Play Store service account key (SENSIBLE — ne jamais committer)
+play-store-key.json
+
+# Keystore (SENSIBLE)
+keystore/
+
+# Screenshots generes
+metadata/android/*/images/
+
+# Logs Fastlane
+*.log
+report.xml
